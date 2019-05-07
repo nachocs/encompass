@@ -125,6 +125,8 @@ Encompass.SelectableAreaComponent = Ember.Component.extend({
         highlighting.disableSelection();
         tagging.disable();
       }
+
+      // component is destroyed when toggling to not selecting
     }
 
     if (isShowing !== this.get('showing')) {

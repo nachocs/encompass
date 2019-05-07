@@ -89,6 +89,12 @@ var UserSchema = new Schema({
   socketId: { type: String },
   seenTour: { type: Date },
   lastSeen: { type: Date },
+  vmtToken: { type: String },
+  vmtUserInfo: {
+    token: { type: String },
+    username: { type: String },
+    userId: { type: String }
+  },
   history: [Log] // currently not working
   //sessions: [{key: String, starts: Number, ends: Number}]
 },
