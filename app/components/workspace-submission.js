@@ -22,9 +22,7 @@ Encompass.WorkspaceSubmissionComponent = Ember.Component.extend(Encompass.Curren
     let making = this.get('makingSelection');
     let showing = this.get('showingSelections');
     let transitioning = this.get('isTransitioning');
-    let ws = this.get('currentWorkspace');
-    let canSelect = this.get('permissions').canEdit(ws, 'selections', 2);
-    return (making || showing) && !transitioning && !this.switching && canSelect;
+    return (making || showing) && !transitioning && !this.switching;
   }),
 
   shouldCheck: Ember.computed('makingSelection', function() {
@@ -32,13 +30,20 @@ Encompass.WorkspaceSubmissionComponent = Ember.Component.extend(Encompass.Curren
   }),
 
   areNoSelections: function() {
-    return !this.get('workspaceSelections.length') > 0;
-  }.property('workspaceSelections'),
+    return this.get('canSeeSelections') && !this.get('workspaceSelections.length') > 0;
+  }.property('workspaceSelections.[]', 'canSeeSelections'),
 
   didRender: function() {
     if(this.get('switching')) {
       this.set('switching', false);
     }
+  },
+
+  didInsertElement() {
+    // height should be 100% - the height of the revisions nav
+    this.setOwnHeight();
+
+    this._super(...arguments);
   },
 
   willDestroyElement: function() {
@@ -173,6 +178,14 @@ Encompass.WorkspaceSubmissionComponent = Ember.Component.extend(Encompass.Curren
   isMakingVmtSelection: function() {
     return this.get('isVmt') && this.get('makingSelection');
   },
+  setOwnHeight() {
+    let revisionsNavHeight = $('#submission-nav').height();
+    this.$().css('height', '100%').css('height', `-=${revisionsNavHeight}px`);
+  },
+
+  handleNavChanges: function() {
+    this.setOwnHeight();
+  }.observes('isNavMultiLine', 'parentHeight'),
 
   actions: {
     addSelection: function( selection, isUpdateOnly ){

@@ -89,6 +89,65 @@
       margin-left: 20px;
     }
 
+    &.no-folders {
+      #folder-list {
+        display: none;
+      }
+    }
+
+    &.no-comments {
+      #comment-list {
+        display: none;
+      }
+    }
+
+    &.no-responses {
+      #workspace-submission-comp {
+        .selection-controls {
+          padding: 10px;
+        }
+      }
+    }
+
+    &.no-selections {
+      &.no-responses {
+        #workspace-submission-comp {
+          .selection-controls {
+            @include flex-container(null, null, row, wrap, center, center, center);
+            .problem-link {
+              max-width: 80%;
+            }
+
+            .problem-link-text {
+              display: inline;
+            }
+          }
+        }
+      }
+
+      #workspace-submission-comp {
+        .selection-controls {
+          @include flex-container(null, null, row, wrap, center, center, center);
+        }
+        .submission-row-item {
+          &.selection-toggles {
+            display: none;
+          }
+        }
+        #selections-header {
+          display: none;
+        }
+        #submission_selections {
+          display: none;
+        }
+
+        #al_submission {
+          height: calc(100% - 38px);
+        }
+      }
+
+    }
+
     .workspace-flex-item {
       background-color: white;
       // box-shadow: $box-shadow;
@@ -299,6 +358,10 @@
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+
+        .folder-name.bolder {
+          font-weight: $bolder-font-weight;
+        }
       }
 
       aside {
@@ -319,6 +382,11 @@
 
           &.many-taggings {
             font-size: 0.9em;
+          }
+
+          &.contains-current-submission {
+            background-color: darken($pale-accent, 5%);
+            font-weight: $bolder-font-weight;
           }
         }
       }
@@ -371,7 +439,7 @@
     #workspace-submission-comp {
       @include flex-item(2, flex-start, auto);
       width: 100%;
-      height: calc(100% - 52px);
+      // height: calc(100% - 52px);
       background-color: $filter-list-background-color;
 
       &.expanded-selections {
@@ -421,6 +489,7 @@
       overflow-y: auto;
       overflow-x: hidden;
       height: 125px;
+      width: 100%;
       border-top:1px solid #d3d3d3;
       background: white;
 
@@ -479,11 +548,13 @@
     }
   }
 
-  #submission-group.multi-line-nav {
-    #workspace-submission-comp {
-      height:calc(100% - 102px);
-    }
-  }
+  // #submission-group.multi-line-nav {
+  //   #workspace-submission-comp {
+  //     height:calc(100% - 102px);
+  //   }
+  // }
+
+
 
 }
 
