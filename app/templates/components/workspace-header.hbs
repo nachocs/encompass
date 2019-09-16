@@ -1,0 +1,19 @@
+<header class="{{makingSelection}} ws-header">
+  <div class="ws-meta">
+    <h2 class="workspace-name">{{workspace.name}}</h2>
+    <span class="info-link">{{#link-to 'workspace.info' workspace}}<i class="fa fa-info-circle" aria-hidden="true"></i>
+      {{/link-to}}
+    </span>
+    <i {{action 'hideHeader'}} title="Hide Header" class="far fa-eye-slash"></i>
+    <span class="info workspaceOwner {{if isMyWorkspace 'isMine' 'notMine'}}">by
+      {{workspace.owner.displayName}} </span>
+
+  </div>
+  <aside>
+    <a id="takeTour" class="action_button" {{action 'startTour'}}>Take Tour</a>
+    {{! this needs to be here so the GuideJS can click it when done
+        we don't have a better way to propagate actions }}
+    <a id="doneTour" style="display:none" {{action 'doneTour'}}>Done Tour</a>
+  </aside>
+  <div class="clear"></div>
+</header>
