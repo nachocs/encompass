@@ -1,10 +1,17 @@
 <div id="workspace-container">
-
+  {{#if isHeaderHidden}}
+  <div title="Show Header" class="">
+    <button {{action 'toggleHeaderDisplay'}}><img src="/images/chevrons-right.svg"></button>
+  </div>
+  {{/if}}
   {{workspace-header
     workspace=currentWorkspace
     makingSelection=makingSelection
     isMyWorkspace=isMyWorkspace
+    makingSelection=makingSelection
     hideHeader=(action 'toggleHeaderDisplay')
+    startTour=(action 'startTour')
+    doneTour=(action 'endTour')
     isHidden=isHeaderHidden
   }}
   <div
