@@ -5,16 +5,15 @@ Encompass.WorkspaceHeaderComponent = Ember.Component.extend(
     elementId: "workspace-header",
     classNames: ["workspace-flex-item"],
     classNameBindings: ["isHidden:hidden"],
-    alert: Ember.inject.service("sweet-alert"),
-    utils: Ember.inject.service("utility-methods"),
-    weighting: 1,
-    sortProperties: ["weight", "name"],
-    createRecordErrors: [],
-    updateRecordErrors: [],
-    permissions: Ember.inject.service("workspace-permissions"),
     actions: {
       hideHeader() {
         this.get("hideHeader")();
+      },
+      startTour() {
+        this.get("startTour")();
+      },
+      doneTour() {
+        this.get("doneTour")();
       }
     }
   }
