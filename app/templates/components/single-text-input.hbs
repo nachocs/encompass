@@ -1,0 +1,25 @@
+{{input
+  id=options.id
+  class="single-text-input"
+  type=inputType
+  placeholder=options.placeholder
+  focus-out=(action "handleEvent" "onBlur")
+  focus-in=(action "handleEvent" "onFocus")
+  input=(action "handleEvent" "onInput")
+}}
+{{#if options.isPassword}}
+  <i {{action "toggleShowPassword"}} class={{togglePasswordIconClass}}></i>
+{{/if}}
+
+{{#if showValidationErrors}}
+  <div class="dynamic-errors">
+    {{#each validationErrors as |error|}}
+      <p class="error-message">{{error}}</p>
+    {{/each}}
+  </div>
+{{/if}}
+
+{{#each dismissableErrors as |error|}}
+  {{error-box error=error showDismiss=true resetError=(action "dismissError" error)}}
+{{/each}}
+
