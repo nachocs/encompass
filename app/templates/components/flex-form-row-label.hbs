@@ -1,9 +1,9 @@
-{{labelText}}
-{{#if isRequired}}
+{{options.text}}
+{{#if options.isRequired}}
   <span class="required-star">
     *
   </span>
 {{/if}}
-<span class={{tooltipClass}} data-tooltip={{tooltipText}}>
+<span class={{tooltipClass}} data-tooltip={{options.tooltip.text}}>
   <i class={{fullIconClass}}></i>
 </span>

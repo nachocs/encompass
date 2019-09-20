@@ -9,17 +9,15 @@ Encompass.FlexFormRowLabelComponent = Ember.Component.extend({
     appearance: 'smooth'
   },
 
-  getSimtipClassFromValues(position, numLines, appearance) {
-    return `simptip-position-${position} simptip-${numLines} simptip-${appearance}`;
-  },
+  tooltipOptions: Ember.computed.alias('options.tooltip'),
 
   didReceiveAttrs() {
     let simptipPosition =
-      this.get('simptipPosition') || this.get('defaultSimptipValues.position');
+      this.get('tooltipOptions.simptipPosition') || this.get('defaultSimptipValues.position');
     let simptipLines =
-      this.get('simptipLines') || this.get('defaultSimptipValues.numLines');
+      this.get('tooltipOptions.simptipLines') || this.get('defaultSimptipValues.numLines');
     let simptipAppearance =
-      this.get('simptipAppearance') ||
+      this.get('tooltipOptions.simptipAppearance') ||
       this.get('defaultSimptipValues.appearance');
 
     let simptipClass = this.getSimtipClassFromValues(
@@ -34,5 +32,11 @@ Encompass.FlexFormRowLabelComponent = Ember.Component.extend({
 
     let fullIconClass = `${iconClass} info-icon`;
     this.set('fullIconClass', fullIconClass);
-  }
+  },
+
+  getSimtipClassFromValues(position, numLines, appearance) {
+    return `simptip-position-${position} simptip-${numLines} simptip-${appearance}`;
+  },
+
+
 });

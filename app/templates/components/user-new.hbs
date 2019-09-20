@@ -1,13 +1,121 @@
-{{#if currentUser.isAdmin}}
-  {{user-new-admin currentUser=currentUser store=store  organizations=organizations toUserInfo="toUserInfo" toUserHome="toUserHome"}}
-{{/if}}
-{{#if currentUser.isPdAdmin}}
-  {{user-new-pd currentUser=currentUser store=store organizations=organizations toUserInfo="toUserInfo" toUserHome="toUserHome"}}
-{{/if}}
-{{#if currentUser.isTeacher}}
-  {{user-new-teacher currentUser=currentUser store=store organizations=organizations toUserInfo="toUserInfo" toUserHome="toUserHome"}}
-{{/if}}
 {{#if currentUser.isStudent}}
-    <div class="centered">FORBIDDEN</div>
+<div class="centered">FORBIDDEN</div>
 {{/if}}
+
+{{#each-in formFields as |field value|}}
+  {{log field value.errors.input.validation }}
+{{/each-in}}
+
+<h1>Create New User</h1>
+<div class="flex-form create-user">
+  <div class="flex-form-row accountType">
+    {{flex-form-row-label
+      options=accountTypeLabelOptions
+      isRequired=true
+    }}
+    <div class="flex-form-row-content">
+    {{my-select selectedValue=initialAccountType prompt="Select Account Type" content=allowedAccountTypes action=(action "updateSelectedType") cannotBeNull=true classNames='user-account-type'}}
+    </div>
+  </div>
+  {{flex-form-row-text
+    options=formFields.firstName
+    classNames=formFields.firstName.className
+  }}
+  {{flex-form-row-text
+    options=formFields.lastName
+    classNames=formFields.lastName.className
+  }}
+  {{flex-form-row-text
+    options=formFields.username
+    classNames=formFields.username.className
+  }}
+    {{flex-form-row-text
+    options=formFields.email
+    classNames=formFields.email.className
+  }}
+  {{#if isEmailValid}}
+    {{flex-form-row-text
+      options=formFields.confirmEmail
+      classNames=formFields.confirmEmail.className
+    }}
+  {{/if}}
+
+    {{flex-form-row-text
+    options=formFields.password
+    classNames=formFields.password.className
+  }}
+  {{#if isPasswordValid}}
+    {{flex-form-row-text
+      options=formFields.confirmPassword
+      classNames=formFields.confirmPassword.className
+    }}
+  {{/if}}
+
+  {{#unless isOrgFixed}}
+    <div class="flex-form-row organization">
+      {{flex-form-row-label
+        options=orgLabelOptions
+        isRequired=true
+      }}
+      <div class="flex-form-row-content">{{selectize-input
+      maxItems=1
+      initialOptions=orgOptions
+      initialItems=initialOrgItem
+      labelField="name"
+      valueField="id"
+      searchField="name"
+      onItemAdd=(action "setOrg")
+      onItemRemove=(action "setOrg")
+      propToUpdate="org"
+      inputId="user-new-org-select"
+      create=(action "processOrgRequest")
+      persist=false
+      createFilter=orgRequestFilter
+      model="organization"
+      placeholder="Choose user's organization"
+
+      }}
+      {{#if showOrgValidationErrors}}
+    <div class="dynamic-errors">
+      {{#each orgValidationErrors as |error|}}
+        <p class="error-message">{{error}}</p>
+      {{/each}}
+    </div>
+  {{/if}}
+
+      </div>
+    </div>
+  {{/unless}}
+
+    {{flex-form-row-text
+      options=formFields.location
+      classNames=formFields.location.className
+    }}
+  <div class="flex-form-row is-authorized">
+    {{flex-form-row-label
+      options=isAuthorizedLabelOptions
+    }}
+    <div class="flex-form-row-content">
+      {{!-- <input type="checkbox" checked={{formfields.isAuthorized.input.value}} name="isAuthorized" onclick={{action "updateIsAuthorized"}}>
+      <label for="isAuthorized">Authorize this user for EnCoMPASS</label> --}}
+
+                    <label for="isAuthorized">
+                <input type="checkbox" checked={{isInitiallyAuthorized}} name="isAuthorized" onclick={{action "updateIsAuthorized"}}>
+                <span>
+                  <span class="radio-text">Authorize this user for EnCoMPASS</span>
+                </span>
+              </label>
+
+    </div>
+
+  </div>
+  <div class="button-row">
+    <button class='primary-button cancel-button new-user' {{action 'cancelNew'}}>Cancel</button>
+    <button class='primary-button new-user' id="new-user-btn" {{action 'signup'}}>Create New User</button>
+  </div>
+
+</div>
+
+
+
 
