@@ -168,4 +168,26 @@ getTimeStringFromMs(ms) {
   return `${displayHours}:${displayMinutes}:${displaySeconds}`;
 
 },
+
+// return input string with first letter capitalized
+capitalizeWord(str) {
+  if (!_.isString(str)) {
+    // throw Error?
+    return;
+  }
+  if (str.length === 0) {
+    return '';
+  }
+  let copy = str.slice();
+  let trimmed = copy.trim();
+
+  let firstLetterCap = trimmed.charAt(0).toUpperCase();
+
+  if (trimmed.length === 1) {
+    return firstLetterCap;
+  }
+
+  let slicedFrom1 = trimmed.slice(1);
+  return firstLetterCap + slicedFrom1;
+}
 });
