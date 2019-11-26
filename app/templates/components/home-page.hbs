@@ -9,11 +9,9 @@
     <h1>Welcome to the EnCoMPASS Project</h1>
     <p> Here are some things you can do with EnCoMPASS: </p>
     <ul>
-      <li>Craft responses to specific parts of your student's submission using noticing and wondering</li>
-      <li>Invite peers to mark up and comment on your students' submissions</li>
-      <li>Create a rubric from your filing of submissions</li>
-      <li>Browse annotated submissions for a given problem to help inform your teaching</li>
-      <li>Visualize your class' performance for a problem</li>
+      <li>Use Notice and Wonder to give generative feedback</li>
+      <li>Collaborate with other teachers in the grounded review of student work</li>
+      <li>Identify emergent categories and criteria for task rubrics</li>
     </ul>
 
   {{#if user.isAuthenticated}}
@@ -27,7 +25,7 @@
 
     <p>
       We'd love to hear your
-      <a href="http://mathforum.org/cgi-bin/mailto.pl?key=92&to=the%20EnCoMPASS%20team">comments</a>.
+      <a href="mailto:encompassmath@gmail.com">comments</a>.
     </p>
     <p><span class="al_link">{{#link-to 'problems'}}Create a Problem{{/link-to}}</span>.</p>
   {{else}}
@@ -35,6 +33,6 @@
     <p>Please login <a href="#/auth/login">here</a></p>
     <p>New to EnCoMPASS, sign up <a href="#/auth/signup">here</a></p>
   {{/if}}
-</div>
-
+  </div>
+  
 {{/if}}
