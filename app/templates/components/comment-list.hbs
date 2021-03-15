@@ -1,0 +1,140 @@
+<div class="comments-group-1">
+<header>
+  <h2>Comments</h2>
+  <span {{action "hideComments"}}><i title="Hide Comments"class="far fa-eye-slash"></i></span>
+</header>
+
+{{#if canComment}}
+  <div class="label-select {{newCommentLabel}}">
+    {{my-select content=labelOptions cannotBeNull=true selectedValue=newCommentLabel action=(action (mut newCommentLabel))}}
+  </div>
+{{/if}}
+<div class="compose-comment">
+  {{#if canComment}}
+      {{textarea tabindex=1 id="commentTextarea" classBinding="onSelection" placeholder=newCommentPlaceholder value=newComment autofocus="autofocus"}}
+    {{else}}
+    {{#if isParentWorkspace}}
+      <p class="info">Parent / Combined Workspaces do not support the creation of new comments.
+      </p>
+    {{else}}
+      <p class="error-message">You do not have permisssion to make comments for this workspace</p>
+    {{/if}}
+
+    {{/if}}
+    {{#if showComposeButtons}}
+      <div class="submit-buttons">
+        <button class="primary-button cancel-button" {{action "cancelComment"}}>Cancel</button>
+        <button class="primary-button save" {{action "madeSelection"}}>Save</button>
+      </div>
+    {{/if}}
+</div>
+
+  <div class="comment-flex-row">
+    <div class="comment-flex-item filter">
+      <span class="filter-label">Filter</span><i class="fas fa-filter"></i>
+      <span class="hover-menu checkbox">
+        <ul>
+          {{#each-in filterOptions as  |option values|}}
+            <li>
+              <label>
+                <input type="checkbox" checked={{values.isChecked}} name={{option}} onclick={{action "updateFilter" option}} disabled={{values.isDisabled}}>
+                <span>
+                  <span class="radio-text">{{values.label}}</span>
+                </span>
+              </label>
+            </li>
+          {{/each-in}}
+          <li>
+            <label>
+              <input type="checkbox" checked={{doUseSinceDate}} name="doUseSinceDate" onclick={{action "updateFilter" "doUseSinceDate"}}>
+              <span>
+                <span class="radio-text">Since</span>
+                {{input type="text" placeholder="mm/dd/yyyy" value=sinceDate}}
+                {{#if showApplyDate}}
+                  <button {{action "applySinceDate"}}>Apply</button>
+                {{/if}}
+              </span>
+            </label>
+          </li>
+        </ul>
+      </span>
+    </div>
+    <div class="comment-flex-item search">
+  {{search-bar
+    onSearch=(action "searchComments")
+    basePlaceholder="Search for comments"
+    inputValue=commentFilterText
+    doSearchOnInputChange=true
+    doDebounce=true
+    constraints=searchConstraints
+    clearSearchResults=(action "clearSearchResults")
+  }}
+</div>
+  </div>
+
+
+  {{#each createRecordErrors as |error|}}
+    <p class="error-message">{{error}}</p>
+  {{/each}}
+	<div class="clear"></div>
+ {{#if showResultsDescription}}
+    <div class="results-message">
+      {{resultsDescription}}
+    </div>
+{{/if}}
+</div>
+  <div id="al_feedback_display" class="display-list">
+    {{#each queryErrors as |error|}}
+      <p class="error-message">{{error}}</p>
+    {{/each}}
+    {{#each updateRecordErrors as |error|}}
+      <p class="error-message">{{error}}</p>
+    {{/each}}
+    {{#if invalidDateError}}
+      {{error-box error=invalidDateError showDismiss=true resetError=(action (mut invalidDateError) null)}}
+    {{/if}}
+    {{#if showLoadingMessage}}
+      Searching for comments. Thank you for your patience.
+    {{else}}
+    <ul>
+      {{#each sortedDisplayList as |comment|}}
+        {{workspace-comment
+          wsComments=comments
+          comment=comment
+          currentWorkspace=currentWorkspace
+          reuseComment=(action "reuseComment")
+          deleteComment=(action "deleteComment")
+          currentSelection=currentSelection
+          isParentWorkspace=isParentWorkspace
+          }}
+        {{else}}
+        <p class="info">{{emptyResultsMessage}}</p>
+      {{/each}}
+    </ul>
+    {{#if showPaginationControl}}
+      {{pagination-control details=commentsMetadata initiatePageChange=(action "initiatePageChange")}}
+    {{/if}}
+    {{/if}}
+  </div>
+  <div class="scroll-icon">
+    {{#if scrollBottom}}
+      <i class="fas fa-chevron-circle-down" {{action 'superScroll'}}></i>
+    {{else}}
+      <i class="fas fa-chevron-circle-up" {{action 'superScroll'}}></i>
+    {{/if}}
+  </div>
+<script>
+  $('.display-list').scroll(function () {
+    let y = $(this).scrollTop();
+    let max = this.scrollHeight;
+    let height = $(this).height();
+
+    let threshold = Math.floor(0.75 * height);
+
+    if (y > threshold) {
+      $('.scroll-icon').fadeIn();
+    } else {
+      $('.scroll-icon').fadeOut();
+    }
+  });
+</script>

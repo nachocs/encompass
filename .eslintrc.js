@@ -9,5 +9,11 @@ module.exports = {
     browser: true
   },
   rules: {
+    "no-unused-vars": "warn",
+    "no-console": "warn"
+  },
+  globals: {
+    Promise: false,
+    process: false,
   }
 };

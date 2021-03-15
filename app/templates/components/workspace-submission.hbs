@@ -1,0 +1,208 @@
+<aside class="submission-row selection-controls">
+  <div class="submission-row-item selection-toggles">
+    <div class="submission-row-item toggle-show">
+      <span class="showing-label">{{showSelectionsInfo.text}}</span>
+      <span {{action 'toggleShow'}}><i title={{showSelectionsInfo.title}} class={{showSelectionsInfo.icon}}></i></span>
+    </div>
+    {{#if this.canSelect}}
+      <div class="submission-row-item  toggle-selecting">
+        <label class="makingSelection">
+          {{input name="is-selecting" type="checkbox" checked=shouldCheck click=(action "toggleSelecting")}}
+          Selecting
+        </label>
+      </div>
+    {{/if}}
+  </div>
+
+      <div title={{currentSubmission.puzzle.title}} class="submission-row-item  problem-link">
+        {{#if currentSubmission.answer}}
+          <a {{action 'openProblem'}} class="problem-link">
+            <span class="problem-link-text">{{currentSubmission.puzzle.title}}</span>
+            <i class="fas fa-external-link-alt"></i>
+          </a>
+        {{else}}
+          <a class='puzzle' target="_blank" href="{{currentSubmission.puzzleUrl}}">
+            <span class="problem-link-text">{{currentSubmission.puzzle.title}}</span>            <i class="fas fa-external-link-alt"></i>
+          </a>
+        {{/if}}
+      </div>
+      {{#if canRespond}}
+      <div class="submission-row-item  new-response">
+        <button class="action_button new-response" {{action 'toNewResponse' currentSubmission.id currentWorkspace.id}}>Respond</button>
+        {{#if submissionResponses.length}}
+          <span class="meta response-count existing" title="existing response count">
+            ({{submissionResponses.length}})
+          </span>
+        {{/if}}
+      </div>
+      {{else}}
+        {{#if isParentWorkspace}}
+        {{#if submissionResponses.length}}
+        <div class="submission-row-item  new-response">
+          <button class="action_button new-response" {{action "viewResponses"}}>View Responses</button>
+          <span class="meta response-count existing" title="existing response count">
+            ({{submissionResponses.length}})
+          </span>
+        </div>
+        {{/if}}
+
+        {{/if}}
+      {{/if}}
+</aside>
+
+<div id="al_submission">
+  {{#if showSelectableView}}
+    <h3 id="sel-view-header" class="selectable-view-header">Selectable View!</h3>
+    {{#selectable-area
+      model=currentSubmission
+      makingSelection=makingSelection
+      showingSelections=showingSelections
+      addSelection="addSelection"
+      hideSelections="hideSelections"
+      handleTransition="handleTransition"
+      sels=workspaceSelections
+      trashed=trashedSelections
+      setupResizeHandler=(action "setupResizeHandler")
+    }}
+      <div id="submission_container">
+        <div class="submission-short {{if isVmt "vmt-summary"}}">
+         {{#if isVmt}}
+          {{#with currentSubmission.vmtRoomInfo as |room|}}
+            <p>Room Name: {{room.roomName}}</p>
+            <p>Activity Name:
+              {{#if room.activityName}}
+                {{room.activityName}}
+              {{else}}
+                N/A
+              {{/if}}
+            </p>
+            <p>Participants</p>
+            <ul>
+              {{#each room.participants as |username| }}
+                <li>{{username}}</li>
+              {{else}}
+                N/A
+              {{/each}}
+            </ul>
+            <p>Facilitators</p>
+            <ul>
+              {{#each room.facilitators as |username| }}
+                <li>{{username}}</li>
+              {{else}}
+                N/A
+              {{/each}}
+            </ul>
+          {{/with}}
+        {{else if currentSubmission.answer.answer}}
+          {{{currentSubmission.answer.answer}}}
+        {{else}}
+          {{{currentSubmission.shortAnswer}}}
+        {{/if}}
+        </div>
+        <div class="submission-long">
+          {{#if vmtScreenshot}}
+        <img src={{vmtScreenshot}} alt="vmt screenshot">
+      {{else if currentSubmission.answer.explanation}}
+        {{{currentSubmission.answer.explanation}}}
+      {{else if currentSubmission.longAnswer}}
+        {{{currentSubmission.longAnswer}}}
+      {{/if}}
+        </div>
+      </div>
+    {{/selectable-area}}
+    {{else}}
+        <div class="non-selectable-sub">
+      <h5 class="submission-header summary">Brief Summary</h5>
+      <div class="submission short {{if isVmt "vmt-summary"}}">
+        {{#if isVmt}}
+          {{#with currentSubmission.vmtRoomInfo as |room|}}
+            <p>Room Name: {{room.roomName}}</p>
+            <p>Activity Name:
+              {{#if room.activityName}}
+                {{room.activityName}}
+              {{else}}
+                N/A
+              {{/if}}
+            </p>
+            <p>Participants</p>
+            <ul>
+              {{#each room.participants as |username| }}
+                <li>{{username}}</li>
+              {{else}}
+                N/A
+              {{/each}}
+            </ul>
+            <p>Facilitators</p>
+            <ul>
+              {{#each room.facilitators as |username| }}
+                <li>{{username}}</li>
+              {{else}}
+                N/A
+              {{/each}}
+            </ul>
+          {{/with}}
+        {{else if currentSubmission.answer.answer}}
+          {{{currentSubmission.answer.answer}}}
+        {{else}}
+          {{{currentSubmission.shortAnswer}}}
+        {{/if}}
+      </div>
+      <h5 class="submission-header explanation">Explanation</h5>
+      <div class="submission long">
+        {{#if isVmt}}
+          {{vmt-replayer}}
+        {{else if currentSubmission.answer.explanation}}
+          {{{currentSubmission.answer.explanation}}}
+        {{else if currentSubmission.longAnswer}}
+          {{{currentSubmission.longAnswer}}}
+        {{/if}}
+      </div>
+    </div>
+
+    {{/if}}
+
+  {{#if currentSubmission.uploadedFile.savedFileName}}
+  <div id="submission_images">
+    <a target="_blank" href="{{unbound currentSubmission.imageUrl}}">
+      <img src="{{currentSubmission.imageUrl}}" alt="Login to the PoWs to see image"/>
+    </a>
+  </div>
+  {{/if}}
+</div><!--/al_submission-->
+<h5 id ="selections-header" class="submission-header selections">
+  Selections
+  {{#if showExpandSelections}}
+    <div class="expand-selections">
+      <img title={{toggleSelectionInfo.title}} {{action "toggleSelectionBox"}} class={{toggleSelectionInfo.className}} src="/images/{{toggleSelectionInfo.imgName}}" alt={{toggleSelectionInfo.alt}}>
+    </div>
+  {{/if}}
+  <div class="hide-show-selections">
+    <i {{action "hideShowSelections"}} class={{hideShowSelectionInfo.className}} title={{hideShowSelectionInfo.title}}></i>
+  </div>
+</h5>
+<div id="submission_selections" class="{{selectionBoxClass}}">
+  <ul>
+  {{#each workspaceSelections as |selection|}}
+    <li {{action "onSelectionSelect"}} class="selection">
+      {{#unless selection.isTrashed}}
+        {{#if canSelect}}
+          {{draggable-selection
+            selection=selection
+            canDeleteSelections=canDeleteSelection
+            deleteSelection=(action "deleteSelection")
+            currentSelection=currentSelection
+          }}
+        {{else}}
+          {{undraggable-selection selection=selection currentSelection=currentSelection }}
+        {{/if}}
+      {{/unless}}
+    </li>
+    {{else}}
+      <p class="info">No selections have been made yet.
+      {{#if canSelect}}
+        Click "make selection" above and highlight some text in the submission.
+      {{/if}}
+    </p>
+  {{/each}}
+  </ul>
+</div>

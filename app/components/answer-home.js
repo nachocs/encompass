@@ -1,0 +1,15 @@
+import Ember from 'ember';
+import CurrentUserMixin from '../mixins/current_user_mixin';
+
+
+
+
+
+
+
+export default Ember.Component.extend(CurrentUserMixin, {
+  elementId: 'answer-home',
+  classNames: ['home-view'],
+
+  actions: {}
+});

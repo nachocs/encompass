@@ -1,0 +1,624 @@
+@import "variables";
+@import "mixins";
+@import "responsive-font-size";
+
+#response-container {
+  background-color: $filter-list-background-color;
+  height: calc(100vh - 75px);
+  .feedback-mode {
+    text-align: center;
+    position: relative;
+    top: 20px;
+    margin-bottom: 20px;
+    font-weight: $light-font-weight;
+  }
+  a.link {
+    color: $accent-color;
+    cursor: pointer;
+    &:hover {
+      font-weight: $main-font-weight;
+    }
+  }
+
+  .pf-response-text {
+    margin-left: 25px;
+  }
+  i.far.fa-envelope, i.far.fa-envelope-open, i.fas.fa-user {
+    cursor: default;
+  }
+}
+.response-flex-item {
+  background-color: white;
+  box-shadow: $box-shadow;
+  border-radius: 3px;
+  margin: 20px;
+  padding: 30px 35px;
+  height: calc(100vh - 215px);
+  overflow-y: auto;
+}
+
+.response-flex-container {
+  @include flex-container(null, null, row, wrap, center, flex-start, flex-start);
+  width: 100%;
+  .response-flex-item.submission{
+    @include flex-item(1, flex-start, 1 1 auto);
+    width: 40%;
+    &.third {
+      @include flex-item(1, flex-start, 1 1 auto);
+      width: 20%;
+      .simptip-position-bottom:after {
+        max-width: 150px;
+      }
+    }
+  }
+  .response-flex-item.mentor {
+    @include flex-item(2, flex-start, 1 1 auto);
+    width: 40%;
+    &.third {
+      @include flex-item(2, flex-start, 1 1 auto);
+      width: 20%;
+      .simptip-position-bottom:after {
+        max-width: 150px;
+      }
+    }
+
+  }
+  .response-flex-item.approver.third {
+    @include flex-item(3, flex-start, 1 1 auto);
+    width: 20%;
+    .simptip-position-bottom:after {
+      max-width: 150px;
+    }
+  }
+
+  .cancel-button {
+    padding: 10px 22px;
+  }
+  pre {
+    word-wrap: break-word;
+    font-family: $primary-font;
+    white-space: pre-wrap;
+  }
+
+  #response-submission-view {
+    .problem-link-container {
+      margin-bottom: 20px;
+      a {
+        font-size: .9em;
+        color: $accent-color;
+        font-weight: $light-font-weight;
+      &:hover {
+          font-weight: $main-font-weight;
+        }
+      }
+    }
+    .workspace-name {
+      color: black;
+      font-weight: $light-font-weight;
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+    .submission-student {
+      color: $primary-font-color;
+      font-size: 1em;
+      margin-bottom: 40px;
+      i {
+        margin-right: 10px;
+      }
+    }
+    .submission-date {
+      @include flex-item(1, flex-start, 1 1 auto);
+      font-weight: $light-font-weight;
+      font-size: 1.1em;
+      color: $filter-list-border-color;
+      text-align: left;
+      margin-bottom: 15px;
+    }
+    .submission-time {
+      font-size: .8em;
+      color: black;
+      margin-left: 5px;
+    }
+    .submission-content-container {
+      margin-bottom: 20px;
+      .submission-header {
+        padding: 5px 0;
+        font-size: 1.1em;
+        color: black;
+        font-weight: $light-font-weight;
+        i {
+          float: right;
+          color: $filter-list-border-color;
+        }
+      }
+      .submission-content {
+        margin-top: 10px;
+        background-color: $filter-list-background-color;
+        border: .5px solid $input-border;
+        padding: 20px;
+        border-radius: 3px;
+        font-size: .9em;
+
+        ul {
+          list-style-type: disc;
+          list-style-position: inside;
+       }
+       ol {
+          list-style-type: decimal;
+          list-style-position: inside;
+       }
+       ul ul, ol ul {
+          list-style-type: circle;
+          list-style-position: inside;
+          margin-left: 15px;
+       }
+       ol ol, ul ol {
+          list-style-type: lower-latin;
+          list-style-position: inside;
+          margin-left: 15px;
+       }
+      }
+      textarea {
+        width: 100%;
+        border: 1px solid $input-border;
+        border-radius: 3px;
+        margin-bottom: 15px;
+        resize: none;
+      }
+    }
+    #answer-new {
+      .quill-container {
+        width: 100%;
+      }
+      textarea {
+        width: 100%;
+        border: 1px solid $input-border;
+        border-radius: 3px;
+        margin-bottom: 15px;
+        resize: none;
+      }
+    }
+    img {
+      max-width: 100%;
+    }
+  }
+
+  #response-mentor-reply {
+    .quill-container {
+      width: 100%;
+      min-width: 150px;
+      section#mentor-editor, section#response-new-editor {
+        width: 100%;
+        display: inline-block;
+        min-height: 150px;
+        .ql-editor {
+          width: 100%;
+          display: inline-block;
+        }
+
+      }
+    }
+    .bread-crumbs-comp {
+      float: right;
+    }
+    section.response {
+      pre.message {
+        white-space: pre-wrap;
+      }
+    }
+    img {
+      display: block;
+      max-width: 250px;
+      width: 100%;
+      height: auto;
+      margin-top: 40px;
+    }
+    div.compose-mentor-reply {
+      margin-left: 15px;
+      h5 {
+        margin-left: 0;
+      }
+      h3.compose-heading {
+        text-align: center;
+      }
+      textarea {
+        width: 100%;
+        border: 1px solid $input-border;
+        border-radius: 3px;
+        margin-bottom: 15px;
+        resize: none;
+      }
+    }
+    .mentor-reply-actions {
+      margin-top: 15px;
+      .fa-trash {
+        font-size: 1.3em;
+        color: $filter-list-border-color;
+        float: right;
+        margin-top: 6px;
+        &:hover {
+          color: $primary-font-color;
+        }
+      }
+    }
+    .top-row {
+      @include flex-container(null, null, row, wrap, center, center, center);
+    }
+    .response-date {
+      @include flex-item(1, flex-start, 1 1 auto);
+      font-weight: $light-font-weight;
+      font-size: 1.1em;
+      color: $filter-list-border-color;
+      text-align: left;
+      margin-bottom: 15px;
+    }
+    .response-time {
+      font-size: .8em;
+      color: black;
+      margin-left: 5px;
+    }
+    .response-link {
+      @include flex-item(2, flex-end, 1 1 auto);
+      text-align: right;
+      font-weight: $light-font-weight;
+      i {
+        color: $accent-color;
+      }
+    }
+    .response-title {
+      color: black;
+      font-weight: $light-font-weight;
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+    .response-users {
+      margin-bottom: 30px;
+      p {
+        line-height: 20px;
+        font-size: .9em;
+      }
+      .response-label {
+        width: 50px;
+        display: inline-block;
+      }
+      .response-value {
+        color: $accent-color;
+        font-weight: $light-font-weight;
+      }
+    }
+    .response-status {
+      color: black;
+      margin: 10px 0;
+    }
+    .response-text, .response-note {
+      margin: 20px 0;
+      background-color: $filter-list-background-color;
+      border: .5px solid $input-border;
+      border-radius: 3px;
+      padding: 20px;
+      pre {
+        word-wrap: break-word;
+        overflow-x: auto;
+      }
+      a {
+        color: $accent-color;
+      }
+      ul {
+        list-style-type: disc;
+        list-style-position: inside;
+     }
+     ol {
+        list-style-type: decimal;
+        list-style-position: inside;
+     }
+     ul ul, ol ul {
+        list-style-type: circle;
+        list-style-position: inside;
+        margin-left: 15px;
+     }
+     ol ol, ul ol {
+        list-style-type: lower-latin;
+        list-style-position: inside;
+        margin-left: 15px;
+     }
+     &.old-format {
+       white-space: pre-line;
+     }
+    }
+    .edit-response {
+      border: 1px solid $input-border;
+      resize: none;
+      width: 100%;
+      height: 300px;
+      border-radius: 3px;
+    }
+    .edit-note {
+      border: 1px solid $input-border;
+      resize: none;
+      width: 100%;
+      height: 60px;
+      border-radius: 3px;
+    }
+    .response-content {
+      .response-existing-container {
+        margin-bottom: 30px;
+        .response-existing {
+          .response-link {
+            color: $accent-color;
+            cursor: pointer;
+            &:hover {
+              font-weight: $main-font-weight;
+            }
+          }
+        }
+        .response-listing {
+          margin: 15px 0 0 20px;
+          font-size: .9em;
+          font-weight: $light-font-weight;
+          .create-date {
+            font-weight: $main-font-weight;
+            margin-right: 10px;
+          }
+          li {
+            margin: 15px 0;
+            a {
+              color: $accent-color;
+              margin-left: 10px;
+            }
+            img {
+              width: 75px;
+              height: 75px;
+            }
+          }
+        }
+      }
+      .response-info {
+        font-weight: $main-font-weight;
+        line-height: 25px;
+        margin-top: 30px;
+        font-size: .9em;
+        a {
+          color: $accent-color;
+          &:hover {
+            font-weight: $main-font-weight;
+          }
+        }
+        .response-prefill {
+          font-weight: $light-font-weight;
+          margin-bottom: 30px;
+        }
+      }
+      .response-header {
+        margin: 15px 0;
+        color: black;
+        font-size: 1.1em;
+        font-weight: $light-font-weight;
+        i {
+          float: right;
+          color: $filter-list-border-color;
+          &:hover {
+            color: $primary-font-color;
+          }
+        }
+      }
+      .response-header-alt {
+        margin: 15px 0;
+        color: black;
+        font-size: 1.1em;
+        font-weight: $main-font-weight;
+      }
+      .selections, .comments {
+        margin-bottom: 40px;
+      }
+      .selections-list {
+        .selections-list-item {
+          margin: 10px 15px;
+          a {
+            background-color: $pale-accent;
+            font-size: .8em;
+          }
+        }
+      }
+      .comments-list {
+        .comments-list-item {
+          margin: 10px 15px;
+          a {
+            font-size: .9em;
+            font-weight: $light-font-weight;
+          }
+        }
+      }
+      .response-compose {
+        textarea {
+          width: 100%;
+          border: 1px solid $input-border;
+          border-radius: 3px;
+          margin-bottom: 15px;
+          resize: vertical;
+        }
+        .approve-note {
+          margin-top: 30px;
+          textarea {
+            height: 80px;;
+          }
+        }
+      }
+    }
+  }
+  #response-approver-reply {
+    .heading {
+      font-size: 1.5em;
+      color: black;
+      font-weight: $light-font-weight;
+      margin-bottom: 30px;
+    }
+    .sub-heading {
+      font-size: 1.1em;
+      font-weight: $main-font-weight;
+      margin-bottom: 15px;
+    }
+    .info {
+      position: static;
+    }
+    .action-container {
+      margin-bottom: 40px;
+    }
+    .display-approver-reply {
+      .top-row {
+        @include flex-container(null, null, row, wrap, center, center, center);
+      }
+      .reply-date {
+        @include flex-item(1, flex-start, 1 1 auto);
+        font-weight: $light-font-weight;
+        font-size: 1.1em;
+        color: $filter-list-border-color;
+        text-align: left;
+        .reply-time {
+          font-size: .8em;
+          color: black;
+          margin-left: 5px;
+        }
+      }
+      .bread-crumbs-comp {
+        @include flex-item(2, flex-end, 1 1 auto);
+      }
+      .reply-users {
+        margin-bottom: 30px;
+        p {
+          font-size: .9em;
+        }
+        .reply-label {
+          width: 50px;
+          display: inline-block;
+        }
+        .reply-value {
+          color: $accent-color;
+          font-weight: $light-font-weight;
+        }
+      }
+    }
+    .reply-header {
+      margin: 15px 0;
+      color: black;
+      font-size: 1.1em;
+      font-weight: $light-font-weight;
+      i {
+        float: right;
+        color: $filter-list-border-color;
+        &:hover {
+          color: $primary-font-color;
+        }
+      }
+    }
+    .reply-content {
+      margin: 20px 0;
+      background-color: $filter-list-background-color;
+      border: .5px solid $input-border;
+      border-radius: 3px;
+      padding: 20px;
+
+      a {
+        color: $accent-color;
+      }
+      ul {
+        list-style-type: disc;
+        list-style-position: inside;
+     }
+     ol {
+        list-style-type: decimal;
+        list-style-position: inside;
+     }
+     ul ul, ol ul {
+        list-style-type: circle;
+        list-style-position: inside;
+        margin-left: 15px;
+     }
+     ol ol, ul ol {
+        list-style-type: lower-latin;
+        list-style-position: inside;
+        margin-left: 15px;
+     }
+     &.old-format {
+       white-space: pre-line;
+     }
+    }
+    .reply-revise {
+      textarea {
+        width: 100%;
+        border: 1px solid $input-border;
+        border-radius: 3px;
+        margin: 15px 0;
+        resize: none;
+        height: 60px;
+      }
+    }
+    .approver-replies {
+      img {
+        display: block;
+        max-width: 250px;
+        width: 100%;
+        height: auto;
+        margin-top: 40px;
+      }
+    }
+    .compose-reply-container {
+      margin-bottom: 50px;
+    }
+    .approver-actions {
+      margin-bottom: 15px;
+      button:nth-child(1) {
+        margin-right: 5px;
+      }
+      :nth-child(2) {
+        margin-left: 5px;
+      }
+    }
+    .approver-replies {
+      h5 {
+        margin-left: 0;
+        margin-bottom: 15px;
+      }
+      .display-approver-reply {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        p {
+          padding: 5px;
+        }
+      }
+    }
+    .display-reply-actions {
+      button {
+        margin: 5px;
+      }
+      .fa-trash {
+        font-size: 1.3em;
+        color: $filter-list-border-color;
+        float: right;
+        margin-top: 10px;
+        &:hover {
+          color: $primary-font-color;
+        }
+      }
+    }
+    .submit-buttons {
+      button {
+        margin: 5px;
+      }
+    }
+    .quill-container {
+      width: 100%;
+      min-width: 150px;
+      margin: 15px 0;
+      section#approver-editor {
+        width: 100%;
+        display: inline-block;
+        min-height: 150px;
+        .ql-editor {
+          width: 100%;
+          display: inline-block;
+        }
+
+      }
+    }
+  }
+}

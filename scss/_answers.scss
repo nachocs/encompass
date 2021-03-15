@@ -1,0 +1,94 @@
+@import "variables";
+@import "mixins";
+@import "responsive-font-size";
+
+#answer-info{
+  .info-detail{
+    display: flex;
+    align-items: center;
+
+    &.brief-summary, &.explanation {
+      ul {
+        list-style-type: disc;
+        list-style-position: inside;
+     }
+     ol {
+        list-style-type: decimal;
+        list-style-position: inside;
+     }
+     ul ul, ol ul {
+        list-style-type: circle;
+        list-style-position: inside;
+        margin-left: 15px;
+     }
+     ol ol, ul ol {
+        list-style-type: lower-latin;
+        list-style-position: inside;
+        margin-left: 15px;
+     }
+    }
+
+  }
+  i {
+    padding: 5px;
+  }
+  .info-header {
+    text-align: center;
+  }
+  .list-header {
+    border-bottom: 1px solid;
+  }
+  label {
+    width: 65%;
+    font-size: 1em;
+    padding: 12px 20px;
+    color: $dark-font-color;
+  }
+}
+
+#answer-new {
+  .new-answer-input {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    textarea {
+      width: 65%;
+      min-width:150px;
+    }
+  }
+
+  .quill-container {
+    width: 65%;
+    min-width: 150px;
+    margin: 15px 0;
+    section#approver-editor {
+      width: 100%;
+      display: inline-block;
+      min-height: 150px;
+      .ql-editor {
+        width: 100%;
+        display: inline-block;
+      }
+    }
+  }
+
+  label {
+    width: 20%;
+    font-size: 1em;
+    padding: 12px 20px;
+    color: $dark-font-color;
+  }
+  .ql-toolbar.ql-snow {
+    width: 100%;
+    display: inline-block;
+  }
+
+  .student-list {
+    display: block;
+  }
+
+  .error-box {
+    width: 50%;
+    margin-left: 20px;
+  }
+}

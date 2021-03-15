@@ -1,0 +1,218 @@
+<div class="info-card">
+  <div class="heading">
+    Workspace Settings
+    {{#if canEdit}}
+      {{#unless isEditing}}
+        <span class="heading-icon" data-test="ws-settings-edit" {{action 'editWorkspaceInfo'}}>
+          <i class="fas fa-edit"></i>
+        </span>
+      {{/unless}}
+    {{/if}}
+  </div>
+  <div class="card-content">
+    <div class="card-row">
+      <div class="row-label">
+        Name
+      </div>
+      <div class="row-value">
+        {{#if isEditing}}
+          {{input type="text" class="text-input" id="edit-name-input" value=workspace.name}}
+        {{else}}
+          {{workspace.name}}
+        {{/if}}
+      </div>
+    </div>
+    <div class="card-row">
+      <div class="row-label">
+        Owner
+      </div>
+      <div class="row-value">
+        {{#if isEditing}}
+          {{selectize-input
+          store=store
+          inputId="owner-select"
+          maxItems=1
+          initialItems=initialOwnerItem
+          onItemAdd=(action "setOwner")
+          onItemRemove=(action "setOwner")
+          labelField="username"
+          valueField="id"
+          searchField="username"
+          model="user"
+          queryParamsKey="usernameSearch"
+          isAsync=true
+          placeholder="Search by username"
+          preload="focus"
+          }}
+        {{else}}
+          {{#link-to 'user' workspace.owner.username}}{{workspace.owner.username}}{{/link-to}}
+        {{/if}}
+      </div>
+    </div>
+    <div class="card-row">
+      <div class="row-label">
+        Privacy Setting
+      </div>
+      <div class="row-value">
+        {{#if isEditing}}
+          {{my-select cannotBeNull=true selectedValue=selectedMode content=modes action=(action (mut selectedMode))}}
+        {{else}}
+          {{workspace.mode}}
+        {{/if}}
+      </div>
+    </div>
+    {{#if doShowLinkedAssignment}}
+      <div class="card-row">
+        <div class="row-label">
+          Linked Assignment
+        </div>
+        <div data-test="linked-assn" class="row-value">
+          {{#if isEditing}}
+            {{selectize-input
+            store=store
+            inputId="linked-assignment-select"
+            maxItems=1
+            initialItems=initialLinkedAssignmentItem
+            onItemAdd=(action "setLinkedAssignment")
+            onItemRemove=(action "setLinkedAssignment")
+            labelField="name"
+            valueField="id"
+            searchField="name"
+            model="assignment"
+            topLevelQueryParams="filterBy"
+            queryParamsKey="name"
+            isAsync=true
+            placeholder="Search for an assignment by name"
+            preload="focus"
+            }}
+          {{else}}
+          {{#if linkedAssignment}}
+              {{#link-to 'assignment' linkedAssignment.id}}{{linkedAssignment.name}}{{/link-to}}
+            {{else}}
+            N/A
+            {{/if}}
+
+          {{/if}}
+        </div>
+      </div>
+      <div class="card-row">
+      <div class="row-label">
+        Allow Automatic Submission Updates
+      </div>
+      <div data-test="allow-updates" class="row-value">
+        {{#if isEditing}}
+          {{my-select cannotBeNull=true selectedValue=selectedAutoUpdateSetting content=yesNoMySelect action=(action (mut selectedAutoUpdateSetting))}}
+        {{else}}
+          {{yes-no workspace.doAllowSubmissionUpdates}}
+        {{/if}}
+      </div>
+      </div>
+      {{#unless isEditing}}
+        <div class="update-submissions">
+          <button {{action "updateWithExistingWork"}} class="primary-button">Update Workspace</button>
+          <div class="update-results">
+            {{#if missingLinkedAssignment}}
+              {{error-box error="Please link an assignment first." showDismiss=true resetError=(action (mut missingLinkedAssignment) null)}}
+            {{/if}}
+            {{#each updateErrors as |error|}}
+              {{error-box error=error showDismiss=true resetError=(action "removeErrorFromArray" 'updateErrors' error)}}
+            {{/each}}
+            {{#each serverErrors as |error|}}
+              {{error-box error=error showDismiss=true resetError=(action "removeErrorFromArray" 'serverErrors' error)}}
+            {{/each}}
+          </div>
+
+        </div>
+      {{/unless}}
+    {{/if}}
+
+     {{#if doShowChildWorkspaces}}
+      <div class="card-row">
+        <div class="row-label">
+         Child Workspaces
+        </div>
+        <div data-test="child-workspaces" class="row-value">
+          {{#if isEditing}}
+            {{!-- {{selectize-input
+            store=store
+            inputId="linked-assignment-select"
+            maxItems=1
+            initialItems=initialLinkedAssignmentItem
+            onItemAdd=(action "setLinkedAssignment")
+            onItemRemove=(action "setLinkedAssignment")
+            labelField="name"
+            valueField="id"
+            searchField="name"
+            model="assignment"
+            topLevelQueryParams="filterBy"
+            queryParamsKey="name"
+            isAsync=true
+            placeholder="Search for an assignment by name"
+            preload="focus"
+            }} --}}
+          {{else}}
+          <ul class="child-workspaces">
+            {{#each childWorkspaces as |ws|}}
+            <li>
+              {{#link-to 'workspace.work' ws.id}}{{ws.name}}{{/link-to}}
+            </li>
+            {{else}}
+           <li>N/A</li>
+          {{/each}}
+          </ul>
+
+          {{/if}}
+        </div>
+      </div>
+      <div class="card-row">
+      <div class="row-label">
+        Allow Automatic Updates From Children
+      </div>
+      <div data-test="allow-updates" class="row-value">
+        {{#if isEditing}}
+          {{my-select cannotBeNull=true selectedValue=selectedAutoUpdateSetting content=yesNoMySelect action=(action (mut selectedAutoUpdateSetting))}}
+        {{else}}
+          {{yes-no workspace.doAutoUpdateFromChildren}}
+        {{/if}}
+      </div>
+      </div>
+      {{#unless isEditing}}
+        <div class="update-submissions">
+          <button {{action "updateWithExistingWork"}} class="primary-button" data-test="parent-ws-update">Update Parent Workspace</button>
+          <div class="update-results">
+            {{#if missingChildWorkspaces}}
+              {{error-box error="No child workspaces to update from" showDismiss=true resetError=(action (mut missingChildWorkspaces) null)}}
+            {{/if}}
+            {{#each updateErrors as |error|}}
+              {{error-box error=error showDismiss=true resetError=(action "removeErrorFromArray" 'updateErrors' error)}}
+            {{/each}}
+            {{#each serverErrors as |error|}}
+              {{error-box error=error showDismiss=true resetError=(action "removeErrorFromArray" 'serverErrors' error)}}
+            {{/each}}
+            {{#each-in createdParentData as |recordType records|}}
+              {{#if records}}
+                <p class="success-message">Added {{records.length}} {{recordType}}</p>
+              {{/if}}
+            {{/each-in}}
+            {{#each-in updatedParentData as |recordType records|}}
+              {{#if records}}
+                <p class="success-message">Updated {{records.length}} {{recordType}}</p>
+              {{/if}}
+            {{/each-in}}
+
+          </div>
+
+        </div>
+      {{/unless}}
+    {{/if}}
+
+    {{#if isEditing}}
+      <div class="card-row button-row">
+        <button class="primary-button cancel-button" {{action "stopEditing"}}>Cancel</button>
+        <button class="primary-button" {{action 'checkWorkspace'}}>Save</button>
+      </div>
+    {{/if}}
+  </div>
+</div>
+
+

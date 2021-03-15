@@ -1,0 +1,41 @@
+{{! TODO: restore the functionlaity of the view WorkspaceFolderDropTarget stuff, see the old ../folders.hbs}}
+<header>
+  <h2>Folders</h2>
+  <span {{action "hideFolders"}}><i title="Hide Folders"class="far fa-eye-slash"></i></span>
+</header>
+{{#workspace-folder-drop folders=folders}}
+  <div class="dropZone" style="height:10px;"></div>
+  <ul id="al_folders">
+    {{#each this.sortedFolders as |folder|}}
+      {{folder-elem
+        store=store
+        model=folder
+        currentWorkspace=workspace
+        folderList=this
+        editFolderMode=editFolderMode
+        dropped=(action "fileSelectionInFolder")
+        confirm="askToDelete"
+        currentSubmission=currentSubmission
+        currentSelection=currentSelection
+        canEditFolders=canEdit
+        canDeleteFolders=canDelete
+        wsTaggings=taggings
+      }}
+    {{/each}}
+  </ul>
+  <div class="dropZone" style="height:10px;"></div>
+{{/workspace-folder-drop}}
+{{#if canManageFolders}}
+<div class="folders-modify">
+  <div class= "folders-modify-item add">
+    <span {{action "openModal" "folderNew" }}>Add
+      <i class="fas fa-plus"></i>
+    </span>
+  </div>
+  <div class= "folders-modify-item edit">
+    <span {{action "toggleEditMode" editFolderMode}}>{{editFolderText}}
+      <i class={{editFolderIcon}}></i>
+    </span>
+  </div>
+</div>
+{{/if}}

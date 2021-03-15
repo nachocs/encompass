@@ -1,0 +1,22 @@
+@import "variables";
+@import "mixins";
+@import "responsive-font-size";
+
+#folder_contents {
+  a {
+    cursor: pointer;
+    &.selection-image {
+      border: none;
+    }
+  }
+  img {
+    max-width: 350px;
+  }
+}
+
+ul#al_folders.hidden {
+
+    display: none;
+
+}
+

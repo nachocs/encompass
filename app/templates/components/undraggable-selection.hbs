@@ -1,0 +1,20 @@
+<div class="selectionLink {{if isImage "image-tag"}} {{if isSelected 'is-selected'}} {{if isText "selection_text"}}"
+  title="{{titleText}} {{if isParentWorkspace " by "}} {{if isParentWorkspace selection.originalSelection.createdBy.username}} {{if isParentWorkspace " in "}} {{if isParentWorkspace selection.originalSelection.workspace.name}}">
+  {{#link-to 'workspace.submission.selection' selection.workspace selection.submission selection classNames=linkToClassName}}
+    {{#if isImage}}
+        <img class="img-tag-thmb" src={{selection.imageTagLink}} alt={{selection.text}}>
+        <div class="overlay">
+          <button {{action 'expandImage'}}><i class={{overlayIcon}}></i></button>
+        </div>
+    {{else}}
+      {{selection.text}}
+    {{/if}}
+  {{/link-to}}
+</div>
+
+{{#if isExpanded}}
+  <div class="full-image">
+    <i class="fas fa-times" {{action 'expandImage'}}></i>
+    <img src={{selection.imageTagLink}} alt={{selection.text}}>
+  </div>
+{{/if}}
