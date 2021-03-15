@@ -1,4 +1,4 @@
-import { AuthenticatedRoute } from './_authenticated_route';
+import AuthenticatedRoute from '../routes/_authenticated_route';
 /**
   * # Answers Route
   * @description Route for dealing with all answer objects

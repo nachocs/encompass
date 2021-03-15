@@ -1,10 +1,5 @@
-import Ember from 'ember';
-import CurrentUserMixin from '../mixins/current_user_mixin';
-
-
-
-
-
+import Ember from "ember";
+import CurrentUserMixin from "../mixins/current_user_mixin";
 
 export default Ember.Controller.extend(CurrentUserMixin, {
   isCompDirty: false,
@@ -12,7 +7,7 @@ export default Ember.Controller.extend(CurrentUserMixin, {
 
   actions: {
     doConfirmLeaving: function (value) {
-      this.set('confirmLeaving', value);
-    }
-  }
+      this.set("confirmLeaving", value);
+    },
+  },
 });

@@ -1,4 +1,4 @@
-import { AuthenticatedRoute } from '../routes/_authenticated_route';
+import AuthenticatedRoute from '../routes/_authenticated_route';
 /**
   * # Assignments Route
   * @description Route for dealing with all assignment objects

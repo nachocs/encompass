@@ -1,5 +1,5 @@
 import DS from 'ember-data';
-
+import Auditable from '../models/_auditable_mixin';
 
 export default DS.Model.extend(Auditable, {
   teacher: DS.belongsTo('user', { inverse: null }),

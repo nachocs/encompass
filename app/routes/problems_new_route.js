@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { AuthenticatedRoute } from '../routes/_authenticated_route';
+import AuthenticatedRoute from '../routes/_authenticated_route';
 
 
 

@@ -1,17 +1,12 @@
 /**
-  * # Workspace Controller
-  * @description This controller for the workspace assists in linking between submissions
-  * @todo Linking between submissions should really be moved to workspace_submissions_index_controller
-  * @author Amir Tahvildaran <amir@mathforum.org>, Damola Mabogunje <damola@mathforum.org>
-  * @since 1.0.0
-*/
-import Ember from 'ember';
-import CurrentUserMixin from '../mixins/current_user_mixin';
-
-
-
-
-
+ * # Workspace Controller
+ * @description This controller for the workspace assists in linking between submissions
+ * @todo Linking between submissions should really be moved to workspace_submissions_index_controller
+ * @author Amir Tahvildaran <amir@mathforum.org>, Damola Mabogunje <damola@mathforum.org>
+ * @since 1.0.0
+ */
+import Ember from "ember";
+import CurrentUserMixin from "../mixins/current_user_mixin";
 
 export default Ember.Controller.extend(CurrentUserMixin, {
   comments: Ember.inject.controller(),
@@ -19,14 +14,16 @@ export default Ember.Controller.extend(CurrentUserMixin, {
   currentSelection: null, //ENC-397, ENC-398
 
   showOverlay: function () {
-    return this.get('makingSelection') || this.get('taggingSelection');
-  }.property('makingSelection', 'taggingSelection'),
+    return this.get("makingSelection") || this.get("taggingSelection");
+  }.property("makingSelection", "taggingSelection"),
 
   actions: {
     popupMaskClicked: function () {
-      this.transitionToRoute('workspace.submission', this.get('currentSubmission'));
+      this.transitionToRoute(
+        "workspace.submission",
+        this.get("currentSubmission")
+      );
     },
-    tagSelection: function (selection, tags) {
-    }
-  }
+    tagSelection: function (selection, tags) {},
+  },
 });

@@ -1,5 +1,5 @@
 import CurrentUserMixin from '../mixins/current_user_mixin';
-import { AuthenticatedRoute } from '../routes/_authenticated_route';
+import AuthenticatedRoute from '../routes/_authenticated_route';
 
 export default AuthenticatedRoute.extend(CurrentUserMixin, {
   model: function () {
