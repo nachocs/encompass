@@ -88,6 +88,7 @@
     "ember-cli-htmlbars-inline-precompile": "^0.4.3",
     "ember-cli-inject-live-reload": "^1.4.1",
     "ember-cli-qunit": "^4.0.0",
+    "ember-cli-sass": "^7.0.0",
     "ember-cli-shims": "^1.1.0",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-uglify": "^1.2.0",
@@ -97,7 +98,8 @@
     "ember-resolver": "^4.0.0",
     "ember-source": "~2.14.1",
     "ember-welcome-page": "^3.0.0",
-    "loader.js": "^4.2.3"
+    "loader.js": "^4.2.3",
+    "sass": "^1.32.8"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"

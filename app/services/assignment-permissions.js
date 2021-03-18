@@ -1,14 +1,8 @@
-import Ember from 'ember';
-
-
-
-
-
-
+import Ember from "ember";
 
 export default Ember.Service.extend({
-  base: Ember.inject.service('edit-permissions'),
-  utils: Ember.inject.service('utility-methods'),
+  base: Ember.inject.service("edit-permissions"),
+  utils: Ember.inject.service("utility-methods"),
   // admins, creators,
 
   // permission tiers for assignments
@@ -18,19 +12,19 @@ export default Ember.Service.extend({
   // teacher - 1
   // rest 0
   // next highest teachers from assignment section
-  getPermissionsLevel(assignment, section, user = this.get('base.user')) {
+  getPermissionsLevel(assignment, section, user = this.get("base.user")) {
     if (!user) {
       return 0;
     }
-    if (this.get('base.isActingAdmin')) {
+    if (this.get("base.isActingAdmin")) {
       return 4;
     }
     // assignments do not have org field but section does
-    if (this.get('base').isRecordInPdDomain(section)) {
+    if (this.get("base").isRecordInPdDomain(section)) {
       return 3;
     }
 
-    if (this.get('base').isCreator(assignment)) {
+    if (this.get("base").isCreator(assignment)) {
       return 2;
     }
 
@@ -40,7 +34,6 @@ export default Ember.Service.extend({
       }
     }
     return 0;
-
   },
 
   isSectionTeacher(assignment, section) {
@@ -48,21 +41,20 @@ export default Ember.Service.extend({
       return;
     }
 
-    let assnSectionId = this.get('utils').getBelongsToId(assignment, 'section');
-    if (assnSectionId !== section.get('id')) {
+    let assnSectionId = this.get("utils").getBelongsToId(assignment, "section");
+    if (assnSectionId !== section.get("id")) {
       return false;
     }
 
-    let teacherIds = this.get('utils').getHasManyIds(section, 'teachers');
-    if (!this.get('utils').isNonEmptyArray(teacherIds)) {
+    let teacherIds = this.get("utils").getHasManyIds(section, "teachers");
+    if (!this.get("utils").isNonEmptyArray(teacherIds)) {
       return false;
     }
-    return teacherIds.includes(this.get('base.userId'));
-
+    return teacherIds.includes(this.get("base.userId"));
   },
 
   canDelete: function (assignment) {
-    if (this.get('base.isActingAdmin')) {
+    if (this.get("base.isActingAdmin")) {
       return true;
     }
     if (this.haveAnswersBeenSubmitted(assignment)) {
@@ -71,7 +63,7 @@ export default Ember.Service.extend({
   },
 
   canEditProblem(assignment, section) {
-    if (this.get('base.isActingAdmin')) {
+    if (this.get("base.isActingAdmin")) {
       return true;
     }
     if (this.haveAnswersBeenSubmitted(assignment)) {
@@ -80,11 +72,11 @@ export default Ember.Service.extend({
     return this.getPermissionsLevel(assignment, section) > 1;
   },
   canEditLinkedWorkspace(assignment) {
-    if (this.get('base.isActingAdmin')) {
+    if (this.get("base.isActingAdmin")) {
       return true;
     }
 
-    if (this.get('base').isCreator(assignment)) {
+    if (this.get("base").isCreator(assignment)) {
       return true;
     }
 
@@ -96,33 +88,30 @@ export default Ember.Service.extend({
       return;
     }
     const currentDate = new Date();
-    const assignedDate = assignment.get('assignedDate');
+    const assignedDate = assignment.get("assignedDate");
     return currentDate < assignedDate;
   },
 
   canEditAssignedDate(assignment) {
     return (
-      !assignment.get('assignedDate') ||
+      !assignment.get("assignedDate") ||
       !this.haveAnswersBeenSubmitted(assignment) ||
       this.isNowBeforeAssignedDate(assignment)
     );
   },
 
   canEditDueDate(assignment) {
-    if (this.get('base.isActingAdmin')) {
+    if (this.get("base.isActingAdmin")) {
       return true;
     }
 
-    if (this.get('base').isCreator(assignment)) {
+    if (this.get("base").isCreator(assignment)) {
       return true;
     }
   },
 
   haveAnswersBeenSubmitted(assignment) {
-    let answerIds = this.get('utils').getHasManyIds(assignment, 'answers');
-    return this.get('utils').isNonEmptyArray(answerIds);
-  }
-
-
-
+    let answerIds = this.get("utils").getHasManyIds(assignment, "answers");
+    return this.get("utils").isNonEmptyArray(answerIds);
+  },
 });
