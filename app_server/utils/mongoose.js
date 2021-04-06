@@ -1,7 +1,7 @@
-import { Types } from 'mongoose';
-import { filter, find, isEqual, map } from 'underscore';
-import { isNil, isNonEmptyArray } from './objects';
+const _ = require('underscore');
+const mongoose = require('mongoose');
 
+const { isNonEmptyArray, isNil } = require('../utils/objects');
 /**
  * Returns true if passed in value matches format for mongoose objectId else false
  * @param {any} val
@@ -33,7 +33,7 @@ const areObjectIdsEqual = (a, b) => {
   }
 
   if (type1 === 'object' && type2 === 'object') {
-    return isEqual(a, b);
+    return _.isEqual(a, b);
   }
   let a2;
   let b2;
@@ -62,25 +62,25 @@ const areObjectIdsEqual = (a, b) => {
  * @param {boolean} [doConvert=false] - whether or not to convert to ObjectIds
  * @returns {array}
  */
-function cleanObjectIdArray(arr, doConvert = false) {
+function cleanObjectIdArray(arr, doConvert=false) {
   if (!isNonEmptyArray(arr)) {
     return [];
   }
 
-  const filtered = filter(arr, isValidMongoId);
+  const filtered = _.filter(arr, isValidMongoId);
 
   if (!doConvert) {
     return filtered;
   }
 
-  return map(filtered, val => Types.ObjectId(val));
+  return _.map(filtered, val => mongoose.Types.ObjectId(val));
 }
 
 const doesObjectIdSetContainObjectId = (objectIds, objectIdToAdd) => {
   if (!Array.isArray(objectIds) || !isValidMongoId(objectIdToAdd)) {
     return false;
   }
-  let existingId = find(objectIds, id => {
+  let existingId = _.find(objectIds, id => {
     return areObjectIdsEqual(id, objectIdToAdd);
   });
 
@@ -162,7 +162,7 @@ const didObjectIdArrayFieldChange = (originalValues, newValues) => {
     originalValuesMap[val] = true;
   });
 
-  for (let newValue of newValues) {
+  for(let newValue of newValues) {
     // iterate over newValues, and if we find a value that does not
     // exist in the originalValuesMap, we can return early with true
     if (!originalValuesMap[newValue]) {
@@ -175,17 +175,10 @@ const didObjectIdArrayFieldChange = (originalValues, newValues) => {
 
 };
 
-const _isValidMongoId = isValidMongoId;
-export { _isValidMongoId as isValidMongoId };
-export { _areObjectIdsEqual as areObjectIdsEqual };
-export { _cleanObjectIdArray as cleanObjectIdArray };
-export { _addToObjectIdSet as addToObjectIdSet };
-export { _doesObjectIdSetContainObjectId as doesObjectIdSetContainObjectId };
-export { _auditObjectIdField as auditObjectIdField };
-export { _didObjectIdArrayFieldChange as didObjectIdArrayFieldChange };
-const _areObjectIdsEqual = areObjectIdsEqual;
-const _cleanObjectIdArray = cleanObjectIdArray;
-const _addToObjectIdSet = addToObjectIdSet;
-const _doesObjectIdSetContainObjectId = doesObjectIdSetContainObjectId;
-const _auditObjectIdField = auditObjectIdField;
-const _didObjectIdArrayFieldChange = didObjectIdArrayFieldChange;
+  module.exports.isValidMongoId = isValidMongoId;
+  module.exports.areObjectIdsEqual = areObjectIdsEqual;
+  module.exports.cleanObjectIdArray = cleanObjectIdArray;
+  module.exports.addToObjectIdSet = addToObjectIdSet;
+  module.exports.doesObjectIdSetContainObjectId = doesObjectIdSetContainObjectId;
+  module.exports.auditObjectIdField = auditObjectIdField;
+  module.exports.didObjectIdArrayFieldChange = didObjectIdArrayFieldChange;

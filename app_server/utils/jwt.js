@@ -1,8 +1,8 @@
-import { sign, verify } from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
-export function verifyJwt(token, key, options) {
+module.exports.verifyJwt = (token, key, options) => {
   return new Promise((resolve, reject) => {
-    verify(token, key, options || {}, (err, decoded) => {
+    jwt.verify(token, key, options || {}, (err, decoded) => {
       if (err) {
         reject(err);
       } else {
@@ -10,11 +10,11 @@ export function verifyJwt(token, key, options) {
       }
     });
   });
-}
+};
 
-export function signJwt(payload, secret, options) {
+module.exports.signJwt = (payload, secret, options) => {
   return new Promise((resolve, reject) => {
-    sign(payload, secret, options || {}, (err, encoded) => {
+    jwt.sign(payload, secret, options || {}, (err, encoded) => {
       if (err) {
         reject(err);
       } else {
@@ -22,4 +22,4 @@ export function signJwt(payload, secret, options) {
       }
     });
   });
-}
+};

@@ -1,19 +1,19 @@
 /* eslint-disable complexity */
-import { compact, isArray, isEmpty, map } from 'underscore';
-import { Submission } from '../../datasource/schemas';
-import { isValidMongoId } from '../../utils/mongoose';
-import objectUtils from '../../utils/objects';
-import { get } from './submissions';
-import { getModelIds, getTeacherAssignments, getTeacherSectionsById } from './utils';
+const _ = require('underscore');
 
+const models = require('../../datasource/schemas');
 
+const utils = require('./utils');
+const mongooseUtils = require('../../utils/mongoose');
 
+const submissionsAccess = require('./submissions');
 
+const objectUtils = require('../../utils/objects');
 const { isNonEmptyObject, isNonEmptyArray, isNonEmptyString } = objectUtils;
 
-export const get = {};
+module.exports.get = {};
 
-const accessibleAnswersQuery = async function (user, ids, filterBy, searchBy) {
+const accessibleAnswersQuery = async function(user, ids, filterBy, searchBy) {
   try {
     if (!isNonEmptyObject(user)) {
       return {};
@@ -28,7 +28,7 @@ const accessibleAnswersQuery = async function (user, ids, filterBy, searchBy) {
 
     if (isNonEmptyObject(filterBy)) {
       const { isTrashedOnly } = filterBy;
-      if (isTrashedOnly === true || isTrashedOnly === "true") {
+      if ( isTrashedOnly === true || isTrashedOnly === "true") {
         if (accountType === 'A') {
           filter = {
             $and: [
@@ -48,15 +48,15 @@ const accessibleAnswersQuery = async function (user, ids, filterBy, searchBy) {
 
 
     if (isNonEmptyArray(ids)) {
-      filter.$and.push({ _id: { $in: ids } });
-    } else if (isValidMongoId(ids)) {
+      filter.$and.push({ _id: { $in : ids } });
+    } else if(mongooseUtils.isValidMongoId(ids)) {
       filter.$and.push({ _id: ids });
     }
 
     if (isNonEmptyObject(filterBy)) {
       if (filterBy.isVmtOnly === 'true' || filterBy.isVmtOnly === true) {
         filter.$and.push({
-          'vmtRoomInfo.roomId': { $ne: null }
+          'vmtRoomInfo.roomId': {$ne: null}
         });
       }
       delete filterBy.isVmtOnly;
@@ -64,36 +64,36 @@ const accessibleAnswersQuery = async function (user, ids, filterBy, searchBy) {
       if (isNonEmptyString(filterBy.vmtSearchText)) {
         let $or = [];
         let $and = [{
-          'vmtRoomInfo.roomId': { $ne: null }
+          'vmtRoomInfo.roomId': {$ne: null}
         }];
         let replaced = filterBy.vmtSearchText.replace(/\s+/g, "");
         let regex = new RegExp(replaced, 'i');
 
-        $or.push({ 'vmtRoomInfo.roomName': regex });
-        $or.push({ 'vmtRoomInfo.activityName': regex });
-        $or.push({ 'vmtRoomInfo.participants': regex });
-        $or.push({ 'vmtRoomInfo.facilitators': regex });
+        $or.push({'vmtRoomInfo.roomName': regex});
+        $or.push({'vmtRoomInfo.activityName': regex});
+        $or.push({'vmtRoomInfo.participants': regex});
+        $or.push({'vmtRoomInfo.facilitators': regex});
 
-        $and.push({ $or });
-        filter.$and.push({ $and });
+        $and.push({$or});
+        filter.$and.push({$and});
         delete filterBy.vmtSearchText;
 
       }
 
       if (filterBy.teacher && accountType !== 'T') {
         let [assignments, sections] = await Promise.all([
-          getTeacherAssignments(filterBy.teacher),
-          getTeacherSectionsById(filterBy.teacher)
+          utils.getTeacherAssignments(filterBy.teacher),
+         utils.getTeacherSectionsById(filterBy.teacher)
         ]);
         let assignmentFilter;
         let sectionFilter;
 
         if (isNonEmptyArray(assignments)) {
-          assignmentFilter = { assignment: { $in: assignments } };
+          assignmentFilter = {assignment: {$in: assignments}};
 
         }
         if (isNonEmptyArray(sections)) {
-          sectionFilter = { section: { $in: sections } };
+          sectionFilter = {section: {$in: sections}};
         }
         let orFilter;
         if (!sectionFilter && !assignmentFilter) {
@@ -101,7 +101,7 @@ const accessibleAnswersQuery = async function (user, ids, filterBy, searchBy) {
           return null;
         }
         if (sectionFilter || assignmentFilter) {
-          if (isArray(filterBy.$or)) {
+          if (_.isArray(filterBy.$or)) {
             orFilter = filterBy.$or;
           } else {
             filterBy.$or = [];
@@ -137,25 +137,25 @@ const accessibleAnswersQuery = async function (user, ids, filterBy, searchBy) {
     orFilter.$or.push({ createdBy: user._id });
 
     if (doIncludeOldPows) {
-      let publicProblemIds = await getModelIds('Problem', {
+      let publicProblemIds = await utils.getModelIds('Problem', {
         isTrashed: false,
         privacySetting: 'E',
       });
 
       if (isNonEmptyArray(publicProblemIds)) {
-        orFilter.$or.push({ problem: { $in: publicProblemIds }, createdBy: '5bb4c600379d310929989c7e' });
+        orFilter.$or.push({ problem: {$in: publicProblemIds }, createdBy: '5bb4c600379d310929989c7e'});
       }
     }
 
     // everyone needs to be able to access answers that correspond with a submission they have access to
-    const submissionCriteria = await get.submissions(user, null);
-    const subsWithAnswers = await Submission.find(submissionCriteria, { answer: 1 }).lean().exec();
-    const answerIds = map(subsWithAnswers, sub => sub.answer);
+    const submissionCriteria = await submissionsAccess.get.submissions(user, null);
+    const subsWithAnswers = await models.Submission.find(submissionCriteria, {answer: 1}).lean().exec();
+    const answerIds = _.map(subsWithAnswers, sub => sub.answer);
     // removes falsy values
-    const compacted = compact(answerIds);
+    const compacted = _.compact(answerIds);
 
     if (isNonEmptyArray(compacted)) {
-      orFilter.$or.push({ _id: { $in: compacted } });
+      orFilter.$or.push({_id: {$in: compacted}});
     }
 
     if (isStudent) {
@@ -163,43 +163,43 @@ const accessibleAnswersQuery = async function (user, ids, filterBy, searchBy) {
       return filter;
     }
 
-    // PdAdmins with acting role 'teacher' can get all answers tied to their org
-    if (accountType === 'P') {
-      const userOrg = user.organization;
-      const userIds = await getModelIds('User', { organization: userOrg, _id: { $ne: "5bb4c600379d310929989c7e" } });
-      orFilter.$or.push({ createdBy: { $in: userIds } });
-      filter.$and.push(orFilter);
+  // PdAdmins with acting role 'teacher' can get all answers tied to their org
+  if (accountType === 'P') {
+    const userOrg = user.organization;
+    const userIds = await utils.getModelIds('User', {organization: userOrg, _id: {$ne: "5bb4c600379d310929989c7e"}});
+    orFilter.$or.push( {createdBy : {$in : userIds} });
+    filter.$and.push(orFilter);
 
-      return filter;
-    }
-    // Teachers with acting role 'teacher' can get all answers tied to their assignments or sections
-    if (accountType === 'T') {
-      // only answers from either a teacher's assignments or from a section where they are in the teachers array
+    return filter;
+  }
+  // Teachers with acting role 'teacher' can get all answers tied to their assignments or sections
+  if (accountType === 'T') {
+    // only answers from either a teacher's assignments or from a section where they are in the teachers array
 
-      const [ownAssignmentIds, ownSections] = await Promise.all([
-        getTeacherAssignments(user._id),
-        getTeacherSectionsById(user._id)
-      ]);
+    const [ ownAssignmentIds, ownSections ] = await Promise.all([
+      utils.getTeacherAssignments(user._id),
+      utils.getTeacherSectionsById(user._id)
+     ]);
 
-      let areValidSections = isArray(ownSections) && !isEmpty(ownSections);
-      let areValidAssignments = isArray(ownAssignmentIds) && !isEmpty(ownAssignmentIds);
+    let areValidSections = _.isArray(ownSections) && !_.isEmpty(ownSections);
+    let areValidAssignments = _.isArray(ownAssignmentIds) && !_.isEmpty(ownAssignmentIds);
 
-      if (areValidAssignments || areValidSections) {
-        if (areValidAssignments) {
-          orFilter.$or.push({ assignment: { $in: ownAssignmentIds } });
-        }
-        if (areValidSections) {
-          orFilter.$or.push({ section: { $in: ownSections } });
-        }
+    if (areValidAssignments || areValidSections) {
+      if (areValidAssignments) {
+        orFilter.$or.push({ assignment : { $in: ownAssignmentIds } });
       }
-
-      filter.$and.push(orFilter);
-      return filter;
+      if (areValidSections) {
+        orFilter.$or.push({ section: { $in: ownSections} });
+      }
     }
-  } catch (err) {
+
+    filter.$and.push(orFilter);
+    return filter;
+  }
+  }catch(err) {
     console.log('err', err);
   }
 
 };
 
-get.answers = accessibleAnswersQuery;
+module.exports.get.answers = accessibleAnswersQuery;

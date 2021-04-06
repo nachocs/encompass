@@ -1,8 +1,7 @@
 const sockets = {};
 
-sockets.init = function (server) {
-  // eslint-disable-next-line no-undef
+sockets.init = function(server) {
   this.io = require('socket.io').listen(server);
 };
 
-export default sockets;
+module.exports = sockets;

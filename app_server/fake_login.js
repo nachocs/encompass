@@ -6,23 +6,23 @@
   */
 
 //REQUIRE MODULES
-import { serialize } from 'cookie';
-import { format } from 'util';
-import { v4 } from 'uuid';
-//REQUIRE FILES
-import { nconf } from './config';
-import { User } from './datasource/schemas';
+const uuid = require('uuid');
+const cookie = require('cookie');
 
+//REQUIRE FILES
+const config = require('./config');
+const models = require('./datasource/schemas');
+const util = require('util');
 
 
 function fakeLogin(req, res, next) {
   var username = req.params.username;
-  var name = username.toLowerCase();
-  var key = v4();
-  var webConf = nconf.get('web');
+  var name     = username.toLowerCase();
+  var key      = uuid.v4();
+  var webConf = config.nconf.get('web');
 
   // Create the user
-  var user = new User({
+  var user = new models.User({
     username: name,
     key: key
   });
@@ -35,21 +35,20 @@ function fakeLogin(req, res, next) {
   var loggedIn = user.history.create({
     event: 'Login',
     creator: name,
-    message: format("User %s (fake) logged in", name)
+    message: util.format("User %s (fake) logged in", name)
   });
 
 
-  User.update({ username: name }, upsertData, { upsert: true }, function (err, count, result) {
-    if (err) {
+  models.User.update({username: name}, upsertData, {upsert: true}, function(err, count, result) {
+    if(err) {
       res.send(err); // This should never happen
     } else {
       // Give them a session cookie
-      res.header('Set-Cookie', serialize('EncAuth', key, { path: '/' }));
+      res.header('Set-Cookie', cookie.serialize('EncAuth', key, {path: '/'}));
       res.header('Location', webConf.base);
       res.send(301);
     }
   });
 }
 
-const _fakeLogin = fakeLogin;
-export { _fakeLogin as fakeLogin };
+module.exports.fakeLogin = fakeLogin;

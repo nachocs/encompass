@@ -1,4 +1,4 @@
-export function getMtSsoUrl() {
+module.exports.getMtSsoUrl = () => {
   let envName = process.env.NODE_ENV;
 
   if (envName === 'production') {
@@ -13,9 +13,9 @@ export function getMtSsoUrl() {
     return process.env.MT_SSO_URL_TEST;
   }
   return process.env.MT_SSO_URL_DEV;
-}
+};
 
-export function getVmtUrl() {
+module.exports.getVmtUrl = () => {
   let envName = process.env.NODE_ENV;
 
   if (envName === 'production') {
@@ -26,9 +26,9 @@ export function getVmtUrl() {
     return process.env.VMT_URL_STAGING;
   }
   return process.env.VMT_URL_DEV;
-}
+};
 
-export function getEncIssuerId() {
+module.exports.getEncIssuerId = () => {
   let envName = process.env.NODE_ENV;
 
   if (envName === 'production') {
@@ -44,9 +44,9 @@ export function getEncIssuerId() {
   }
 
   return process.env.ENC_JWT_ISSUER_ID_DEV;
-}
+};
 
-export function getMtIssuerId() {
+module.exports.getMtIssuerId = () => {
   let envName = process.env.NODE_ENV;
 
   if (envName === 'production') {
@@ -62,9 +62,9 @@ export function getMtIssuerId() {
   }
 
   return process.env.MT_SSO_JWT_ISSUER_ID_DEV;
-}
+};
 
-export function getVmtIssuerId() {
+module.exports.getVmtIssuerId = () => {
   let envName = process.env.NODE_ENV;
 
   if (envName === 'production') {
@@ -80,4 +80,4 @@ export function getVmtIssuerId() {
   }
 
   return process.env.VMT_JWT_ISSUER_ID_DEV;
-}
+};

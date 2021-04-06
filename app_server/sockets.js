@@ -1,7 +1,8 @@
-import { io as _io } from './socketInit';
+const _ = require('underscore');
+const socketInit = require('./socketInit');
 
-export default function () {
-  const io = _io;
+module.exports = function () {
+  const io = socketInit.io;
   io.sockets.on('connection', socket => {
     console.log('user connected!');
 
@@ -11,5 +12,5 @@ export default function () {
 
   });
 
-}
+};
 

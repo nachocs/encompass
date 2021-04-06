@@ -12,7 +12,9 @@
   },
   "scripts": {
     "build": "ember build",
-    "start": "ember server",
+    "start": "concurrently \"npm:start-front\" \"npm:start-back\"",
+    "start-front": "ember server",
+    "start-back": "node app_server/server.js",
     "test": "ember test",
     "drop-testdb": "echo 'db.dropDatabase()' | mongo encompass_test",
     "seed-vmt": "cd ../vmt/server && npm run test",
@@ -74,6 +76,9 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^2.4.5",
     "chromedriver": "^86.0.0",
     "concurrently": "^5.3.0",

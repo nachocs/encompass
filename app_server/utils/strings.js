@@ -1,7 +1,7 @@
-import { chain, isNumber, isString } from 'underscore';
+const _ = require('underscore');
 
 function getFirstCharOfStr(str) {
-  if (!isString(str)) {
+  if (!_.isString(str)) {
     return;
   }
   if (str.length === 0) {
@@ -13,7 +13,7 @@ function getFirstCharOfStr(str) {
 // trim leading and trailing whitespaces and also remove excess whitespaces between words
 // e.g. 'alex    williams ' -> 'alex williams'
 function removeExtraSpacesFromStr(str) {
-  if (!isString(str)) {
+  if (!_.isString(str)) {
     return;
   }
   if (str.length === 0) {
@@ -24,14 +24,14 @@ function removeExtraSpacesFromStr(str) {
   let trimmed = copy.trim();
   let words = trimmed.split(' ');
 
-  return chain(words)
+  return _.chain(words)
     .without('')
     .join(' ')
     .value();
 }
 
 function getNthWordOfStr(str, n, doRemoveExtraSpaces) {
-  if (!isString(str) || !isNumber(n)) {
+  if (!_.isString(str) || !_.isNumber(n)) {
     return;
   }
   if (str.length === 0) {
@@ -56,7 +56,7 @@ function getNthWordOfStr(str, n, doRemoveExtraSpaces) {
 
 // return input string with first letter capitalized
 function capitalizeWord(str) {
-  if (!isString(str)) {
+  if (!_.isString(str)) {
     // throw Error?
     return;
   }
@@ -79,7 +79,7 @@ function capitalizeWord(str) {
 // expects a space delimited string
 // returns new string with first letter of each word capitalized
 function capitalizeString(str, doRemoveExtraSpaces) {
-  if (!isString(str)) {
+  if (!_.isString(str)) {
     // throw error?
     return;
   }
@@ -95,20 +95,14 @@ function capitalizeString(str, doRemoveExtraSpaces) {
 
   let words = copy.split(' ');
 
-  return chain(words)
+  return _.chain(words)
     .map(capitalizeWord)
     .join(' ')
     .value();
 }
 
-const _getFirstCharOfStr = getFirstCharOfStr;
-export { _getFirstCharOfStr as getFirstCharOfStr };
-export { _removeExtraSpacesFromStr as removeExtraSpacesFromStr };
-export { _getNthWordOfStr as getNthWordOfStr };
-export { _capitalizeWord as capitalizeWord };
-export { _capitalizeString as capitalizeString };
-const _removeExtraSpacesFromStr = removeExtraSpacesFromStr;
-const _getNthWordOfStr = getNthWordOfStr;
-const _capitalizeWord = capitalizeWord;
-const _capitalizeString = capitalizeString;
-
+module.exports.getFirstCharOfStr = getFirstCharOfStr;
+module.exports.removeExtraSpacesFromStr = removeExtraSpacesFromStr;
+module.exports.getNthWordOfStr = getNthWordOfStr;
+module.exports.capitalizeWord = capitalizeWord;
+module.exports.capitalizeString = capitalizeString;

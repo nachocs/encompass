@@ -7,19 +7,19 @@
 
 /*eslint no-process-env: "off"*/
 
-import { configure } from 'log4js';
-import nconf, { add, argv, defaults } from 'nconf';
+const nconf = require('nconf');
+const logs = require('log4js');
 const build = process.env.BUILD;
 console.log('build: ', build);
 
 // const today = new Date();
 // const aYearAgo = new Date(today.getFullYear() - 1, 8, 18, 0, 0, 1);
 
-argv().env().file({ file: 'config.json' });
+nconf.argv().env().file({ file: 'config.json' });
 
-add('release', { type: 'file', file: 'release.json' });
+nconf.add('release', { type: 'file', file: 'release.json' });
 
-defaults({
+nconf.defaults({
   port: '8080',
   devPort: '8080',
   testPort: '8082',
@@ -60,12 +60,11 @@ defaults({
   }
 });
 
-const _nconf = nconf;
-export { _nconf as nconf };
+exports.nconf = nconf;
 
 // var logConf = nconf.get('logs');
 
-configure({
+logs.configure({
   appenders: {
     srv: { type: 'file', filename: 'server.out', category: ['console'] },
     err: { type: 'file', filename: 'error.out', category: ['server'] },
