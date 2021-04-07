@@ -1,22 +1,22 @@
+import Model, { attr, hasMany, belongsTo } from '@ember-data/model';
 import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
-import DS from 'ember-data';
 import moment from 'moment';
 import Permission from '../mixins/permission_mixin';
 import Auditable from '../models/_auditable_mixin';
 
-export default DS.Model.extend(Auditable, Permission, {
+export default Model.extend(Auditable, Permission, {
   workspaceId: alias('id'),
-  name: DS.attr('string'),
-  folders: DS.hasMany('folder', { async: true }),
-  submissions: DS.hasMany('submission', { async: true }),
-  responses: DS.hasMany('response', { async: true }),
-  selections: DS.hasMany('selection', { async: true }),
-  comments: DS.hasMany('comment', { async: true }),
-  organization: DS.belongsTo('organization'),
-  taggings: DS.hasMany('tagging', { async: false }),
-  lastViewed: DS.attr('date'),
-  lastModifiedDate: DS.attr('date'),
+  name: attr('string'),
+  folders: hasMany('folder', { async: true }),
+  submissions: hasMany('submission', { async: true }),
+  responses: hasMany('response', { async: true }),
+  selections: hasMany('selection', { async: true }),
+  comments: hasMany('comment', { async: true }),
+  organization: belongsTo('organization'),
+  taggings: hasMany('tagging', { async: false }),
+  lastViewed: attr('date'),
+  lastModifiedDate: attr('date'),
   lastViewedDate: computed(function () {
     if (!this.lastViewed) {
       return this.lastModifiedDate;
@@ -33,9 +33,9 @@ export default DS.Model.extend(Auditable, Permission, {
       return this.lastModifiedDate;
     }
   }),
-  workspaceType: DS.attr('string'),
-  childWorkspaces: DS.hasMany('workspace', { inverse: null }),
-  parentWorkspaces: DS.hasMany('workspace', { inverse: null }),
+  workspaceType: attr('string'),
+  childWorkspaces: hasMany('workspace', { inverse: null }),
+  parentWorkspaces: hasMany('workspace', { inverse: null }),
 
   _collectionLength: function (collection) {
     // https://stackoverflow.com/questions/35405360/ember-data-show-length-of-a-hasmany-relationship-in-a-template-without-downloadi
@@ -114,7 +114,7 @@ export default DS.Model.extend(Auditable, Permission, {
       return loFmt + ' - ' + hiFmt;
     }
   }),
-  permissions: DS.attr(),
+  permissions: attr(),
 
   collaborators: computed('permissions.[]', function () {
     const permissions = this.permissions;
@@ -133,9 +133,9 @@ export default DS.Model.extend(Auditable, Permission, {
     }
     return [];
   }),
-  sourceWorkspace: DS.attr(), // if workspace is copy
-  linkedAssignment: DS.belongsTo('assignment'),
-  doAllowSubmissionUpdates: DS.attr('boolean', { defaultValue: true }),
-  doOnlyUpdateLastViewed: DS.attr('boolean', { defaultValue: false }),
-  doAutoUpdateFromChildren: DS.attr('boolean', { defaultValue: false }),
+  sourceWorkspace: attr(), // if workspace is copy
+  linkedAssignment: belongsTo('assignment'),
+  doAllowSubmissionUpdates: attr('boolean', { defaultValue: true }),
+  doOnlyUpdateLastViewed: attr('boolean', { defaultValue: false }),
+  doAutoUpdateFromChildren: attr('boolean', { defaultValue: false }),
 });

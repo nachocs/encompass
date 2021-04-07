@@ -1,25 +1,25 @@
+import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
 import { computed } from '@ember/object';
 /*global _:false */
 import { alias } from '@ember/object/computed';
-import DS from 'ember-data';
 import Auditable from '../models/_auditable_mixin';
 
-export default DS.Model.extend(Auditable, {
+export default Model.extend(Auditable, {
   answerId: alias('id'),
-  studentName: DS.attr('string'),
-  problem: DS.belongsTo('problem'),
-  answer: DS.attr('string'),
-  explanation: DS.attr('string'),
-  explanationImage: DS.belongsTo('image', { inverse: null }),
-  section: DS.belongsTo('section'),
-  isSubmitted: DS.attr('boolean'),
-  students: DS.hasMany('users', { inverse: null }),
-  studentNames: DS.attr(),
-  priorAnswer: DS.belongsTo('answer'),
-  assignment: DS.belongsTo('assignment', { async: true }),
-  additionalImage: DS.belongsTo('image', { inverse: null }),
-  workspacesToUpdate: DS.attr(''),
-  vmtRoomInfo: DS.attr(),
+  studentName: attr('string'),
+  problem: belongsTo('problem'),
+  answer: attr('string'),
+  explanation: attr('string'),
+  explanationImage: belongsTo('image', { inverse: null }),
+  section: belongsTo('section'),
+  isSubmitted: attr('boolean'),
+  students: hasMany('users', { inverse: null }),
+  studentNames: attr(),
+  priorAnswer: belongsTo('answer'),
+  assignment: belongsTo('assignment', { async: true }),
+  additionalImage: belongsTo('image', { inverse: null }),
+  workspacesToUpdate: attr(''),
+  vmtRoomInfo: attr(),
 
   isVmt: computed('vmtRoomInfo.roomId', function () {
     let id = this.get('vmtRoomInfo.roomId');

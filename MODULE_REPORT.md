@@ -8,7 +8,7 @@
 ```js
 
 
-export default DS.Model.extend(Ember.Copyable, Auditable, {
-  workspace: DS.belongsTo('workspace', { async: false }),
-  selection: DS.belongsTo('selection'),
+export default Model.extend(Ember.Copyable, Auditable, {
+  workspace: belongsTo('workspace', { async: false }),
+  selection: belongsTo('selection'),
 ```

@@ -1,16 +1,16 @@
+import Model, { attr, hasMany, belongsTo } from '@ember-data/model';
 import { computed } from '@ember/object';
 import { sort } from '@ember/object/computed';
-import DS from 'ember-data';
 import Auditable from '../models/_auditable_mixin';
 
-export default DS.Model.extend(Auditable, {
-  name: DS.attr('string'),
-  weight: DS.attr('number'),
-  taggings: DS.hasMany('tagging', { async: true }),
-  parent: DS.belongsTo('folder', { inverse: 'children', async: true }),
-  children: DS.hasMany('folder', { inverse: 'parent', async: true }),
-  workspace: DS.belongsTo('workspace', { async: true }),
-  isTopLevel: DS.attr('boolean'),
+export default Model.extend(Auditable, {
+  name: attr('string'),
+  weight: attr('number'),
+  taggings: hasMany('tagging', { async: true }),
+  parent: belongsTo('folder', { inverse: 'children', async: true }),
+  children: hasMany('folder', { inverse: 'parent', async: true }),
+  workspace: belongsTo('workspace', { async: true }),
+  isTopLevel: attr('boolean'),
   isExpanded: false,
   sortProperties: ['weight', 'name'],
 
@@ -93,5 +93,5 @@ export default DS.Model.extend(Auditable, {
   },
 
   sortedChildren: sort('cleanChildren', 'sortProperties'),
-  originalFolder: DS.belongsTo('folder', { inverse: null }),
+  originalFolder: belongsTo('folder', { inverse: null }),
 });

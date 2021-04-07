@@ -1,32 +1,32 @@
+import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
 import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
-import DS from 'ember-data';
 import moment from 'moment';
 import Auditable from '../models/_auditable_mixin';
 
-export default DS.Model.extend(Auditable, {
+export default Model.extend(Auditable, {
   submissionId: alias('id'),
-  shortAnswer: DS.attr('string'),
-  longAnswer: DS.attr('string'),
+  shortAnswer: attr('string'),
+  longAnswer: attr('string'),
   /*
    * the powId is the ID for this submission in the PoW environment
    */
-  powId: DS.attr('number'),
-  creator: DS.attr(),
-  creatorId: DS.attr('number'),
-  publication: DS.attr(),
-  uploadedFile: DS.attr(),
+  powId: attr('number'),
+  creator: attr(),
+  creatorId: attr('number'),
+  publication: attr(),
+  uploadedFile: attr(),
   //teacher, class, puzzle TODO
   //teacher: DS.belongsTo(App.User, {embedded:'always'}),
-  teacher: DS.attr(),
-  section: DS.belongsTo('section'),
-  problem: DS.belongsTo('problem'),
-  answer: DS.belongsTo('answer'),
-  selections: DS.hasMany('selection', { async: true }),
-  comments: DS.hasMany('comment', { async: true }),
-  workspaces: DS.hasMany('workspace', { async: true }),
-  responses: DS.hasMany('response', { async: true }),
-  vmtRoomInfo: DS.attr(''),
+  teacher: attr(),
+  section: belongsTo('section'),
+  problem: belongsTo('problem'),
+  answer: belongsTo('answer'),
+  selections: hasMany('selection', { async: true }),
+  comments: hasMany('comment', { async: true }),
+  workspaces: hasMany('workspace', { async: true }),
+  responses: hasMany('response', { async: true }),
+  vmtRoomInfo: attr(''),
 
   folders: computed('selections.[].folders', function () {
     var folders = [];

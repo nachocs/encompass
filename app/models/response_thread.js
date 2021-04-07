@@ -1,22 +1,22 @@
+import Model, { hasMany, attr } from '@ember-data/model';
 import { computed } from '@ember/object';
 import { gt } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import DS from 'ember-data';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default DS.Model.extend(CurrentUserMixin, {
+export default Model.extend(CurrentUserMixin, {
   utils: service('utility-methods'),
   store: service(),
 
-  submissions: DS.hasMany('submission'),
-  responses: DS.hasMany('response'),
-  workspaceName: DS.attr('string'),
-  problemTitle: DS.attr('string'),
-  uniqueIdentifier: DS.attr(),
-  threadType: DS.attr('string'), // submitter, mentor, approver
-  studentDisplay: DS.attr('string'),
-  mentors: DS.attr(),
-  isNewThread: DS.attr('boolean', { defaultValue: false }),
+  submissions: hasMany('submission'),
+  responses: hasMany('response'),
+  workspaceName: attr('string'),
+  problemTitle: attr('string'),
+  uniqueIdentifier: attr(),
+  threadType: attr('string'), // submitter, mentor, approver
+  studentDisplay: attr('string'),
+  mentors: attr(),
+  isNewThread: attr('boolean', { defaultValue: false }),
   hasNewRevision: gt('newRevisions.length', 0),
 
   inNeedOfRevisions: gt('needsRevisionResponses.length', 0),

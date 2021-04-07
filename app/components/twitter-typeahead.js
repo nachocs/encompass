@@ -1,10 +1,5 @@
 import Ember from 'ember';
 
-
-
-
-
-
 export default Ember.Component.extend({
   classNames: ['twitter-typeahead'],
 
@@ -37,7 +32,6 @@ export default Ember.Component.extend({
     }
 
     this.set('templates', templates);
-
   },
 
   didInsertElement() {
@@ -82,7 +76,6 @@ export default Ember.Component.extend({
 
     if (this.setSelectedValueOnChange) {
       this.$('.typeahead').on('typeahead:change', function (ev, val) {
-
         if (that.get('isDestroyed') || that.get('isDestroying')) {
           return;
         }
@@ -104,14 +97,12 @@ export default Ember.Component.extend({
         that.set('selectedValue', inputValue);
         if (that.get('onSelect')) {
           that.sendAction('onSelect', inputValue);
-
         }
         if (that.get('allowMultiple')) {
           that.$('.typeahead').typeahead('val', '');
         }
       });
     }
-
   },
 
   willDestroyElement: function () {
@@ -125,7 +116,11 @@ export default Ember.Component.extend({
     let hint = false;
     let highlight = true;
 
-    if (minLength === undefined || minLength === null || typeof minLength !== 'number') {
+    if (
+      minLength === undefined ||
+      minLength === null ||
+      typeof minLength !== 'number'
+    ) {
       minLength = 1;
     }
 
@@ -138,7 +133,7 @@ export default Ember.Component.extend({
       limit,
       async,
       hint,
-      highlight
+      highlight,
     };
 
     // name will default to random number if not provided
@@ -180,7 +175,7 @@ export default Ember.Component.extend({
     let ret = {
       source,
       display,
-      templates
+      templates,
     };
     if (name) {
       ret.name = name;
@@ -236,5 +231,4 @@ export default Ember.Component.extend({
       cb(matches);
     };
   },
-
 });

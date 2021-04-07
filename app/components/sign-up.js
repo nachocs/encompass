@@ -1,16 +1,10 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 /*global _:false */
 import $ from 'jquery';
-
-import { inject as service } from '@ember/service';
-import Component from '@ember/component';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 import UserSignupMixin from '../mixins/user_signup_mixin';
-
-
-
-
-
 
 export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
   classNames: ['signup-page'],
@@ -24,7 +18,10 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
 
   init: function () {
     this._super(...arguments);
-    this.set('typeaheadHeader', '<label class="tt-header">Popular Organizations:</label>');
+    this.set(
+      'typeaheadHeader',
+      '<label class="tt-header">Popular Organizations:</label>'
+    );
 
     this.set('orgRequestFilter', this.createOrgRequestFilter.bind(this));
   },
@@ -36,7 +33,7 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
       }
       $.post({
         url: '/auth/signup',
-        data: data
+        data: data,
       })
         .then((res) => {
           return resolve(res);
@@ -47,7 +44,16 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
     });
   },
   getSimilarOrgs(orgRequest) {
-    let stopWords = ['university', 'college', 'school', 'the', 'and', 'of', 'for', ' '];
+    let stopWords = [
+      'university',
+      'college',
+      'school',
+      'the',
+      'and',
+      'of',
+      'for',
+      ' ',
+    ];
 
     let orgs = this.organizations;
 
@@ -57,14 +63,17 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
 
     let sliced = orgs.toArray().slice();
 
-    let requestCompare = this.similarity.convertStringForCompare(orgRequest, stopWords);
+    let requestCompare = this.similarity.convertStringForCompare(
+      orgRequest,
+      stopWords
+    );
 
-    let similarOrgs = _.filter(sliced, (org => {
+    let similarOrgs = _.filter(sliced, (org) => {
       let name = org.get('name');
       let compare = this.similarity.convertStringForCompare(name, stopWords);
       let score = this.similarity.compareTwoStrings(compare, requestCompare);
       return score > 0.5;
-    }));
+    });
     return similarOrgs;
   },
 
@@ -79,9 +88,8 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
     let mapped = _.map(toArray, (org) => {
       return {
         id: org.id,
-        name: org.get('name')
+        name: org.get('name'),
       };
-
     });
     return mapped;
   }),
@@ -122,9 +130,18 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
       var doPasswordsMatch = that.get('doPasswordsMatch');
       var doEmailsMatch = that.get('doEmailsMatch');
 
-
-
-      if (!firstName || !lastName || !email || (!organization && !orgRequest) || !location || !usernameTrim || !password || !requestReason || !confirmEmail || !confirmPassword) {
+      if (
+        !firstName ||
+        !lastName ||
+        !email ||
+        (!organization && !orgRequest) ||
+        !location ||
+        !usernameTrim ||
+        !password ||
+        !requestReason ||
+        !confirmEmail ||
+        !confirmPassword
+      ) {
         that.set('missingCredentials', true);
         return;
       }
@@ -156,7 +173,6 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
       // make sure user did not type in existing org
 
       if (orgRequest) {
-
         let orgs = this.organizations;
         let matchingOrg = orgs.findBy('name', orgRequest);
         if (matchingOrg) {
@@ -165,19 +181,31 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
           createUserData.organization = matchingOrg.id;
         } else {
           createUserData.organizationRequest = orgRequest;
-
         }
 
-
-        return that.createUser(createUserData)
+        return that
+          .createUser(createUserData)
           .then((res) => {
             if (res.username) {
-              that.get('alert').showToast('success', `Signup successful`, 'bottom-end', 3000, null, false);
+              that
+                .get('alert')
+                .showToast(
+                  'success',
+                  `Signup successful`,
+                  'bottom-end',
+                  3000,
+                  null,
+                  false
+                );
               window.location.href = '/';
-            } else if (res.message === 'There already exists a user with that username') {
+            } else if (
+              res.message === 'There already exists a user with that username'
+            ) {
               that.set('usernameError', that.get('usernameErrors.taken'));
-
-            } else if (res.message === 'There already exists a user with that email address') {
+            } else if (
+              res.message ===
+              'There already exists a user with that email address'
+            ) {
               that.set('emailError', that.get('emailErrors.taken'));
             } else {
               that.set('postErrors', [res.message]);
@@ -188,15 +216,29 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
           });
       } else {
         createUserData.organization = organization.id;
-        return that.createUser(createUserData)
+        return that
+          .createUser(createUserData)
           .then((res) => {
             if (res.username) {
-              that.get('alert').showToast('success', `Signup successful`, 'bottom-end', 3000, null, false);
+              that
+                .get('alert')
+                .showToast(
+                  'success',
+                  `Signup successful`,
+                  'bottom-end',
+                  3000,
+                  null,
+                  false
+                );
               window.location.href = '/';
-            } else if (res.message === 'There already exists a user with that username') {
+            } else if (
+              res.message === 'There already exists a user with that username'
+            ) {
               that.set('usernameError', that.get('usernameErrors.taken'));
-
-            } else if (res.message === 'There already exists a user with that email address') {
+            } else if (
+              res.message ===
+              'There already exists a user with that email address'
+            ) {
               that.set('emailError', that.get('emailErrors.taken'));
             } else {
               that.set('postErrors', [res.message]);
@@ -231,9 +273,10 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
       let similarOrgs = this.getSimilarOrgs(input);
       let modalSelectOptions = {};
 
-
       if (similarOrgs.get('length') > 0) {
-        let text = `Are you sure you want to submit a new organization request for ${input}? We found ${similarOrgs.get('length')} organizations with similar names. Please review the options in the dropdown to see if your desired organization already exists. If you decide to proceed with the organization request, the creation of the organization will be contingent on an admin's approval.`;
+        let text = `Are you sure you want to submit a new organization request for ${input}? We found ${similarOrgs.get(
+          'length'
+        )} organizations with similar names. Please review the options in the dropdown to see if your desired organization already exists. If you decide to proceed with the organization request, the creation of the organization will be contingent on an admin's approval.`;
         for (let org of similarOrgs) {
           let id = org.get('id');
           let name = org.get('name');
@@ -241,7 +284,13 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
         }
         modalSelectOptions[input] = `Yes, I am sure I want to create ${input}`;
 
-        this.alert.showPromptSelect('Similar Orgs Found', modalSelectOptions, 'Choose existing org or confirm request', text)
+        this.alert
+          .showPromptSelect(
+            'Similar Orgs Found',
+            modalSelectOptions,
+            'Choose existing org or confirm request',
+            text
+          )
           .then((result) => {
             if (result.value) {
               // user confirmed org request
@@ -250,7 +299,7 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
                 this.set('orgRequest', input);
                 let ret = {
                   name: input,
-                  id: input
+                  id: input,
                 };
                 return callback(ret);
               }
@@ -258,7 +307,6 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
               this.$('select')[0].selectize.setValue(result.value, true);
               this.$('select')[0].selectize.removeOption(input);
               return callback(null);
-
             } else {
               // user hit cancel
               // remove option from dropdown
@@ -270,13 +318,11 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
       // no similar orgs, create org request
       let ret = {
         name: input,
-        id: input
+        id: input,
       };
       this.set('orgRequest', input);
 
       return callback(ret);
-
-
-    }
-  }
+    },
+  },
 });

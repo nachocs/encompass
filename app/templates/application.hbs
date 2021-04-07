@@ -1,23 +1,25 @@
-{{!--outlet header--}}
+<div class="ember-view">
+  {{!--outlet header--}}
 
-<TopBar @store={{store}} @user={{currentUser}} @isHidden={{isHidden}} @toHome="toHome" />
-<SocketLoader @store={{store}} @currentUser={{currentUser}} />
-<section id="al_body">
-  <!-- a dynamic section of the view hierarchy that will be filled in
-     response to routing changes -->
+  <TopBar @store={{store}} @user={{currentUser}} @isHidden={{isHidden}} @toHome="toHome" />
+  <SocketLoader @store={{store}} @currentUser={{currentUser}} />
+  <section id="al_body">
+    <!-- a dynamic section of the view hierarchy that will be filled in
+       response to routing changes -->
 
-  {{outlet}}
+    {{outlet}}
 
-  {{!-- {{outlet 'modal'}} --}}
+    {{!-- {{outlet 'modal'}} --}}
 
-  {{#if showCategoryList}}
-  <div id="category-list-modal">
-    <div class="modal-content">
-      <h4>Select a Category</h4>
-      <button class="close" {{action 'closeModal' }}><i class="fas fa-times"></i></button>
-      <CategoriesMenu @categories={{categories}} @store={{store}} @addCategories="searchCategory" />
+    {{#if showCategoryList}}
+    <div id="category-list-modal">
+      <div class="modal-content">
+        <h4>Select a Category</h4>
+        <button class="close" {{action 'closeModal' }}><i class="fas fa-times"></i></button>
+        <CategoriesMenu @categories={{categories}} @store={{store}} @addCategories="searchCategory" />
+      </div>
     </div>
-  </div>
-  {{/if}}
+    {{/if}}
 
-</section> <!-- end al_body -->
+  </section> <!-- end al_body -->
+</div>

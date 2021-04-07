@@ -20,8 +20,8 @@ module.exports = {
     browser: true,
   },
   rules: {
-    "no-unused-vars": "warn",
-    "no-console": "warn"
+    'no-unused-vars': 'warn',
+    'no-console': 'warn',
   },
   globals: {
     Promise: false,
@@ -54,6 +54,8 @@ module.exports = {
         // this can be removed once the following is fixed
         // https://github.com/mysticatea/eslint-plugin-node/issues/77
         'node/no-unpublished-require': 'off',
+        'ember/no-classic-classes': 'warn',
+        'ember/no-classic-components': 'warn',
       },
     },
   ],

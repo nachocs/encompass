@@ -1,16 +1,16 @@
+import Model, { attr } from '@ember-data/model';
 import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
-import DS from 'ember-data';
 import Auditable from '../models/_auditable_mixin';
 
-export default DS.Model.extend(Auditable, {
+export default Model.extend(Auditable, {
   imageId: alias('id'),
-  encoding: DS.attr('string'),
-  mimetype: DS.attr('string'),
-  imageData: DS.attr('string'),
-  sourceUrl: DS.attr('string'),
-  originalname: DS.attr('string'),
-  pdfPageNum: DS.attr('number'),
+  encoding: attr('string'),
+  mimetype: attr('string'),
+  imageData: attr('string'),
+  sourceUrl: attr('string'),
+  originalname: attr('string'),
+  pdfPageNum: attr('number'),
 
   pdfFileDisplay: computed('pdfPageNum', function () {}),
 

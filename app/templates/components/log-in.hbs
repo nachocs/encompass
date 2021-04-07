@@ -5,34 +5,36 @@
   <form class="form-signin">
     <div class="auth-form-input">
       {{#if missingCredentials}}
-        <ErrorBox @error="Incorrect username or password" @showDismiss={{true}} />
+      <ErrorBox @error="Incorrect username or password" @showDismiss={{true}} />
       {{/if}}
 
       <label for="username">Username:</label>
-      <Input class="form-control" @name="username" @id="username" required={{true}} @type="text" @value={{username}} @action="resetErrors" @on="key-down" />
+      <Input class="form-control" @name="username" @id="username" required={{true}} @type="text" @value={{username}}
+        {{on "key-down" this.resetErrors}} />
 
       {{#if incorrectUsername}}
-        <ErrorBox @error="Incorrect Username" @showDismiss={{true}} />
+      <ErrorBox @error="Incorrect Username" @showDismiss={{true}} />
       {{/if}}
     </div>
 
     <div class="auth-form-input">
       <label for="password">Password:</label>
-      <Input class="form-control" @name="password" @id="password" required={{true}} @type="password" @value={{password}} @action="resetErrors" @on="key-down" />
+      <Input class="form-control" @name="password" @id="password" required={{true}} @type="password" @value={{password}}
+        {{on "key-down" this.resetErrors}} />
 
       {{#if incorrectPassword}}
-        <ErrorBox @error="Incorrect Password" @showDismiss={{true}} />
+      <ErrorBox @error="Incorrect Password" @showDismiss={{true}} />
       {{/if}}
 
       {{#if oauthErrorMsg}}
-        <ErrorBox @error={{oauthErrorMsg}} @showDismiss={{true}} />
+      <ErrorBox @error={{oauthErrorMsg}} @showDismiss={{true}} />
       {{/if}}
 
     </div>
 
-    <button class="auth-button" type="submit" {{action 'login'}}>Log In</button>
+    <button class="auth-button" type="submit" {{action 'login' }}>Log In</button>
     {{#each postErrors as |error|}}
-      <ErrorBox @error={{error}} @showDismiss={{true}} />
+    <ErrorBox @error={{error}} @showDismiss={{true}} />
     {{/each}}
   </form>
 
@@ -41,8 +43,12 @@
 
     <SocialSignin />
 
-    <p class="signup-link" data-test="auth-signup"> New to EnCoMPASS? <LinkTo @route="auth.signup" @classNames="signup-link">Sign up now</LinkTo></p>
-    <p class="forgot-link">Forgot Password? <LinkTo @route="auth.forgot" @classNames="forgot-link">Request password reset</LinkTo></p>
+    <p class="signup-link" data-test="auth-signup"> New to EnCoMPASS? <LinkTo @route="auth.signup"
+        @classNames="signup-link">Sign up now</LinkTo>
+    </p>
+    <p class="forgot-link">Forgot Password? <LinkTo @route="auth.forgot" @classNames="forgot-link">Request password
+        reset</LinkTo>
+    </p>
 
   </div>
 </div>

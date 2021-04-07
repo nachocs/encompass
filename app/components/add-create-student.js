@@ -1,36 +1,36 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import $ from 'jquery';
-import { inject as service } from '@ember/service';
-import Component from '@ember/component';
-import ErrorHandlingMixin from "../mixins/error_handling_mixin";
+import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(ErrorHandlingMixin, {
-  elementId: "add-create-student",
+  elementId: 'add-create-student',
   isUsingDefaultPassword: false,
-  fieldType: "password",
+  fieldType: 'password',
   isShowingClassPassword: true,
   createUserErrors: [],
   findUserErrors: [],
   updateSectionErrors: [],
-  alert: service("sweet-alert"),
+  alert: service('sweet-alert'),
 
   clearCreateInputs: function () {
-    let fields = ["username", "firstName", "lastName", "password"];
+    let fields = ['username', 'firstName', 'lastName', 'password'];
     for (let field of fields) {
       this.set(field, null);
     }
   },
 
   clearAddExistingUser: function () {
-    let fields = ["canAddExistingUser", "existingUser"];
+    let fields = ['canAddExistingUser', 'existingUser'];
     for (let field of fields) {
       this.set(field, null);
     }
   },
 
-  initialStudentOptions: computed("students.[]", function () {
-    let peeked = this.store.peekAll("user").toArray();
+  initialStudentOptions: computed('students.[]', function () {
+    let peeked = this.store.peekAll('user').toArray();
     let currentStudents = this.students.toArray();
     let filtered = [];
 
@@ -38,8 +38,8 @@ export default Component.extend(ErrorHandlingMixin, {
       filtered = peeked.removeObjects(currentStudents);
       return filtered.map((obj) => {
         return {
-          id: obj.get("id"),
-          username: obj.get("username"),
+          id: obj.get('id'),
+          username: obj.get('username'),
         };
       });
     }
@@ -53,8 +53,8 @@ export default Component.extend(ErrorHandlingMixin, {
 
     let organization = this.organization;
     let sectionId = this.section.id;
-    let sectionRole = "student";
-    let currentUser = that.get("currentUser");
+    let sectionRole = 'student';
+    let currentUser = that.get('currentUser');
 
     let createUserData = {
       firstName,
@@ -65,7 +65,7 @@ export default Component.extend(ErrorHandlingMixin, {
       sectionRole,
       createdBy: currentUser.id,
       isAuthorized: true,
-      accountType: "S",
+      accountType: 'S',
       authorizedBy: currentUser.id,
       isFromSectionPage: true,
     };
@@ -73,32 +73,32 @@ export default Component.extend(ErrorHandlingMixin, {
     if (organization) {
       createUserData.organization = organization.id;
     } else {
-      createUserData.organization = this.get("currentUser.organization.id");
+      createUserData.organization = this.get('currentUser.organization.id');
     }
 
     return $.post({
-      url: "/auth/signup",
+      url: '/auth/signup',
       data: createUserData,
     })
       .then((res) => {
-        that.removeMessages("createUserErrors");
+        that.removeMessages('createUserErrors');
         if (res.message) {
           if (
-            res.message === "There already exists a user with that username"
+            res.message === 'There already exists a user with that username'
           ) {
-            that.set("usernameAlreadyExists", true);
+            that.set('usernameAlreadyExists', true);
           } else {
-            this.set("createUserErrors", [res.message]);
+            this.set('createUserErrors', [res.message]);
           }
         } else if (res.user && res.canAddExistingUser === true) {
-          this.set("canAddExistingUser", true);
-          this.set("existingUser", res.user);
+          this.set('canAddExistingUser', true);
+          this.set('existingUser', res.user);
         } else {
           let userId = res._id;
           let section = this.section;
-          let students = section.get("students");
+          let students = section.get('students');
           return this.store
-            .findRecord("user", userId)
+            .findRecord('user', userId)
             .then((user) => {
               students.pushObject(user); //add student to students aray
               section
@@ -106,25 +106,25 @@ export default Component.extend(ErrorHandlingMixin, {
                 .then(() => {
                   that.clearCreateInputs();
                   this.alert.showToast(
-                    "success",
-                    "Student Created",
-                    "bottom-end",
+                    'success',
+                    'Student Created',
+                    'bottom-end',
                     3000,
                     false,
                     null
                   );
                 })
                 .catch((err) => {
-                  that.handleErrors(err, "updateSectionErrors", section);
+                  that.handleErrors(err, 'updateSectionErrors', section);
                 });
             })
             .catch((err) => {
-              that.handleErrors(err, "findUserErrors");
+              that.handleErrors(err, 'findUserErrors');
             });
         }
       })
       .catch((err) => {
-        that.handleErrors(err, "createUserErrors", createUserData);
+        that.handleErrors(err, 'createUserErrors', createUserData);
       });
   },
 
@@ -143,11 +143,11 @@ export default Component.extend(ErrorHandlingMixin, {
     showPassword: function () {
       let isShowingPassword = this.showingPassword;
       if (!isShowingPassword) {
-        this.set("showingPassword", true);
-        this.set("fieldType", "text");
+        this.set('showingPassword', true);
+        this.set('fieldType', 'text');
       } else {
-        this.set("showingPassword", false);
-        this.set("fieldType", "password");
+        this.set('showingPassword', false);
+        this.set('fieldType', 'password');
       }
     },
 
@@ -158,32 +158,30 @@ export default Component.extend(ErrorHandlingMixin, {
       }
       let students = this.students;
       this.store
-        .findRecord("user", student._id)
+        .findRecord('user', student._id)
         .then((user) => {
-          this.removeMessages("findUserErrors");
+          this.removeMessages('findUserErrors');
           if (!students.includes(user)) {
             students.pushObject(user);
 
             this.clearAddExistingUser();
             this.clearCreateInputs();
-            this.section
-              .save()
-              .then(() => {
-                this.alert.showToast(
-                  "success",
-                  "Student added",
-                  "bottom-end",
-                  3000,
-                  false,
-                  null
-                );
-              });
+            this.section.save().then(() => {
+              this.alert.showToast(
+                'success',
+                'Student added',
+                'bottom-end',
+                3000,
+                false,
+                null
+              );
+            });
           } else {
-            this.set("userAlreadyInSection", true);
+            this.set('userAlreadyInSection', true);
           }
         })
         .catch((err) => {
-          this.handleErrors(err, "findUserErrors");
+          this.handleErrors(err, 'findUserErrors');
         });
     },
 
@@ -205,14 +203,14 @@ export default Component.extend(ErrorHandlingMixin, {
       }
 
       if (!username || !password) {
-        this.set("isMissingCredentials", true);
+        this.set('isMissingCredentials', true);
         return;
       }
 
       const students = this.students;
 
-      if (!isEmpty(students.findBy("username", username))) {
-        this.set("userAlreadyInSection", true);
+      if (!isEmpty(students.findBy('username', username))) {
+        this.set('userAlreadyInSection', true);
         return;
       }
 
@@ -239,13 +237,13 @@ export default Component.extend(ErrorHandlingMixin, {
         var usernameTest = usernamePattern.test(username);
 
         if (usernameTest === false) {
-          this.set("incorrectUsername", true);
+          this.set('incorrectUsername', true);
           return;
         }
 
         if (usernameTest === true) {
-          this.set("incorrectUsername", false);
-          this.set("isMissingCredentials", false);
+          this.set('incorrectUsername', false);
+          this.set('isMissingCredentials', false);
           return;
         }
       }
@@ -253,9 +251,9 @@ export default Component.extend(ErrorHandlingMixin, {
 
     checkError: function () {
       let errors = [
-        "usernameAlreadyExists",
-        "userAlreadyInSection",
-        "isMissingCredentials",
+        'usernameAlreadyExists',
+        'userAlreadyInSection',
+        'isMissingCredentials',
       ];
 
       for (let error of errors) {
@@ -266,24 +264,24 @@ export default Component.extend(ErrorHandlingMixin, {
     },
 
     updateSectionPassword: function () {
-      this.set("isEditingSectionPassword", false);
+      this.set('isEditingSectionPassword', false);
       let section = this.section;
-      if (section.get("hasDirtyAttributes")) {
+      if (section.get('hasDirtyAttributes')) {
         section
           .save()
           .then(() => {
             this.alert.showToast(
-              "success",
-              "Class Password Updated",
-              "bottom-end",
+              'success',
+              'Class Password Updated',
+              'bottom-end',
               3000,
               false,
               null
             );
-            this.removeMessages("updateSectionErrors");
+            this.removeMessages('updateSectionErrors');
           })
           .catch((err) => {
-            this.handleErrors(err, "updateSectionErrors");
+            this.handleErrors(err, 'updateSectionErrors');
           });
       }
     },
@@ -291,7 +289,7 @@ export default Component.extend(ErrorHandlingMixin, {
       if (!val) {
         return;
       }
-      let user = this.store.peekRecord("user", val);
+      let user = this.store.peekRecord('user', val);
       if (!user) {
         return;
       }
@@ -300,8 +298,8 @@ export default Component.extend(ErrorHandlingMixin, {
 
       // adding
       if (students.includes(user)) {
-        this.set("userAlreadyInSection", true);
-        this.clearSelectizeInput("select-add-student");
+        this.set('userAlreadyInSection', true);
+        this.clearSelectizeInput('select-add-student');
         return;
       }
       students.addObject(user);
@@ -310,18 +308,18 @@ export default Component.extend(ErrorHandlingMixin, {
         .save()
         .then(() => {
           this.alert.showToast(
-            "success",
-            "Student Added",
-            "bottom-end",
+            'success',
+            'Student Added',
+            'bottom-end',
             3000,
             false,
             null
           );
           // clear selectize
-          this.clearSelectizeInput("select-add-student");
+          this.clearSelectizeInput('select-add-student');
         })
         .catch((err) => {
-          this.handleErrors(err, "updateSectionErrors");
+          this.handleErrors(err, 'updateSectionErrors');
         });
     },
   },

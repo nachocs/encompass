@@ -3,17 +3,17 @@ import Application from '@ember/application';
 import loadInitializers from 'ember-load-initializers';
 import Resolver from 'ember-resolver';
 import $ from 'jquery';
+import _ from 'lodash';
 import config from './config/environment';
-
-
 
 // export for others scripts to use
 window.$ = $;
+window._ = _;
 
 window.ENV = window.ENV || {}; // Enable {{control}} helper in Ember templates
 window.ENV.EXPERIMENTAL_CONTROL_HELPER = true;
 var QUNIT = window.TESTING;
-var TEST_MODE = (QUNIT);
+var TEST_MODE = QUNIT;
 var rootElement = '#encompass';
 var PRINT_DEBUG_TO_CONSOLE = true;
 
@@ -22,7 +22,6 @@ if (TEST_MODE) {
   rootElement = '#testing-location';
 }
 // Ember.run.backburner.DEBUG = true;
-
 
 // const App = Ember.Application.extend({
 //   modulePrefix: config.modulePrefix,
@@ -39,7 +38,6 @@ if (TEST_MODE) {
 //   Encompass.setupForTesting();
 //   Encompass.injectTestHelpers();
 // }
-
 
 export default class App extends Application {
   modulePrefix = config.modulePrefix;

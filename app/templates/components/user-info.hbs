@@ -19,7 +19,7 @@
       <td>First Name</td>
       <td>
         {{#if isEditing}}
-        {{input value=user.firstName classNames='user-first-name'}}
+        <Input @value={{user.firstName}} @classNames="user-first-name" />
         {{else}}
         {{user.firstName}}
         {{/if}}
@@ -29,7 +29,7 @@
       <td>Last Name</td>
       <td>
         {{#if isEditing}}
-        {{input value=user.lastName classNames='user-last-name'}}
+        <Input @value={{user.lastName}} @classNames="user-last-name" />
         {{else}}
         {{user.lastName}}
         {{/if}}
@@ -45,7 +45,7 @@
       <td>Email</td>
       <td>
         {{#if isEditing}}
-        {{input value=userEmail classNames='user-email'}}
+        <Input @value={{userEmail}} @classNames="user-email" />
         {{else}}
         {{user.email}}
         {{/if}}
@@ -83,8 +83,7 @@
       <td>Organization {{#if isEditing}}<span class="required-star">*</span>{{/if}}</td>
       {{#if isEditing}}
       {{#if currentUser.isAdmin}}
-      <td>{{twitter-typeahead dataList=orgList selectedValue=user.organization onSelect="setOrg" minLength=0
-        optionLabelPath='name' setSelectedValueOnChange=true}}</td>
+      <td><TwitterTypeahead @dataList={{orgList}} @selectedValue={{user.organization}} @onSelect="setOrg" @minLength={{0}} @optionLabelPath="name" @setSelectedValueOnChange={{true}} /></td>
       {{else}}
       <td>{{user.organization.name}}</td>
       {{/if}}
@@ -118,7 +117,7 @@
       <td>User's Sections</td>
       <td>
         {{#each userSections as |section|}}
-        <p>{{#link-to 'section' section}}{{section.name}}{{/link-to}}</p>
+        <p><LinkTo @route="section" @model={{section}}>{{section.name}}</LinkTo></p>
         {{/each}}
       </td>
     </tr>
@@ -127,7 +126,7 @@
       <td>Location</td>
       <td>
         {{#if isEditing}}
-        {{input value=user.location classNames='user-location'}}
+        <Input @value={{user.location}} @classNames="user-location" />
         {{else}}
         {{user.location}}
         {{/if}}
@@ -163,9 +162,8 @@
       {{#if isEditing}}
       <td>
         {{#if canEdit}}
-        {{my-select selectedValue=selectedType cannotBeNull=true content=accountTypes action=(action (mut
-        selectedType))}}
-        {{input required=true type="hidden" value=selectedType}}
+        <MySelect @selectedValue={{selectedType}} @cannotBeNull={{true}} @content={{accountTypes}} @action={{action (mut selectedType)}} />
+        <Input required={{true}} @type="hidden" @value={{selectedType}} />
         {{/if}}
       </td>
       {{else}}
@@ -178,7 +176,7 @@
       <td>
         {{#if isEditing}}
         {{#if canEdit}}
-        {{input type="checkbox" checked=user.isAuthorized value=authorized classNames='user-isAuth'}}
+        <Input @type="checkbox" @checked={{user.isAuthorized}} @value={{authorized}} @classNames="user-isAuth" />
         {{else}}
         {{user.isAuthorized}}
         {{/if}}
@@ -205,7 +203,7 @@
       <td>Authorize</td>
       <td>
         {{#if canEdit}}
-        {{input type="checkbox" checked=user.isAuthorized name='isAuthorized' classNames='user-isAuth'}}
+        <Input @type="checkbox" @checked={{user.isAuthorized}} @name="isAuthorized" @classNames="user-isAuth" />
         {{else}}
         {{user.isAuthorized}}
         {{/if}}
@@ -224,8 +222,7 @@
   {{#if canEdit}}
   {{#if isEditing}}
   {{#if isResettingPassword}}
-  {{reset-password-user user=user handleResetSuccess=(action "handleResetSuccess") cancelReset=(action
-  "handleCancelForm")}}
+  <ResetPasswordUser @user={{user}} @handleResetSuccess={{action "handleResetSuccess"}} @cancelReset={{action "handleCancelForm"}} />
   {{/if}}
   {{#unless isResettingPassword}}
   <div class="button-row">
