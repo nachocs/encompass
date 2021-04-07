@@ -1,8 +1,11 @@
-import Ember from "ember";
+import { computed } from '@ember/object';
+import { not } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import CurrentUserMixin from "../mixins/current_user_mixin";
 import ErrorHandlingMixin from "../mixins/error_handling_mixin";
 
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   tagName: "header",
   classNameBindings: ["isSmallHeader:small", "isHidden:hide"],
   elementId: "al_header",
@@ -10,18 +13,18 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   isHidden: false,
   openMenu: false,
   toggleRoleErrors: [],
-  alert: Ember.inject.service("sweet-alert"),
+  alert: service("sweet-alert"),
 
-  isStudent: function () {
+  isStudent: computed("user.actingRole", "user.id", function () {
     return (
       this.user.get("isStudent") || this.user.get("actingRole") === "student"
     );
-  }.property("user.actingRole", "user.id"),
+  }),
 
-  notStudent: Ember.computed.not("isStudent"),
+  notStudent: not("isStudent"),
 
   didReceiveAttrs: function () {
-    let currentUser = this.get("currentUser");
+    let currentUser = this.currentUser;
     if (currentUser) {
       this.set("isStudentAccount", currentUser.get("accountType") === "S");
     }
@@ -38,7 +41,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       // console.log('toggle called', this.openMenu);
     },
     showToggleModal: function () {
-      this.get("alert")
+      this.alert
         .showModal(
           "question",
           "Are you sure you want to switch roles?",
@@ -54,7 +57,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     toggleActingRole: function () {
       // should this action be moved to the application controller?
-      const currentUser = this.get("currentUser");
+      const currentUser = this.currentUser;
 
       // student account types cannot toggle to teacher role
       if (currentUser.get("accountType") === "S") {
@@ -72,7 +75,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
           this.set("actionToConfirm", null);
           this.store.unloadAll("assignment");
           this.sendAction("toHome");
-          this.get("alert").showToast(
+          this.alert.showToast(
             "success",
             "Successfully switched roles",
             "bottom-end",

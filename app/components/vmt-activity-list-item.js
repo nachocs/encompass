@@ -1,56 +1,50 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 
-
-
-
-
-
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['vmt-activity-list-item'],
 
   isExpanded: false,
   areRoomsExpanded: false,
 
-  isSelected: function () {
-    let ids = this.get('selectedActivityIds') || [];
+  isSelected: computed('activity._id', 'selectedActivityIds.[]', function () {
+    let ids = this.selectedActivityIds || [];
     return ids.includes(this.get('activity._id'));
-  }.property('activity._id', 'selectedActivityIds.[]'),
+  }),
 
-  encodedImageUri: function () {
+  encodedImageUri: computed('activity.image', function () {
     if (!this.get('activity.image')) {
       return '';
     }
     return encodeURI(this.get('activity.image'));
-  }.property('activity.image'),
+  }),
 
-  expandHideRoomsIcon: function () {
-    if (this.get('areRoomsExpanded')) {
+  expandHideRoomsIcon: computed('areRoomsExpanded', function () {
+    if (this.areRoomsExpanded) {
       return {
         className: 'far fa-minus-square',
-        title: 'Hide rooms'
+        title: 'Hide rooms',
       };
     }
     return {
       className: 'far fa-plus-square',
-      title: 'Show rooms'
+      title: 'Show rooms',
     };
-  }.property('areRoomsExpanded'),
-
+  }),
 
   actions: {
     expandImage() {
-      this.set('isExpanded', !this.get('isExpanded'));
+      this.set('isExpanded', !this.isExpanded);
     },
 
     onSelect() {
-      this.get('onSelect')(this.get('activity'));
+      this.onSelect(this.activity);
     },
     onRoomSelect(room) {
-      this.get('onRoomSelect')(room);
+      this.onRoomSelect(room);
     },
     toggleRooms() {
       this.toggleProperty('areRoomsExpanded');
-    }
-  }
-
+    },
+  },
 });

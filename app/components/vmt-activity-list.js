@@ -1,21 +1,21 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['vmt-activity-list'],
 
   actions: {
     onActivitySelect(activity) {
       // adds all activity's rooms
-      this.get('onItemSelect')(activity);
+      this.onItemSelect(activity);
     },
 
     onRoomSelect(room) {
-      this.get('onSubItemSelect')(room);
+      this.onSubItemSelect(room);
     },
   }
 });

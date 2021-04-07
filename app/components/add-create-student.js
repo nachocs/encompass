@@ -1,7 +1,11 @@
-import Ember from "ember";
+import { computed } from '@ember/object';
+import { isEmpty } from '@ember/utils';
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import ErrorHandlingMixin from "../mixins/error_handling_mixin";
 
-export default Ember.Component.extend(ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: "add-create-student",
   isUsingDefaultPassword: false,
   fieldType: "password",
@@ -9,7 +13,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
   createUserErrors: [],
   findUserErrors: [],
   updateSectionErrors: [],
-  alert: Ember.inject.service("sweet-alert"),
+  alert: service("sweet-alert"),
 
   clearCreateInputs: function () {
     let fields = ["username", "firstName", "lastName", "password"];
@@ -25,9 +29,9 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
     }
   },
 
-  initialStudentOptions: function () {
-    let peeked = this.get("store").peekAll("user").toArray();
-    let currentStudents = this.get("students").toArray();
+  initialStudentOptions: computed("students.[]", function () {
+    let peeked = this.store.peekAll("user").toArray();
+    let currentStudents = this.students.toArray();
     let filtered = [];
 
     if (peeked && currentStudents) {
@@ -40,15 +44,15 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
       });
     }
     return filtered;
-  }.property("students.[]"),
+  }),
 
   createStudent: function (info) {
     const that = this;
     // info is object with username, password, name?
     let { username, password, firstName, lastName } = info;
 
-    let organization = this.get("organization");
-    let sectionId = this.get("section").id;
+    let organization = this.organization;
+    let sectionId = this.section.id;
     let sectionRole = "student";
     let currentUser = that.get("currentUser");
 
@@ -72,7 +76,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
       createUserData.organization = this.get("currentUser.organization.id");
     }
 
-    return Ember.$.post({
+    return $.post({
       url: "/auth/signup",
       data: createUserData,
     })
@@ -91,7 +95,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
           this.set("existingUser", res.user);
         } else {
           let userId = res._id;
-          let section = this.get("section");
+          let section = this.section;
           let students = section.get("students");
           return this.store
             .findRecord("user", userId)
@@ -101,7 +105,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
                 .save()
                 .then(() => {
                   that.clearCreateInputs();
-                  this.get("alert").showToast(
+                  this.alert.showToast(
                     "success",
                     "Student Created",
                     "bottom-end",
@@ -137,7 +141,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
 
   actions: {
     showPassword: function () {
-      let isShowingPassword = this.get("showingPassword");
+      let isShowingPassword = this.showingPassword;
       if (!isShowingPassword) {
         this.set("showingPassword", true);
         this.set("fieldType", "text");
@@ -148,11 +152,11 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
     },
 
     addExistingStudent: function () {
-      let student = this.get("existingUser");
+      let student = this.existingUser;
       if (!student) {
         return;
       }
-      let students = this.get("students");
+      let students = this.students;
       this.store
         .findRecord("user", student._id)
         .then((user) => {
@@ -162,10 +166,10 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
 
             this.clearAddExistingUser();
             this.clearCreateInputs();
-            this.get("section")
+            this.section
               .save()
               .then(() => {
-                this.get("alert").showToast(
+                this.alert.showToast(
                   "success",
                   "Student added",
                   "bottom-end",
@@ -189,15 +193,15 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
     },
 
     validateCreateStudent: function () {
-      const username = this.get("username");
+      const username = this.username;
       let password;
 
-      const isUsingDefaultPassword = this.get("isUsingDefaultPassword");
+      const isUsingDefaultPassword = this.isUsingDefaultPassword;
 
       if (isUsingDefaultPassword) {
-        password = this.get("sectionPassword");
+        password = this.sectionPassword;
       } else {
-        password = this.get("password");
+        password = this.password;
       }
 
       if (!username || !password) {
@@ -205,19 +209,19 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
         return;
       }
 
-      const students = this.get("students");
+      const students = this.students;
 
-      if (!Ember.isEmpty(students.findBy("username", username))) {
+      if (!isEmpty(students.findBy("username", username))) {
         this.set("userAlreadyInSection", true);
         return;
       }
 
-      if (this.get("incorrectUsername")) {
+      if (this.incorrectUsername) {
         return;
       }
 
-      const firstName = this.get("firstName");
-      const lastName = this.get("lastName");
+      const firstName = this.firstName;
+      const lastName = this.lastName;
 
       const ret = {
         username,
@@ -229,7 +233,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
     },
 
     usernameValidate() {
-      var username = this.get("username");
+      var username = this.username;
       if (username) {
         var usernamePattern = new RegExp(/^[a-z0-9_]{3,30}$/);
         var usernameTest = usernamePattern.test(username);
@@ -263,12 +267,12 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
 
     updateSectionPassword: function () {
       this.set("isEditingSectionPassword", false);
-      let section = this.get("section");
+      let section = this.section;
       if (section.get("hasDirtyAttributes")) {
         section
           .save()
           .then(() => {
-            this.get("alert").showToast(
+            this.alert.showToast(
               "success",
               "Class Password Updated",
               "bottom-end",
@@ -287,12 +291,12 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
       if (!val) {
         return;
       }
-      let user = this.get("store").peekRecord("user", val);
+      let user = this.store.peekRecord("user", val);
       if (!user) {
         return;
       }
 
-      let students = this.get("students");
+      let students = this.students;
 
       // adding
       if (students.includes(user)) {
@@ -302,10 +306,10 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
       }
       students.addObject(user);
 
-      this.get("section")
+      this.section
         .save()
         .then(() => {
-          this.get("alert").showToast(
+          this.alert.showToast(
             "success",
             "Student Added",
             "bottom-end",

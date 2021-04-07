@@ -1,15 +1,17 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import { equal } from '@ember/object/computed';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['circle-ntf'],
 
-  count: function () {
-    let count = this.get('displayCount');
+  count: computed('displayCount', function () {
+    let count = this.displayCount;
 
     if (typeof count !== 'number') {
       return 0;
@@ -18,7 +20,7 @@ export default Ember.Component.extend({
       return '99+';
     }
     return count;
-  }.property('displayCount'),
+  }),
 
-  areNoNtfs: Ember.computed.equal('count', 0),
+  areNoNtfs: equal('count', 0),
 });

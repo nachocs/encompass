@@ -1,13 +1,13 @@
-import Ember from 'ember';
-import DS from 'ember-data';
+import { attr, belongsTo, hasMany } from '@ember-data/model';
+import Mixin from '@ember/object/mixin';
 
 
 
 
 
 
-export default Ember.Mixin.create({
-  mode: DS.attr('string'),
-  owner: DS.belongsTo('user', { async: true }),
-  editors: DS.hasMany('user', { async: true })
+export default Mixin.create({
+  mode: attr('string'),
+  owner: belongsTo('user', { async: true }),
+  editors: hasMany('user', { async: true })
 });

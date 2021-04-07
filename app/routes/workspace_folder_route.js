@@ -7,14 +7,14 @@
   * @since 1.0.3
   * @see folders_edit_route
   */
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 
 
 
 
 
 
-export default Ember.Route.extend({
+export default Route.extend({
 
   renderTemplate: function (controller, model) {
     var appController = this.controllerFor('application');

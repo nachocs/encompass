@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 
 
 
 
 
 
-export default Ember.Helper.helper(function (val) {
+export default buildHelper(function (val) {
   let text;
   val = val[0];
   switch (val) {

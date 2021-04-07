@@ -1,11 +1,12 @@
-import Ember from 'ember';
+import { later } from '@ember/runloop';
+import Service from '@ember/service';
 
 
 
 
 
 
-export default Ember.Service.extend({
+export default Service.extend({
 
   handleLoadingMessage(context, eventType, triggerProperty, propToSet, timeout = 500) {
     if (context.get('isDestroyed') || context.get('isDestroying')) {
@@ -27,7 +28,7 @@ export default Ember.Service.extend({
       return;
     }
 
-    Ember.run.later(function () {
+    later(function () {
       if (context.isDestroyed || context.isDestroying) {
         return;
       }

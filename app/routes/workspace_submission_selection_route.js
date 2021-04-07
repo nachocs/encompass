@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import { schedule } from '@ember/runloop';
+import Route from '@ember/routing/route';
 import $ from 'jquery';
 
 
@@ -6,7 +8,7 @@ import $ from 'jquery';
 
 
 
-export default Ember.Route.extend({
+export default Route.extend({
 
   afterModel: function (model, transition) {
     this.controllerFor('workspace').set('currentSelection', model);
@@ -16,23 +18,23 @@ export default Ember.Route.extend({
     this.controllerFor('workspace').set('currentSelection', null);
   },
 
-  doTour: function () {
+  doTour: observer('shouldDoTour', function () {
     var user = this.modelFor('application');
 
-    Ember.run.schedule('afterRender', function () {
+    schedule('afterRender', function () {
       if (!user.get('seenTour')) { //customize for this part of the tour
         window.guiders.hideAll();
         //guiders.show('comments');
       }
     });
-  }.observes('shouldDoTour'),
+  }),
 
-  shouldDoTour: function () {
+  shouldDoTour: computed('Encompass.redoTour', function () {
     var user = this.modelFor('application');
     var userSeenTour = user.get('seenTour');
     var redoTour = this.get('Encompass.redoTour');
     return userSeenTour || redoTour;
-  }.property('Encompass.redoTour'),
+  }),
 
   renderTemplate: function () {
     this.render();

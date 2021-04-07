@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import $ from 'jquery';
 import VmtHostMixin from '../mixins/vmt-host.js';
 
@@ -6,7 +6,7 @@ import VmtHostMixin from '../mixins/vmt-host.js';
 
 
 
-export default Ember.Component.extend(VmtHostMixin, {
+export default Component.extend(VmtHostMixin, {
   didInsertElement() {
     this.fetchReplayer();
     this.fetchCss();

@@ -1,20 +1,21 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: ['custom-submission-viewer-list-item'],
 
-  isChecked: function () {
-    return this.get('selectedSubmissionIds').includes(this.get('submission.id'));
-  }.property('selectedSubmissionIds.[]'),
+  isChecked: computed('selectedSubmissionIds.[]', function () {
+    return this.selectedSubmissionIds.includes(this.get('submission.id'));
+  }),
 
   actions: {
     onSelect: function () {
-      this.get('onSelect')(this.get('submission.id'));
+      this.onSelect(this.get('submission.id'));
     }
   }
 

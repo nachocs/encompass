@@ -1,5 +1,5 @@
 /*global _:false */
-import Ember from 'ember';
+import Service from '@ember/service';
 
 
 
@@ -7,7 +7,7 @@ import Ember from 'ember';
 
 
 
-export default Ember.Service.extend({
+export default Service.extend({
   compareTwoStrings(str1, str2) {
     if (!str1.length && !str2.length) { // if both are empty strings
       return 1;

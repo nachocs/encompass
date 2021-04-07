@@ -1,25 +1,23 @@
-/*global _:false */
-import Ember from 'ember';
+import Component from '@ember/component';
+import { inject as controller } from '@ember/controller';
+import { computed } from '@ember/object';
+import { equal } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'workspace-info',
-  comments: Ember.inject.controller,
-  alert: Ember.inject.service('sweet-alert'),
-  permissions: Ember.inject.service('workspace-permissions'),
-  utils: Ember.inject.service('utility-methods'),
+  comments: controller,
+  alert: service('sweet-alert'),
+  permissions: service('workspace-permissions'),
+  utils: service('utility-methods'),
   isEditing: false,
   selectedMode: null,
   updateRecordErrors: [],
   isShowingCustomViewer: false,
   customSubmissionIds: [],
-  isParentWorkspace: Ember.computed.equal('workspace.workspaceType', 'parent'),
+  isParentWorkspace: equal('workspace.workspaceType', 'parent'),
 
   didReceiveAttrs() {
     this._super(...arguments);
@@ -27,14 +25,15 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     const collaborators = this.get('workspace.collaborators');
     // array of Ids, query for users;
 
-    if (!this.get('utils').isNonEmptyArray(collaborators)) {
+    if (!this.utils.isNonEmptyArray(collaborators)) {
       this.set('originalCollaborators', []);
       return;
     }
 
-    return this.get('store').query('user', {
-      ids: collaborators
-    })
+    return this.store
+      .query('user', {
+        ids: collaborators,
+      })
       .then((users) => {
         this.set('originalCollaborators', users.toArray());
       })
@@ -44,46 +43,51 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   getLinkedAssignment: function () {
-    return this.get('workspace.linkedAssignment')
-      .then((assignment) => {
-        if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-          this.set('linkedAssignment', assignment);
-        }
-      });
+    return this.get('workspace.linkedAssignment').then((assignment) => {
+      if (!this.isDestroyed && !this.isDestroying) {
+        this.set('linkedAssignment', assignment);
+      }
+    });
   },
 
   willDestroyElement: function () {
-    let workspace = this.get('workspace');
+    let workspace = this.workspace;
     workspace.save();
     this._super(...arguments);
   },
 
-  canEdit: Ember.computed('workspace.id', function () {
-    let workspace = this.get('workspace');
+  canEdit: computed('workspace.id', function () {
+    let workspace = this.workspace;
     let ownerId = workspace.get('owner.id');
     let creatorId = workspace.get('createdBy.id');
-    let currentUser = this.get('currentUser');
+    let currentUser = this.currentUser;
     let accountType = currentUser.get('accountType');
-    let isAdmin = accountType === "A";
+    let isAdmin = accountType === 'A';
     let isOwner = ownerId === currentUser.id;
     let isCreator = creatorId === currentUser.id;
 
     return isAdmin || isOwner || isCreator;
   }),
 
-  canEditCollaborators: function () {
-    if (this.get('canEdit')) {
-      return true;
+  canEditCollaborators: computed(
+    'workspace.feedbackAuthorizers.[]',
+    function () {
+      if (this.canEdit) {
+        return true;
+      }
+      return this.get('workspace.feedbackAuthorizers').includes(
+        this.get('currentUser.id')
+      );
     }
-    return this.get('workspace.feedbackAuthorizers').includes(this.get('currentUser.id'));
+  ),
 
-  }.property('workspace.feedbackAuthorizers.[]'),
+  showRemoveSelfAsCollab: computed('workspace.collaborators.[]', function () {
+    return this.get('workspace.collaborators').includes(
+      this.get('currentUser.id')
+    );
+  }),
 
-  showRemoveSelfAsCollab: function () {
-    return this.get('workspace.collaborators').includes(this.get('currentUser.id'));
-  }.property('workspace.collaborators.[]'),
-
-  modes: function () {
+  modes: computed('currentUser.isAdmin', 'currentUser.isStudent', function () {
     const basic = ['private', 'org', 'public'];
 
     if (this.get('currentUser.isStudent') || !this.get('currentUser.isAdmin')) {
@@ -91,51 +95,57 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     }
 
     return ['private', 'org', 'public', 'internet'];
-
-  }.property('currentUser.isAdmin', 'currentUser.isStudent'),
+  }),
 
   globalItems: {
     groupName: 'globalPermissionValue',
     groupLabel: 'Workspace Permissions',
-    info: 'Workspace permissions apply to all aspects of a workspace for this user. This means whatever you select applies to all the selections, comments, folders, etc.',
+    info:
+      'Workspace permissions apply to all aspects of a workspace for this user. This means whatever you select applies to all the selections, comments, folders, etc.',
     required: true,
     inputs: [
       {
         label: 'View Only',
         value: 'viewOnly',
-        moreInfo: 'This user will be able to see the workspace, but not add or make any changes',
+        moreInfo:
+          'This user will be able to see the workspace, but not add or make any changes',
       },
       {
         label: 'Editor',
         value: 'editor',
-        moreInfo: 'This user can add, delete or modify selections, comments, and folders, but they will not be able to see or create new responses'
+        moreInfo:
+          'This user can add, delete or modify selections, comments, and folders, but they will not be able to see or create new responses',
       },
       {
         label: 'Mentor',
         value: 'indirectMentor',
-        moreInfo: 'This user can create selections, comments, and folders. They can also send feedback that will be delivered once approved by a designated feedback approver'
+        moreInfo:
+          'This user can create selections, comments, and folders. They can also send feedback that will be delivered once approved by a designated feedback approver',
       },
       {
         label: 'Mentor with Direct Send',
         value: 'directMentor',
-        moreInfo: 'This user can create selections, comments, and folders. They can also send direct feedback that does not require approval'
+        moreInfo:
+          'This user can create selections, comments, and folders. They can also send direct feedback that does not require approval',
       },
       {
         label: 'Approver',
         value: 'approver',
-        moreInfo: 'This user can add, delete or modify selections, comments, and folders. They can directly send their own feedback and approve feedback created by other users'
+        moreInfo:
+          'This user can add, delete or modify selections, comments, and folders. They can directly send their own feedback and approve feedback created by other users',
       },
       {
         label: 'Custom',
         value: 'custom',
-        moreInfo: 'Select this if you want to set permissions for each aspect of a workspace',
-      }
-    ]
+        moreInfo:
+          'Select this if you want to set permissions for each aspect of a workspace',
+      },
+    ],
   },
 
-  initialCollabOptions: function () {
-    let peeked = this.get('store').peekAll('user');
-    let collabs = this.get('selectedCollaborators');
+  initialCollabOptions: computed('selectedCollaborators', function () {
+    let peeked = this.store.peekAll('user');
+    let collabs = this.selectedCollaborators;
 
     if (!_.isObject(peeked)) {
       return [];
@@ -146,50 +156,64 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     return filtered.map((obj) => {
       return {
         id: obj.get('id'),
-        username: obj.get('username')
+        username: obj.get('username'),
       };
     });
-  }.property('selectedCollaborators'),
+  }),
 
-  selectedCollaborators: function () {
-    let hash = {};
-    let wsOwnerId = this.get('workspace.owner.id');
+  selectedCollaborators: computed(
+    'originalCollaborators.[]',
+    'workspace.owner.id',
+    function () {
+      let hash = {};
+      let wsOwnerId = this.get('workspace.owner.id');
 
-    // no reason to set owner as a collaborator
-    if (wsOwnerId) {
-      hash[wsOwnerId] = true;
-    }
-    const originalCollaborators = this.get('originalCollaborators');
+      // no reason to set owner as a collaborator
+      if (wsOwnerId) {
+        hash[wsOwnerId] = true;
+      }
+      const originalCollaborators = this.originalCollaborators;
 
-    if (!this.get('utils').isNonEmptyArray(originalCollaborators)) {
+      if (!this.utils.isNonEmptyArray(originalCollaborators)) {
+        return hash;
+      }
+      originalCollaborators.forEach((user) => {
+        if (_.isString(user)) {
+          hash[user] = true;
+        } else if (_.isObject(user)) {
+          hash[user.get('id')] = true;
+        }
+      });
       return hash;
     }
-    originalCollaborators.forEach((user) => {
-      if (_.isString(user)) {
-        hash[user] = true;
-      } else if (_.isObject(user)) {
-        hash[user.get('id')] = true;
-      }
-    });
-    return hash;
-  }.property('originalCollaborators.[]', 'workspace.owner.id'),
+  ),
 
   actions: {
     removeCollab(user) {
-      const utils = this.get('utils');
+      const utils = this.utils;
       if (!utils.isNonEmptyObject(user)) {
         return;
       }
-      const permissions = this.get('workspacePermissions');
+      const permissions = this.workspacePermissions;
 
       if (utils.isNonEmptyArray(permissions)) {
         const objToRemove = permissions.findBy('user', user.id);
         if (objToRemove) {
-          this.get('alert').showModal('warning', `Are you sure you want to remove ${user.get('username')} as a collaborator?`, `This may affect their ability to access ${this.get('workspace.name')} `, 'Yes, remove.')
+          this.alert
+            .showModal(
+              'warning',
+              `Are you sure you want to remove ${user.get(
+                'username'
+              )} as a collaborator?`,
+              `This may affect their ability to access ${this.get(
+                'workspace.name'
+              )} `,
+              'Yes, remove.'
+            )
             .then((result) => {
               if (result.value) {
                 permissions.removeObject(objToRemove);
-                const collaborators = this.get('originalCollaborators');
+                const collaborators = this.originalCollaborators;
                 collaborators.removeObject(user);
                 // this.get('alert').showToast('success', `${user.get('username')} removed`, 'bottom-end', 3000, null, false);
                 // remove workspace from user's collab workspaces
@@ -199,13 +223,13 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
     },
     savePermissions(permissionsObject) {
-      if (!this.get('utils').isNonEmptyObject(permissionsObject)) {
+      if (!this.utils.isNonEmptyObject(permissionsObject)) {
         return;
       }
-      const permissions = this.get('workspacePermissions');
+      const permissions = this.workspacePermissions;
 
       // array of user records for display purposes
-      const collaborators = this.get('originalCollaborators');
+      const collaborators = this.originalCollaborators;
       // check if user already is in array
       let existingObj = permissions.findBy('user', permissionsObject.user.id);
 
@@ -227,11 +251,18 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       this.set('selectedCollaborator', null);
       this.$('select#collab-select')[0].selectize.clear();
 
-      this.get('alert').showToast('success', `Permissions set for ${permissionsObject.user.get('username')}`, 'bottom-end', 3000, null, false);
+      this.alert.showToast(
+        'success',
+        `Permissions set for ${permissionsObject.user.get('username')}`,
+        'bottom-end',
+        3000,
+        null,
+        false
+      );
     },
 
     editCollab: function (user) {
-      if (!this.get('utils').isNonEmptyObject(user)) {
+      if (!this.utils.isNonEmptyObject(user)) {
         return;
       }
       this.set('selectedCollaborator', user);
@@ -243,25 +274,33 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     editWorkspace: function () {
       this.set('isEditing', true);
-      let workspace = this.get('workspace');
+      let workspace = this.workspace;
       this.set('selectedMode', workspace.get('mode'));
     },
 
     checkWorkspace: function () {
-      let workspace = this.get('workspace');
+      let workspace = this.workspace;
       let workspaceOrg = workspace.get('organization.content');
       let workspaceOwner = workspace.get('owner');
       let ownerOrg = workspaceOwner.get('organization');
       let ownerOrgName = ownerOrg.get('name');
-      let mode = this.get('selectedMode');
+      let mode = this.selectedMode;
       workspace.set('mode', mode);
       if (mode === 'org' && workspaceOrg === null) {
-        this.get('alert').showModal('info', `Do you want to make this workspace visibile to ${ownerOrgName}`, `Everyone in this organization will be able to see this workspace`, 'Yes', 'No').then((results) => {
-          if (results.value) {
-            workspace.set('organization', ownerOrg);
-            this.send('saveWorkspace');
-          }
-        });
+        this.alert
+          .showModal(
+            'info',
+            `Do you want to make this workspace visibile to ${ownerOrgName}`,
+            `Everyone in this organization will be able to see this workspace`,
+            'Yes',
+            'No'
+          )
+          .then((results) => {
+            if (results.value) {
+              workspace.set('organization', ownerOrg);
+              this.send('saveWorkspace');
+            }
+          });
       } else {
         this.send('saveWorkspace');
       }
@@ -269,12 +308,22 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     saveWorkspace: function () {
       this.set('isEditing', false);
-      let workspace = this.get('workspace');
-      workspace.save().then((res) => {
-        this.get('alert').showToast('success', 'Workspace Updated', 'bottom-end', 3000, null, false);
-      }).catch((err) => {
-        this.handleErrors(err, 'updateRecordErrors', workspace);
-      });
+      let workspace = this.workspace;
+      workspace
+        .save()
+        .then((res) => {
+          this.alert.showToast(
+            'success',
+            'Workspace Updated',
+            'bottom-end',
+            3000,
+            null,
+            false
+          );
+        })
+        .catch((err) => {
+          this.handleErrors(err, 'updateRecordErrors', workspace);
+        });
     },
 
     removeErrorString: function (arrayPropName, errorString) {
@@ -284,10 +333,10 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
     },
     updateCustomSubs(id) {
-      if (!this.get('utils').isNonEmptyArray(this.get('customSubmissionIds'))) {
+      if (!this.utils.isNonEmptyArray(this.customSubmissionIds)) {
         this.set('customSubmissionIds', []);
       }
-      const customSubmissionIds = this.get('customSubmissionIds');
+      const customSubmissionIds = this.customSubmissionIds;
 
       const isIn = customSubmissionIds.includes(id);
       if (isIn) {
@@ -297,14 +346,13 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
     },
     selectAllSubmissions: function () {
-      this.set('customSubmissionIds', this.get('workspace.submissions').mapBy('id'));
+      this.set(
+        'customSubmissionIds',
+        this.get('workspace.submissions').mapBy('id')
+      );
     },
     deselectAllSubmissions: function () {
       this.set('customSubmissionIds', []);
     },
-  }
-
+  },
 });
-
-
-

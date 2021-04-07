@@ -4,7 +4,10 @@
  * Passed in to this component:
  * - folders: The list of folders for the current workspace
  */
-import Ember from 'ember';
+import { next } from '@ember/runloop';
+
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 import { App as Encompass } from '../app';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
@@ -15,21 +18,21 @@ import './Droppable';
 
 
 
-export default Ember.Component.extend(Encompass.DragNDrop.Droppable, CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(Encompass.DragNDrop.Droppable, CurrentUserMixin, ErrorHandlingMixin, {
   classNames: ['dropTarget'],
   classNameBindings: ['dragAction'],
   folderSaveErrors: [],
 
   // This will determine which class (if any) you should add to
   // the view when you are in the process of dragging an item.
-  dragAction: Ember.computed({
+  dragAction: computed('dragContext', {
     get: function () {
       return null;
     },
     set: function (key, value) {
       return null;
     }
-  }).property('dragContext'),
+  }),
 
   drop: function (event) {
     var dataTransfer = event.originalEvent.dataTransfer;
@@ -40,7 +43,7 @@ export default Ember.Component.extend(Encompass.DragNDrop.Droppable, CurrentUser
     // Set view properties
     // Must be within `Ember.run.next` to always work
     if (dropType === 'folder') {
-      Ember.run.next(comp, function () {
+      next(comp, function () {
         comp.putFolderInWorkspace(dropObject);
       });
     }

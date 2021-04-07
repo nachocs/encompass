@@ -1,7 +1,7 @@
 
-{{#link-to 'index'}}
+<LinkTo @route="index">
   <h1 id="encompass-logo" class="{{unless isSmallHeader 'al_logo'}}">Drexel | EnCoMPASS</h1>
-{{/link-to}}
+</LinkTo>
 
   <div class="clear_r"></div>
 
@@ -11,33 +11,33 @@
         <ul id="main-nav">
           <span id="menu-items">
             {{!-- My Work / Homepage Button --}}
-          <li id="home-btn"><div class="dropdown-skinny">{{#link-to 'index' classNames='menu home'}}my work{{/link-to}}</div></li>
+          <li id="home-btn"><div class="dropdown-skinny"><LinkTo @route="index" @classNames="menu home">my work</LinkTo></div></li>
             {{!-- Make Button --}}
             {{#if notStudent}}
               <li>
                 <div class="dropdown dropdown-skinny">
-                  {{#link-to 'index' classNames='menu workspaces'}}make<i
-                    class="fa fa-caret-down caret-down"></i>{{/link-to}}
+                  <LinkTo @route="index" @classNames="menu workspaces">make<i
+                    class="fa fa-caret-down caret-down"></i></LinkTo>
                   <div class="dropdown-content">
-                    {{#link-to 'assignments.new' classNames='menu workspaces-new'}}assignment{{/link-to}}
+                    <LinkTo @route="assignments.new" @classNames="menu workspaces-new">assignment</LinkTo>
                     {{!-- {{#if notStudent}} --}}
                     <div class="parent-dropdown">
                       <div class="dropdown dropdown-skinny">
-                      {{#link-to 'workspaces.new' classNames='menu import'}}workspace<i
-                      class="fa fa-caret-right caret-right spacing"></i>{{/link-to}}
+                      <LinkTo @route="workspaces.new" @classNames="menu import">workspace<i
+                      class="fa fa-caret-right caret-right spacing"></i></LinkTo>
                     </div>
                         <div id="dropdown-hidden" class="dropdown-content dropdown-right dropdown-hidden">
-                          {{#link-to 'workspaces.new' classNames='menu workspaces-new'}}new{{/link-to}}
+                          <LinkTo @route="workspaces.new" @classNames="menu workspaces-new">new</LinkTo>
                           {{!-- {{#if notStudent}} --}}
-                          {{#link-to 'import' classNames='menu import'}}import{{/link-to}}
-                          {{#link-to 'workspaces.copy' classNames='menu import'}}copy{{/link-to}}
-                          {{#link-to 'vmt.import' classNames='menu vmt-import'}}vmt{{/link-to}}
+                          <LinkTo @route="import" @classNames="menu import">import</LinkTo>
+                          <LinkTo @route="workspaces.copy" @classNames="menu import">copy</LinkTo>
+                          <LinkTo @route="vmt.import" @classNames="menu vmt-import">vmt</LinkTo>
                           {{!-- {{/if}} --}}
                         </div>
                     </div>
-                    {{#link-to 'problems.new' classNames='menu import'}}problem{{/link-to}}
-                    {{#link-to 'sections.new' classNames='menu sections'}}class{{/link-to}}
-                    {{#link-to 'users.new' classNames='menu vmt-import'}}users{{/link-to}}
+                    <LinkTo @route="problems.new" @classNames="menu import">problem</LinkTo>
+                    <LinkTo @route="sections.new" @classNames="menu sections">class</LinkTo>
+                    <LinkTo @route="users.new" @classNames="menu vmt-import">users</LinkTo>
 
                     {{!-- {{/if}} --}}
                   </div>
@@ -47,15 +47,15 @@
               {{!-- Do Button --}}
               <li>
                 <div class="dropdown dropdown-wide">
-                  {{#link-to 'index' classNames='menu workspaces'}}do<i
-                    class="fa fa-caret-down caret-down"></i>{{/link-to}}
+                  <LinkTo @route="index" @classNames="menu workspaces">do<i
+                    class="fa fa-caret-down caret-down"></i></LinkTo>
                   <div class="dropdown-content">
-                    {{#link-to 'assignments' classNames='menu problems'}}solve a problem{{/link-to}}
-                      {{#link-to 'workspaces' classNames='menu workspaces'}}review submitted work{{/link-to}}
-                      {{#link-to 'responses' classNames='menu workspaces'}}mentor submissions{{/link-to}}
+                    <LinkTo @route="assignments" @classNames="menu problems">solve a problem</LinkTo>
+                      <LinkTo @route="workspaces" @classNames="menu workspaces">review submitted work</LinkTo>
+                      <LinkTo @route="responses" @classNames="menu workspaces">mentor submissions</LinkTo>
                     {{#if notStudent}}
-                      {{#link-to 'sections' classNames='menu sections'}}manage classes{{/link-to}}
-                      {{#link-to 'users' classNames='menu users'}}manage users{{/link-to}}
+                      <LinkTo @route="sections" @classNames="menu sections">manage classes</LinkTo>
+                      <LinkTo @route="users" @classNames="menu users">manage users</LinkTo>
                     {{/if}}
                   </div>
                 </div>
@@ -63,15 +63,15 @@
               {{!-- Find Button --}}
               <li>
                 <div class="dropdown dropdown-skinny">
-                  {{#link-to 'index' classNames='menu workspaces'}}find<i
-                    class="fa fa-caret-down caret-down"></i>{{/link-to}}
+                  <LinkTo @route="index" @classNames="menu workspaces">find<i
+                    class="fa fa-caret-down caret-down"></i></LinkTo>
                   <div class="dropdown-content">
-                    {{#link-to 'assignments' classNames='menu workspaces-new'}}assignment{{/link-to}}
-                    {{#link-to 'workspaces' classNames='menu import'}}workspace{{/link-to}}
-                    {{#link-to 'problems' classNames='menu import'}}problem{{/link-to}}
-                    {{#link-to 'sections.home' classNames='menu sections'}}class{{/link-to}}
+                    <LinkTo @route="assignments" @classNames="menu workspaces-new">assignment</LinkTo>
+                    <LinkTo @route="workspaces" @classNames="menu import">workspace</LinkTo>
+                    <LinkTo @route="problems" @classNames="menu import">problem</LinkTo>
+                    <LinkTo @route="sections.home" @classNames="menu sections">class</LinkTo>
                     {{#if notStudent}}
-                      {{#link-to 'users' classNames='menu vmt-import'}}users{{/link-to}}
+                      <LinkTo @route="users" @classNames="menu vmt-import">users</LinkTo>
                     {{/if}}
                   </div>
                 </div>
@@ -151,7 +151,7 @@
               <li>{{#link-to 'users.home' classNames='menu users'}}users{{/link-to}}</li>
             {{/if}}
           {{/if}} --}}
-          <li id="logout-btn">{{#link-to 'logout' classNames='menu logout'}}<i class="fas fa-power-off logout-icon"></i><span id="logout-text">log out</span>{{/link-to}}</li>
+          <li id="logout-btn"><LinkTo @route="logout" @classNames="menu logout"><i class="fas fa-power-off logout-icon"></i><span id="logout-text">log out</span></LinkTo></li>
           </span>
           {{#unless isStudentAccount}}
           <li id="role-toggle">
@@ -162,13 +162,13 @@
           </li>
           {{/unless}}
           <li id="current-username">
-            {{#link-to 'user' currentUser.username}}<img src={{currentUser.avatar}} alt={{currentUser.username}}>{{/link-to}}
+            <LinkTo @route="user" @model={{currentUser.username}}><img src={{currentUser.avatar}} alt={{currentUser.username}}></LinkTo>
           </li>
           <li id="user-image">
-            {{input type="checkbox" id="menu-button" name="menu-toggle" checked=openMenu click=(action "toggleMenu")}}
+            <Input @type="checkbox" @id="menu-button" @name="menu-toggle" @checked={{openMenu}} @click={{action "toggleMenu"}} />
             <img src={{user.avatar}} alt="">
             {{#if newNotifications}}
-              {{circle-ntf displayCount=newNotifications.length}}
+              <CircleNtf @displayCount={{newNotifications.length}} />
             {{/if}}
           </li>
         </ul>
@@ -177,27 +177,27 @@
 
     <div id="hide-menu" class="hidden animated">
       <ul>
-        <li>{{#link-to 'index'}}home{{/link-to}}</li>
-        <li>{{#link-to 'assignments.home'}}assignments{{/link-to}}</li>
+        <li><LinkTo @route="index">home</LinkTo></li>
+        <li><LinkTo @route="assignments.home">assignments</LinkTo></li>
         {{#unless currentUser.isStudent}}
-          <li>{{#link-to 'problems'}}problems{{/link-to}}</li>
+          <li><LinkTo @route="problems">problems</LinkTo></li>
         {{/unless}}
-        <li>{{#link-to 'sections.home'}}classes{{/link-to}}</li>
+        <li><LinkTo @route="sections.home">classes</LinkTo></li>
         {{!-- {{#unless currentUser.isStudent}} --}}
-          <li>{{#link-to 'workspaces'}}workspaces{{/link-to}}</li>
+          <li><LinkTo @route="workspaces">workspaces</LinkTo></li>
         {{!-- {{/unless}} --}}
         {{#unless currentUser.isStudent}}
-        <li>{{#link-to 'import'}}import{{/link-to}}</li>
+        <li><LinkTo @route="import">import</LinkTo></li>
         {{/unless}}
-        <li>{{#link-to 'responses'}}responses{{/link-to}}
+        <li><LinkTo @route="responses">responses</LinkTo>
           {{#if responseNotifications}}
-            {{circle-ntf displayCount=responseNotifications.length}}
+            <CircleNtf @displayCount={{responseNotifications.length}} />
           {{/if}}
         </li>
         {{#unless currentUser.isStudent}}
-          <li>{{#link-to 'users.home'}}users{{/link-to}}</li>
+          <li><LinkTo @route="users.home">users</LinkTo></li>
         {{/unless}}
-        <li id="logout-btn-side">{{#link-to 'logout'}}logout{{/link-to}}</li>
+        <li id="logout-btn-side"><LinkTo @route="logout">logout</LinkTo></li>
       </ul>
     </div>
 
@@ -205,8 +205,8 @@
     <nav id="topbar-unauth">
       <ul>
         {{!-- <li>{{#link-to 'index' classNames='menu home'}}home{{/link-to}}</li> --}}
-        <li data-test="login">{{#link-to 'auth.login' classNames='menu login hidden'}}log in{{/link-to}}</li>
-        <li data-test="signup">{{#link-to 'auth.signup' classNames='menu signup'}}sign up{{/link-to}}</li>
+        <li data-test="login"><LinkTo @route="auth.login" @classNames="menu login hidden">log in</LinkTo></li>
+        <li data-test="signup"><LinkTo @route="auth.signup" @classNames="menu signup">sign up</LinkTo></li>
       </ul>
     </nav>
   {{/if}}

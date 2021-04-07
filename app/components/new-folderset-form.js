@@ -1,17 +1,18 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: 'new-folderset-form',
   privacySetting: 'M',
-  utils: Ember.inject.service('utility-methods'),
+  utils: service('utility-methods'),
 
   didReceiveAttrs() {
-    if (this.get('utils').isNullOrUndefined(this.get('privacySetting'))) {
+    if (this.utils.isNullOrUndefined(this.privacySetting)) {
       this.set('privacySetting', 'M');
     }
     this._super(...arguments);

@@ -1,29 +1,26 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   classNames: ['student-matching-answer'],
-  utils: Ember.inject.service('utility-methods'),
+  utils: service('utility-methods'),
 
   section: null,
   submission: null,
   isExpanded: false,
   selectedIds: [],
 
-  selectizeInputId: function () {
+  selectizeInputId: computed('answer.id', function () {
     let id = this.get('answer.explanationImage.id') || '';
     return `select-add-student${id}`;
-  }.property('answer.id'),
+  }),
 
   didReceiveAttrs: function () {
-    const section = this.get('selectedSection');
-    const answer = this.get('answer');
+    const section = this.selectedSection;
+    const answer = this.answer;
     const image = answer.explanationImage;
     this.set('image', image);
 
@@ -36,45 +33,53 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
     if (!Array.isArray(this.get('submission.studentNames'))) {
       this.set('submission.studentNames', []);
     }
-
   },
 
-  initialStudentItems: function () {
-    let userItems = this.get('submission.students').mapBy('id');
-    let nameItems = this.get('submission.studentNames');
-    return userItems.pushObjects(nameItems);
-  }.property('submission.students.[]', 'submission.studentNames.[]'),
-
-  studentOptions: function () {
-    if (!this.get('studentMap')) {
-      return [];
+  initialStudentItems: computed(
+    'submission.students.[]',
+    'submission.studentNames.[]',
+    function () {
+      let userItems = this.get('submission.students').mapBy('id');
+      let nameItems = this.get('submission.studentNames');
+      return userItems.pushObjects(nameItems);
     }
-    let options = [];
-    let selectedIds = this.get('selectedIds') || [];
+  ),
 
-    _.each(this.get('studentMap'), (val, key) => {
-      if (!selectedIds.includes(val)) {
-        options.addObject({
-          id: val.get('id'),
-          username: val.get('username')
-        });
+  studentOptions: computed(
+    'selectedIds.[]',
+    'studentMap',
+    'addedStudentNames.[]',
+    function () {
+      if (!this.studentMap) {
+        return [];
       }
-    });
-    _.each(this.get('addedStudentNames'), (name) => {
-      options.addObject({
-        id: name,
-        username: name
+      let options = [];
+      let selectedIds = this.selectedIds || [];
+
+      _.each(this.studentMap, (val, key) => {
+        if (!selectedIds.includes(val)) {
+          options.addObject({
+            id: val.get('id'),
+            username: val.get('username'),
+          });
+        }
       });
-    });
-    return options;
-  }.property('selectedIds.[]', 'studentMap', 'addedStudentNames.[]'),
+      _.each(this.addedStudentNames, (name) => {
+        options.addObject({
+          id: name,
+          username: name,
+        });
+      });
+      return options;
+    }
+  ),
 
   updateAnswer(userId, doRemove) {
     if (!userId) {
       return;
     }
 
-    let isMongoId = this.get('utils').isValidMongoId(userId);
+    let isMongoId = this.utils.isValidMongoId(userId);
 
     let creators;
     let userObj;
@@ -86,7 +91,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
       if (doRemove) {
         creators.removeObject(userObj);
       } else {
-        creators.addObject(this.get('studentMap')[userId]);
+        creators.addObject(this.studentMap[userId]);
       }
       // add or remove string name from studentNames array on answer object
     } else {
@@ -100,11 +105,11 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
         creators.addObject(userId);
         // keep track of which string name items have been added
         // once user creates item for one answer, it should be available on other answers to select
-        this.get('addedStudentNames').addObject(userId);
+        this.addedStudentNames.addObject(userId);
       }
     }
     // check if all answers have been assigned at least one student
-    this.get('checkStatus')();
+    this.checkStatus();
   },
 
   actions: {
@@ -115,17 +120,17 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
       }
       let doRemove;
       if (_.isNull($item)) {
-        this.get('selectedIds').removeObject(val);
+        this.selectedIds.removeObject(val);
         doRemove = true;
       } else {
-        this.get('selectedIds').addObject(val);
+        this.selectedIds.addObject(val);
         doRemove = false;
       }
 
       this.updateAnswer(val, doRemove);
     },
     expandImage: function () {
-      this.set('isExpanded', !this.get('isExpanded'));
+      this.set('isExpanded', !this.isExpanded);
     },
 
     // runs when creating item in selectize control
@@ -138,9 +143,8 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
 
       return cb({
         username: trimmed,
-        id: trimmed
+        id: trimmed,
       });
     },
-
-  }
+  },
 });

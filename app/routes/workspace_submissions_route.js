@@ -7,14 +7,14 @@
 
 // Is this route necessary?
 // workspace submissions are being sideloaded when workspace is fetched
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 
 
 
 
 
 
-export default Ember.Route.extend({
+export default Route.extend({
   model() {
     let workspace = this.modelFor('workspace');
 

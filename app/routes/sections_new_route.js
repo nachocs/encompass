@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { hash } from 'rsvp';
 import AuthenticatedRoute from '../routes/_authenticated_route';
 
 
@@ -15,11 +15,11 @@ export default AuthenticatedRoute.extend({
   },
 
   model: function (params) {
-    return Ember.RSVP.hash({
-      users: this.get('store').findAll('user'),
-      organizations: this.get('store').findAll('organization'),
+    return hash({
+      users: this.store.findAll('user'),
+      organizations: this.store.findAll('organization'),
       user: this.modelFor('application'),
-      sections: this.get('store').findAll('section')
+      sections: this.store.findAll('section')
     });
   },
   renderTemplate: function () {

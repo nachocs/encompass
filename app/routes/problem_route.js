@@ -2,7 +2,7 @@ import AuthenticatedRoute from '../routes/_authenticated_route';
 
 export default AuthenticatedRoute.extend({
   model: function (params) {
-    var problem = this.get('store').findRecord('problem', params.problemId);
+    var problem = this.store.findRecord('problem', params.problemId);
     return problem;
   },
 

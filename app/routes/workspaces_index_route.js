@@ -4,13 +4,13 @@
   * @author Amir Tahvildaran <amir@mathforum.org>
   * @since 1.0.0
   */
-import Ember from 'ember';
+import { hash } from 'rsvp';
 import AuthenticatedRoute from '../routes/_authenticated_route';
 
 
 export default AuthenticatedRoute.extend({
   model: function () {
-    const store = this.get('store');
+    const store = this.store;
     const user = this.modelFor('application');
     let workspaceCriteria = {};
 
@@ -21,7 +21,7 @@ export default AuthenticatedRoute.extend({
         }
       };
     }
-    return Ember.RSVP.hash({
+    return hash({
       organizations: store.findAll('organization'),
       workspaces: store.query('workspace', workspaceCriteria),
     });

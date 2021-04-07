@@ -26,29 +26,10 @@
                 {{selectedSection.name}}
               </p>
             {{else}}
-              {{selectize-input
-                inputId="assn-new-section-select"
-                initialOptions=sectionOptions
-                onItemAdd=(action "updateSelectizeSingle")
-                onItemRemove=(action "updateSelectizeSingle")
-                maxItems=1
-                labelField="name"
-                valueField="id"
-                searchField="name"
-                propToUpdate="selectedSection"
-                placeholder="Search for a class by name"
-                model="section"
-                store=store
-              }}
-              {{input required=true type="hidden" value=selectedSection}}
+              <SelectizeInput @inputId="assn-new-section-select" @initialOptions={{sectionOptions}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="name" @valueField="id" @searchField="name" @propToUpdate="selectedSection" @placeholder="Search for a class by name" @model="section" @store={{store}} />
+              <Input required={{true}} @type="hidden" @value={{selectedSection}} />
               {{#each sectionFormErrors as |error|}}
-                {{error-box
-                  error=error
-                  showDismiss=true
-                  resetError=(action
-                    "removeErrorFromArray" "sectionFormErrors" error
-                  )
-                }}
+                <ErrorBox @error={{error}} @showDismiss={{true}} @resetError={{action "removeErrorFromArray" "sectionFormErrors" error}} />
               {{/each}}
             {{/if}}
           </div>
@@ -71,33 +52,9 @@
             </p>
           {{else}}
             <div class="flex-input">
-              {{selectize-input
-                store=store
-                inputId="assn-new-problem-select"
-                initialOptions=problemOptions
-                onItemAdd=(action "updateSelectizeSingle")
-                onItemRemove=(action "updateSelectizeSingle")
-                maxItems=1
-                labelField="title"
-                valueField="id"
-                searchField="title"
-                propToUpdate="selectedProblem"
-                placeholder="Search for a problem by title"
-                isAsync=true
-                model="problem"
-                queryParamsKey="query"
-                searchCriterion="title"
-                topLevelQueryParams="searchBy"
-                preload=problemsPreloadValue
-              }}
+              <SelectizeInput @store={{store}} @inputId="assn-new-problem-select" @initialOptions={{problemOptions}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="title" @valueField="id" @searchField="title" @propToUpdate="selectedProblem" @placeholder="Search for a problem by title" @isAsync={{true}} @model="problem" @queryParamsKey="query" @searchCriterion="title" @topLevelQueryParams="searchBy" @preload={{problemsPreloadValue}} />
               {{#each problemFormErrors as |error|}}
-                {{error-box
-                  error=error
-                  showDismiss=true
-                  resetError=(action
-                    "removeErrorFromArray" "problemFormErrors" error
-                  )
-                }}
+                <ErrorBox @error={{error}} @showDismiss={{true}} @resetError={{action "removeErrorFromArray" "problemFormErrors" error}} />
               {{/each}}
             </div>
           {{/if}}
@@ -112,12 +69,7 @@
             </span>
           </label>
           <div class="flex-input">
-            {{input
-              id="assignedDate"
-              name="daterange"
-              type="text"
-              value=assignedDate
-            }}
+            <Input @id="assignedDate" @name="daterange" @type="text" @value={{assignedDate}} />
             {{#each assignedDateFormErrors as |error|}}
               <p class="error-message">
                 {{error}}
@@ -135,23 +87,14 @@
             </span>
           </label>
           <div class="flex-input">
-            {{input
-              id="dueDate"
-              name="daterange"
-              type="text"
-              value=dueDate
-            }}
+            <Input @id="dueDate" @name="daterange" @type="text" @value={{dueDate}} />
             {{#each dueDateFormErrors as |error|}}
               <p class="error-message">
                 {{error}}
               </p>
             {{/each}}
             {{#if invalidDateRange}}
-              {{error-box
-                error="Invalid Date Range"
-                showDismiss=true
-                resetError=(action (mut invalidDateRange) null)
-              }}
+              <ErrorBox @error="Invalid Date Range" @showDismiss={{true}} @resetError={{action (mut invalidDateRange) null}} />
             {{/if}}
           </div>
         </li>
@@ -165,11 +108,7 @@
             </span>
           </label>
           <div class="flex-input">
-            {{input
-              type="text"
-              placeholder="Give your assignment a name (optional)"
-              value=name
-            }}
+            <Input @type="text" placeholder="Give your assignment a name (optional)" @value={{name}} />
             {{#each nameFormErrors as |error|}}
               <p class="error-message">
                 {{error}}
@@ -186,15 +125,10 @@
              Create Student Workspaces Now?
             </span>
           </label>
-          {{radio-group options=linkedWsOptions selectedValue=doCreateLinkedWorkspaces}}
+          <RadioGroup @options={{linkedWsOptions}} @selectedValue={{doCreateLinkedWorkspaces}} />
 
           {{#if showLinkedWsForm}}
-            {{linked-workspaces-new
-            isDisplayOnly=true
-            students=selectedSection.students.content
-            assignmentName=assignmentNamePreview
-            sectionName=selectedSection.name
-            }}
+            <LinkedWorkspacesNew @isDisplayOnly={{true}} @students={{selectedSection.students.content}} @assignmentName={{assignmentNamePreview}} @sectionName={{selectedSection.name}} />
           {{/if}}
         </li>
         {{#if doCreateLinkedWorkspaces}}
@@ -207,13 +141,10 @@
             Create Parent Workspace Now?
             </span>
           </label>
-          {{radio-group options=parentWsOptions selectedValue=doCreateParentWorkspace}}
+          <RadioGroup @options={{parentWsOptions}} @selectedValue={{doCreateParentWorkspace}} />
 
           {{#if showParentWsForm}}
-            {{parent-workspace-new
-              isDisplayOnly=true
-              assignmentName=assignmentNamePreview
-            }}
+            <ParentWorkspaceNew @isDisplayOnly={{true}} @assignmentName={{assignmentNamePreview}} />
           {{/if}}
         </li>
         {{/if}}

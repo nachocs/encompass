@@ -1,4 +1,7 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
@@ -6,17 +9,17 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
 
-export default Ember.Component.extend(ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   classNames: ['reset-page'],
   getTokenErrors: [],
   resetPasswordErrors: [],
-  alert: Ember.inject.service('sweet-alert'),
+  alert: service('sweet-alert'),
 
   didReceiveAttrs: function () {
     const token = this.token;
     const that = this;
     if (token) {
-      Ember.$.get({
+      $.get({
         url: `/auth/reset/${token}`
       })
         .then((res) => {
@@ -33,20 +36,20 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
     }
   },
 
-  doPasswordsMatch: function () {
-    return this.get('password') === this.get('confirmPassword');
-  }.property('password', 'confirmPassword'),
+  doPasswordsMatch: computed('password', 'confirmPassword', function () {
+    return this.password === this.confirmPassword;
+  }),
 
   actions: {
     resetPassword: function () {
-      const password = this.get('password');
-      const confirmPassword = this.get('confirmPassword');
+      const password = this.password;
+      const confirmPassword = this.confirmPassword;
 
       if (!password || !confirmPassword) {
         this.set('missingRequiredFields', true);
         return;
       }
-      if (!this.get('doPasswordsMatch')) {
+      if (!this.doPasswordsMatch) {
         this.set('matchError', true);
         return;
       }
@@ -54,12 +57,12 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
       const resetPasswordData = { password };
       const that = this;
 
-      return Ember.$.post({
+      return $.post({
         url: `/auth/reset/${that.token}`,
         data: resetPasswordData
       })
         .then((res) => {
-          this.get('alert').showToast('success', 'Password Reset', 'bottom-end', 3000, false, null);
+          this.alert.showToast('success', 'Password Reset', 'bottom-end', 3000, false, null);
           that.sendAction('toHome');
         })
         .catch((err) => {

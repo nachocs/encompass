@@ -1,3 +1,5 @@
+import Component from '@ember/component';
+import { aliasMethod, computed } from '@ember/object';
 /**
  * A draggable, droppoable folder element. Can hold selections, or other folders.
  *
@@ -15,263 +17,354 @@
  * - Replace folderList reference with a passed in action.
  * - drag folder out, then put back in - it won't go back in until you refresh.  Ember seems to be sending the correct data to the server api.
  */
-import Ember from 'ember';
+import { gt } from '@ember/object/computed';
+import { next } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import { App as Encompass } from '../app';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
+export default Component.extend(
+  Encompass.DragNDrop.Droppable,
+  Encompass.DragNDrop.Draggable,
+  ErrorHandlingMixin,
+  CurrentUserMixin,
+  {
+    alert: service('sweet-alert'),
+    utils: service('utility-methods'),
 
+    tagName: 'li',
+    classNames: ['folderItem'],
+    classNameBindings: [
+      'model.sortedChildren.length:has-children',
+      'containsCurrentSelection:contains-current-selection',
+      'containsCurrentSubmission:contains-current-submission',
+    ],
+    link: null,
+    updateRecordErrors: [],
+    queryErrors: [],
 
+    creatorId: computed('model.id', function () {
+      return this.utils.getBelongsToId(this.model, 'createdBy');
+    }),
 
+    isOwnFolder: computed('creatorId', function () {
+      return this.get('currentUser.id') === this.creatorId;
+    }),
 
+    canDeleteFolder: computed('isOwnFolder', 'canDeleteFolders', function () {
+      return this.isOwnFolder || this.canDeleteFolders;
+    }),
 
-export default Ember.Component.extend(Encompass.DragNDrop.Droppable, Encompass.DragNDrop.Draggable, ErrorHandlingMixin, CurrentUserMixin, {
-  alert: Ember.inject.service('sweet-alert'),
-  utils: Ember.inject.service('utility-methods'),
+    canEditFolder: computed('isOwnFolder', 'canEditFolders', function () {
+      return this.isOwnFolder || this.canEditFolders;
+    }),
 
-  tagName: 'li',
-  classNames: ['folderItem'],
-  classNameBindings: ['model.sortedChildren.length:has-children', 'containsCurrentSelection:contains-current-selection', 'containsCurrentSubmission:contains-current-submission'],
-  link: null,
-  updateRecordErrors: [],
-  queryErrors: [],
+    containsCurrentSubmission: computed(
+      'model.submissions',
+      'currentSubmission.id',
+      'model.isExpanded',
+      'model._submissions.[]',
+      function () {
+        let allSubmissions = this.get('model._submissions');
+        let ownSubmissions = this.get('model.submissions');
+        let isExpanded = this.get('model.isExpanded');
 
-  creatorId: function () {
-    return this.get('utils').getBelongsToId(this.get('model'), 'createdBy');
-  }.property('model.id'),
+        const currentSubmissionId = this.get('currentSubmission.id');
 
-  isOwnFolder: function () {
-    return this.get('currentUser.id') === this.get('creatorId');
-  }.property('creatorId'),
+        let submissions = isExpanded ? ownSubmissions : allSubmissions;
+        let foundSubmission = submissions.find((sub) => {
+          return sub.get('id') === currentSubmissionId;
+        });
+        return !this.utils.isNullOrUndefined(foundSubmission);
+      }
+    ),
 
-  canDeleteFolder: function () {
-    return this.get('isOwnFolder') || this.get('canDeleteFolders');
-  }.property('isOwnFolder', 'canDeleteFolders'),
+    containsCurrentSelection: computed(
+      'currentSelection.id',
+      'model.taggedSelections',
+      'model._selections.[]',
+      'model.isExpanded',
+      function () {
+        let allSelections = this.get('model._selections');
+        let ownSelections = this.get('model.taggedSelections');
+        let isExpanded = this.get('model.isExpanded');
 
-  canEditFolder: function () {
-    return this.get('isOwnFolder') || this.get('canEditFolders');
-  }.property('isOwnFolder', 'canEditFolders'),
+        const currentSelectionId = this.get('currentSelection.id');
 
-  containsCurrentSubmission: function () {
-    let allSubmissions = this.get('model._submissions');
-    let ownSubmissions = this.get('model.submissions');
-    let isExpanded = this.get('model.isExpanded');
+        let selections = isExpanded ? ownSelections : allSelections;
 
-    const currentSubmissionId = this.get('currentSubmission.id');
+        let foundSelection = selections.find((sel) => {
+          return sel.get('id') === currentSelectionId;
+        });
+        return !this.utils.isNullOrUndefined(foundSelection);
+      }
+    ),
 
-    let submissions = isExpanded ? ownSubmissions : allSubmissions;
-    let foundSubmission = submissions.find((sub) => {
-      return sub.get('id') === currentSubmissionId;
-    });
-    return !this.get('utils').isNullOrUndefined(foundSubmission);
-  }.property('model.submissions', 'currentSubmission.id', 'model.isExpanded', 'model._submissions.[]',),
+    /* Drag and drop stuff */
+    supportedTypes: {
+      selection: /^http:\/\/.*\/#\/workspaces\/[0-9a-f]*\/submissions\/[0-9a-f]*\/selections/,
+      folder: /^ember/, // We assume all other droppable ember objects are folders
+    },
+    dragEnter: aliasMethod('onDrag'),
+    dragOver: aliasMethod('onDrag'),
+    dragLeave: aliasMethod('onDrop'),
+    dragEnd: aliasMethod('onDrop'),
 
-  containsCurrentSelection: function () {
-    let allSelections = this.get('model._selections');
-    let ownSelections = this.get('model.taggedSelections');
-    let isExpanded = this.get('model.isExpanded');
+    onDrag: function (event) {
+      document.getElementById(this.elementId).style.backgroundColor =
+        'rgb(255, 255, 255)';
+      event = event || window.event;
+      event.preventDefault();
 
-    const currentSelectionId = this.get('currentSelection.id');
+      return false;
+    },
 
-    let selections = isExpanded ? ownSelections : allSelections;
+    dragStart: function (event) {
+      var dataTransfer = event.originalEvent.dataTransfer;
+      var folderId = this.get('model.id');
 
-    let foundSelection = selections.find((sel) => {
-      return sel.get('id') === currentSelectionId;
-    });
-    return !this.get('utils').isNullOrUndefined(foundSelection);
-  }.property('currentSelection.id', 'model.taggedSelections', 'model._selections.[]', 'model.isExpanded',),
+      this._super(event);
+      // Get the id of the dragged folder
+      dataTransfer.setData(
+        'application/json',
+        JSON.stringify({ id: folderId })
+      );
+      // Notify the drop target that a folder is being dropped
+      dataTransfer.setData('text/plain', 'folder');
+      event.stopPropagation();
+    },
 
-  /* Drag and drop stuff */
-  supportedTypes: {
-    selection: /^http:\/\/.*\/#\/workspaces\/[0-9a-f]*\/submissions\/[0-9a-f]*\/selections/,
-    folder: /^ember/ // We assume all other droppable ember objects are folders
-  },
-  dragEnter: Ember.aliasMethod('onDrag'),
-  dragOver: Ember.aliasMethod('onDrag'),
-  dragLeave: Ember.aliasMethod('onDrop'),
-  dragEnd: Ember.aliasMethod('onDrop'),
+    onDrop: function (event) {
+      document.getElementById(this.elementId).style.backgroundColor =
+        'transparent';
+      event = event || window.event;
+      event.preventDefault();
 
-  onDrag: function (event) {
-    document.getElementById(this.elementId).style.backgroundColor = 'rgb(255, 255, 255)';
-    event = event || window.event;
-    event.preventDefault();
+      return false;
+    },
 
-    return false;
-  },
+    drop: function (event) {
+      var packet = event.originalEvent;
+      var dropType = packet.dataTransfer.getData('text/plain');
+      var dropObject = event.dataTransfer.getData('application/json');
 
-  dragStart: function (event) {
-    var dataTransfer = event.originalEvent.dataTransfer;
-    var folderId = this.get('model.id');
+      if (this.supportedTypes.hasOwnProperty(dropType)) {
+        next(this, function () {
+          this.putInFolder(this.model, dropType, dropObject);
+        });
 
-    this._super(event);
-    // Get the id of the dragged folder
-    dataTransfer.setData('application/json', JSON.stringify({ 'id': folderId }));
-    // Notify the drop target that a folder is being dropped
-    dataTransfer.setData('text/plain', 'folder');
-    event.stopPropagation();
-  },
+        document.getElementById(this.elementId).style.backgroundColor =
+          'transparent';
+      }
 
-  onDrop: function (event) {
-    document.getElementById(this.elementId).style.backgroundColor = 'transparent';
-    event = event || window.event;
-    event.preventDefault();
+      document.getElementById(this.elementId).parentNode.style.backgroundColor =
+        'transparent';
+      return this._super(event);
+    },
 
-    return false;
-  },
+    putInFolder: function (folder, type, data) {
+      var obj = JSON.parse(data);
 
-  drop: function (event) {
-    var packet = event.originalEvent;
-    var dropType = packet.dataTransfer.getData('text/plain');
-    var dropObject = event.dataTransfer.getData('application/json');
+      if (this.model.hasSelection(obj.id)) {
+        this.alert.showToast(
+          'info',
+          'Selection has already been filed in this folder',
+          'bottom-end',
+          3000,
+          false,
+          null
+        );
+        return;
+      }
 
-    if (this.supportedTypes.hasOwnProperty(dropType)) {
-      Ember.run.next(this, function () {
-        this.putInFolder(this.model, dropType, dropObject);
-      });
+      if (type === 'selection') {
+        this.sendAction('dropped', obj.id, this.model);
+      } else if (type === 'folder') {
+        this.putFolderInFolder(obj, this.model);
+        this.notifyPropertyChange('model');
+      } else {
+        this.alert.showToast(
+          'error',
+          'Invalid or unsupported object cannot be filed in folder',
+          'bottom-end',
+          3000,
+          false,
+          null
+        );
+      }
+    },
 
-      document.getElementById(this.elementId).style.backgroundColor = 'transparent';
-    }
+    putFolderInFolder: function (child, parent) {
+      let parentName = this.get('model.name');
+      var droppedFolder = false;
+      var parentOfDropped = false;
+      var iterator = parent;
 
-    document.getElementById(this.elementId).parentNode.style.backgroundColor = 'transparent';
-    return this._super(event);
-  },
+      if (child.id === this.get('model.id')) {
+        this.alert.showToast(
+          'error',
+          'A folder cannot be placed into itself',
+          'bottom-end',
+          3000,
+          false,
+          null
+        );
+        return;
+      }
 
-  putInFolder: function (folder, type, data) {
-    var obj = JSON.parse(data);
+      var folders = this.folderList.get('folders');
+      droppedFolder = folders.filterBy('id', child.id).get('firstObject');
 
-    if (this.get('model').hasSelection(obj.id)) {
-      this.get('alert').showToast('info', 'Selection has already been filed in this folder', 'bottom-end', 3000, false, null);
-      return;
-    }
+      let childName = droppedFolder.get('name');
 
-    if (type === "selection") {
-      this.sendAction('dropped', obj.id, this.model);
-    } else if (type === "folder") {
-      this.propertyWillChange('model');
-      this.putFolderInFolder(obj, this.model);
-      this.propertyDidChange('model');
-    } else {
-      this.get('alert').showToast('error', 'Invalid or unsupported object cannot be filed in folder', 'bottom-end', 3000, false, null);
-    }
-  },
-
-  putFolderInFolder: function (child, parent) {
-    let parentName = this.get('model.name');
-    var droppedFolder = false;
-    var parentOfDropped = false;
-    var iterator = parent;
-
-    if (child.id === this.get('model.id')) {
-      this.get('alert').showToast('error', 'A folder cannot be placed into itself', 'bottom-end', 3000, false, null);
-      return;
-    }
-
-    var folders = this.folderList.get('folders');
-    droppedFolder = folders.filterBy('id', child.id).get('firstObject');
-
-    let childName = droppedFolder.get('name');
-
-    if (!droppedFolder) {
-      this.get('alert').showToast('error', 'Sorry, there was a problem placing the folder', 'bottom-end', 3000, false, null);
-
-      return;
-    }
-
-    // look from the bottom up to see if parent is a descendent of child
-    while (iterator.get('parent')) {
-      iterator = iterator.get('parent');
-
-      if (iterator.get('id') === droppedFolder.get('id')) {
-        this.get('alert').showToast('error', 'A folder cannot be dropped into one if its sub-folders', 'bottom-end', 3000, false, null);
+      if (!droppedFolder) {
+        this.alert.showToast(
+          'error',
+          'Sorry, there was a problem placing the folder',
+          'bottom-end',
+          3000,
+          false,
+          null
+        );
 
         return;
       }
-    }
 
-    // get parent of the folder being dropped
-    if (droppedFolder.get('parent')) {
-      parentOfDropped = folders.filterBy('id', droppedFolder.get('parent').get('id')).get('firstObject');
-    }
+      // look from the bottom up to see if parent is a descendent of child
+      while (iterator.get('parent')) {
+        iterator = iterator.get('parent');
 
+        if (iterator.get('id') === droppedFolder.get('id')) {
+          this.alert.showToast(
+            'error',
+            'A folder cannot be dropped into one if its sub-folders',
+            'bottom-end',
+            3000,
+            false,
+            null
+          );
 
-    if (parentOfDropped) {
-      parentOfDropped.get('children').then(function (children) {
-        children.removeObject(droppedFolder);
-      });
-    }
+          return;
+        }
+      }
 
-    droppedFolder.set('parent', parent);
+      // get parent of the folder being dropped
+      if (droppedFolder.get('parent')) {
+        parentOfDropped = folders
+          .filterBy('id', droppedFolder.get('parent').get('id'))
+          .get('firstObject');
+      }
 
-    parent.get('children').then(function (children) {
-      children.pushObject(droppedFolder);
-    });
-
-    droppedFolder.save().then((res) => {
-      this.get('alert').showToast('success', `${childName} is now inside ${parentName}`, 'bottom-end', 3000, false, null);
-    }).catch((err) => {
-      this.handleErrors(err, 'updateRecordErrors', droppedFolder);
-    });
-  },
-
-  hasManyTaggings: Ember.computed.gt('model.childSelections.length', 99),
-
-  selectionsTitle: function () {
-    let selectionsCount = this.get('model.childSelections.length');
-
-    if (selectionsCount === 0) {
-      return '0 Selections';
-    }
-    let submissionsCount = this.get('model.submissions.length');
-
-    let selectionNoun = selectionsCount > 1 ? 'selections' : 'selection';
-    let submissionsNoun = submissionsCount > 1 ? 'submissions' : 'submission';
-
-    return `${selectionsCount} ${selectionNoun} from ${submissionsCount} ${submissionsNoun}`;
-
-  }.property('model.childSelections.length', 'model.submissions.length'),
-
-  actions: {
-    toggle: function () {
-      this.set('model.isExpanded', !this.get('model.isExpanded'));
-    },
-
-    editFolderName: function () {
-      var folder = this.get('model');
-      this.set('alerts', this.get('alert'));
-      if (folder.get('hasDirtyAttributes')) {
-        folder.get('workspace').then(() => {
-          folder.save().then((res) => {
-            this.get('alerts').showToast('success', 'Folder updated', 'bottom-end', 3000, false, null);
-          }).catch((err) => {
-            this.handleErrors(err, 'updateRecordErrors', folder);
-          }); //we need the workspace to be populated
+      if (parentOfDropped) {
+        parentOfDropped.get('children').then(function (children) {
+          children.removeObject(droppedFolder);
         });
       }
-      return true; //bubbling the event so that if the user clicks into another input it takes
-      //we'll handle the event further up to dismiss it so it doesn't cause an
-      //error
+
+      droppedFolder.set('parent', parent);
+
+      parent.get('children').then(function (children) {
+        children.pushObject(droppedFolder);
+      });
+
+      droppedFolder
+        .save()
+        .then((res) => {
+          this.alert.showToast(
+            'success',
+            `${childName} is now inside ${parentName}`,
+            'bottom-end',
+            3000,
+            false,
+            null
+          );
+        })
+        .catch((err) => {
+          this.handleErrors(err, 'updateRecordErrors', droppedFolder);
+        });
     },
 
-    openLink: function () {
-      let model = this.get('model');
-      let currentWorkspace = this.get('currentWorkspace');
-      var getUrl = window.location;
-      var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+    hasManyTaggings: gt('model.childSelections.length', 99),
 
-      window.open(`${baseUrl}#/workspaces/${currentWorkspace.id}/folders/${model.id}`, 'newwindow', 'width=1000, height=700');
+    selectionsTitle: computed(
+      'model.childSelections.length',
+      'model.submissions.length',
+      function () {
+        let selectionsCount = this.get('model.childSelections.length');
+
+        if (selectionsCount === 0) {
+          return '0 Selections';
+        }
+        let submissionsCount = this.get('model.submissions.length');
+
+        let selectionNoun = selectionsCount > 1 ? 'selections' : 'selection';
+        let submissionsNoun =
+          submissionsCount > 1 ? 'submissions' : 'submission';
+
+        return `${selectionsCount} ${selectionNoun} from ${submissionsCount} ${submissionsNoun}`;
+      }
+    ),
+
+    actions: {
+      toggle: function () {
+        this.set('model.isExpanded', !this.get('model.isExpanded'));
+      },
+
+      editFolderName: function () {
+        var folder = this.model;
+        this.set('alerts', this.alert);
+        if (folder.get('hasDirtyAttributes')) {
+          folder.get('workspace').then(() => {
+            folder
+              .save()
+              .then((res) => {
+                this.alerts.showToast(
+                  'success',
+                  'Folder updated',
+                  'bottom-end',
+                  3000,
+                  false,
+                  null
+                );
+              })
+              .catch((err) => {
+                this.handleErrors(err, 'updateRecordErrors', folder);
+              }); //we need the workspace to be populated
+          });
+        }
+        return true; //bubbling the event so that if the user clicks into another input it takes
+        //we'll handle the event further up to dismiss it so it doesn't cause an
+        //error
+      },
+
+      openLink: function () {
+        let model = this.model;
+        let currentWorkspace = this.currentWorkspace;
+        var getUrl = window.location;
+        var baseUrl =
+          getUrl.protocol +
+          '//' +
+          getUrl.host +
+          '/' +
+          getUrl.pathname.split('/')[1];
+
+        window.open(
+          `${baseUrl}#/workspaces/${currentWorkspace.id}/folders/${model.id}`,
+          'newwindow',
+          'width=1000, height=700'
+        );
+      },
+
+      confirmDelete: function () {
+        this.sendAction('confirm', this.model);
+      },
+
+      showFolder: function () {},
+
+      updateTaggings: function () {
+        this.currentWorkspace.reload();
+      },
     },
-
-
-    confirmDelete: function () {
-      this.sendAction('confirm', this.model);
-    },
-
-    showFolder: function () {
-    },
-
-    updateTaggings: function () {
-      this.get('currentWorkspace').reload();
-    }
   }
-});
-
+);

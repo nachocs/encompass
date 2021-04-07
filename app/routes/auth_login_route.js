@@ -11,7 +11,7 @@ export default LoggedOutRoute.extend(MtAuthMixin, {
 
   model: function (params) {
     return {
-      oauthError: this.get('oauthError'),
+      oauthError: this.oauthError,
     };
   },
 

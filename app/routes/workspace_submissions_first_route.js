@@ -4,16 +4,18 @@
   * @author Amir Tahvildaran, Daniel Kelly
   * @since 1.0.1
   */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import Route from '@ember/routing/route';
 
 
 
 
 
 
-export default Ember.Route.extend({
-  utils: Ember.inject.service('utility-methods'),
-  alert: Ember.inject.service('sweet-alert'),
+export default Route.extend({
+  utils: service('utility-methods'),
+  alert: service('sweet-alert'),
 
   model: function () {
     return this.modelFor('workspace.submissions');
@@ -29,7 +31,7 @@ export default Ember.Route.extend({
       this.transitionTo('workspace.submission', workspace, sorted.objectAt(lastRevision).get('id'));
     } else {
       // no work in workspace yet; transition to info page
-      this.get('alert').showToast('info', 'Workspace does not have any submissions yet', 'bottom-end', 3000, false, null);
+      this.alert.showToast('info', 'Workspace does not have any submissions yet', 'bottom-end', 3000, false, null);
 
       this.transitionTo('workspace.info');
     }

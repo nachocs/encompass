@@ -4,14 +4,16 @@
   * @author Amir Tahvildaran <amir@mathforum.org>, Damola Mabogunje <damola@mathforum.org>
   * @since 1.0.0
   */
-import Ember from 'ember';
+import $ from 'jquery';
+
+import Route from '@ember/routing/route';
 
 
 
 
 
 
-export default Ember.Route.extend({
+export default Route.extend({
   needs: 'application',
   /*
   using regular ajax request because sideloaded  data was not being pushed in to store soon enough
@@ -21,16 +23,16 @@ export default Ember.Route.extend({
   model: function (params) {
     let url = `/api/workspaces/${params.workspace_id}`;
 
-    return Ember.$.get({ url })
+    return $.get({ url })
       .then((results) => {
         _.each(results, (val, key) => {
           if (val) {
-            this.get('store').pushPayload({
+            this.store.pushPayload({
               [key]: val
             });
           }
         });
-        return this.get('store').peekRecord('workspace', params.workspace_id);
+        return this.store.peekRecord('workspace', params.workspace_id);
       });
   },
 

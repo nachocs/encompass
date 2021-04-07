@@ -7,7 +7,12 @@
   * @see workspace_submissions_route
   */
 /*global _:false */
-import Ember from 'ember';
+import $ from 'jquery';
+
+import { resolve } from 'rsvp';
+import { schedule } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import VmtHostMixin from '../mixins/vmt-host';
 
@@ -16,9 +21,9 @@ import VmtHostMixin from '../mixins/vmt-host';
 
 
 
-export default Ember.Route.extend(CurrentUserMixin, VmtHostMixin, {
-  alert: Ember.inject.service('sweet-alert'),
-  utils: Ember.inject.service('utility-methods'),
+export default Route.extend(CurrentUserMixin, VmtHostMixin, {
+  alert: service('sweet-alert'),
+  utils: service('utility-methods'),
 
   queryParams: 'vmtRoomId',
 
@@ -66,7 +71,7 @@ export default Ember.Route.extend(CurrentUserMixin, VmtHostMixin, {
 
     let user = this.modelFor('application');
 
-    Ember.run.schedule('afterRender', () => {
+    schedule('afterRender', () => {
       if (!user.get('seenTour')) {
         this.controller.send('startTour', 'workspace');
       }
@@ -75,19 +80,19 @@ export default Ember.Route.extend(CurrentUserMixin, VmtHostMixin, {
 
   resolveVmtRoom(submission) {
     let roomId = submission.get('vmtRoomInfo.roomId');
-    let utils = this.get('utils');
+    let utils = this.utils;
 
     if (!utils.isValidMongoId(roomId)) {
-      return Ember.RSVP.resolve(null);
+      return resolve(null);
     }
 
     let cachedRoom = this.extractVmtRoom(roomId);
 
     if (cachedRoom) {
-      return Ember.RSVP.resolve(cachedRoom);
+      return resolve(cachedRoom);
     }
     let url = `api/vmt/rooms/${roomId}`;
-    return Ember.$.get({
+    return $.get({
       url,
     })
       .then((data) => {
@@ -104,7 +109,7 @@ export default Ember.Route.extend(CurrentUserMixin, VmtHostMixin, {
   },
 
   handleRoomForVmt(room) {
-    let utils = this.get('utils');
+    let utils = this.utils;
     if (!utils.isNonEmptyObject(window.vmtRooms)) {
       window.vmtRooms = {};
     }
@@ -116,7 +121,7 @@ export default Ember.Route.extend(CurrentUserMixin, VmtHostMixin, {
   },
 
   extractVmtRoom(roomId) {
-    if (!this.get('utils').isNonEmptyObject(window.vmtRooms)) {
+    if (!this.utils.isNonEmptyObject(window.vmtRooms)) {
       return null;
     }
 
@@ -147,21 +152,21 @@ export default Ember.Route.extend(CurrentUserMixin, VmtHostMixin, {
       });
     },
     fileSelectionInFolder: function (selectionId, folder) {
-      let selection = this.get('store').peekRecord('selection', selectionId);
+      let selection = this.store.peekRecord('selection', selectionId);
       let workspace = this.modelFor('workspace');
 
       if (!selection) {
         return;
       }
-      let tagging = this.get('store').createRecord('tagging', {
+      let tagging = this.store.createRecord('tagging', {
         workspace,
         selection,
         folder,
-        createdBy: this.get('currentUser')
+        createdBy: this.currentUser
       });
       tagging.save()
         .then((savedTagging) => {
-          this.get('alert').showToast('success', 'Selection Filed', 'bottom-end', 3000, false, null);
+          this.alert.showToast('success', 'Selection Filed', 'bottom-end', 3000, false, null);
         })
         .catch((err) => {
           console.log('err save tagging', err);
@@ -170,7 +175,7 @@ export default Ember.Route.extend(CurrentUserMixin, VmtHostMixin, {
     willTransition(transition) {
       let currentUrl = window.location.hash;
       let wasVmt = currentUrl.indexOf('?vmtRoomId=') !== -1;
-      let willBeVmt = this.get('utils').isValidMongoId(transition.queryParams.vmtRoomId);
+      let willBeVmt = this.utils.isValidMongoId(transition.queryParams.vmtRoomId);
       if (wasVmt && !willBeVmt) {
         window.postMessage({
           messageType: 'DESTROY_REPLAYER',

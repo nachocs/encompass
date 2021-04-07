@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import $ from 'jquery';
+import Component from '@ember/component';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
@@ -6,7 +8,7 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
 
-export default Ember.Component.extend(ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   classNames: ['confirm-page'],
   confirmTokenErrors: [],
   isAlreadyConfirmed: false,
@@ -17,7 +19,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
     const token = this.token;
     const that = this;
     if (token) {
-      Ember.$.get({
+      $.get({
         url: `/auth/confirm/${token}`
       })
         .then((res) => {
@@ -39,12 +41,12 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
     }
   },
 
-  loginMessage: function () {
-    if (this.get('isAlreadyConfirmed')) {
+  loginMessage: computed('isAlreadyConfirmed', 'invalidTokenError', function () {
+    if (this.isAlreadyConfirmed) {
       return 'to get started using EnCoMPASS';
     }
     return 'and you will be redirected a page where you can request a new confirmation email to be sent to your email address on file.';
-  }.property('isAlreadyConfirmed', 'invalidTokenError'),
+  }),
 
 
   actions: {

@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Service from '@ember/service';
 
 
 
@@ -6,7 +6,7 @@ import Ember from 'ember';
 
 
 
-export default Ember.Service.extend({
+export default Service.extend({
   /*
     attachTo: (optional) selector of the html element you want to attach the guider to
     autoFocus: (optional) if you want the browser to scroll to the position of the guider, set this to true

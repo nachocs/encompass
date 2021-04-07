@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import { hash } from 'rsvp';
+import { inject as controller } from '@ember/controller';
 import AuthenticatedRoute from '../routes/_authenticated_route';
 
 
 export default AuthenticatedRoute.extend({
   hideOutlet: true,
-  application: Ember.inject.controller(),
+  application: controller(),
 
 
   beforeModel: function (transition) {
@@ -18,14 +19,14 @@ export default AuthenticatedRoute.extend({
     if (problemId) {
       this.set('hideOutlet', false);
     } else {
-      if (!this.get('hideOutlet')) {
+      if (!this.hideOutlet) {
         this.set('hideOutlet', true);
       }
     }
 
   },
   model: function (params) {
-    const store = this.get('store');
+    const store = this.store;
     const user = this.modelFor('application');
     let problemCriteria = {};
 
@@ -36,11 +37,11 @@ export default AuthenticatedRoute.extend({
         }
       };
     }
-    return Ember.RSVP.hash({
+    return hash({
       organizations: store.findAll('organization'),
       sections: store.findAll('section'),
       problems: store.query('problem', problemCriteria),
-      hideOutlet: this.get('hideOutlet')
+      hideOutlet: this.hideOutlet
     });
   },
 
@@ -52,8 +53,8 @@ export default AuthenticatedRoute.extend({
       this.transitionTo('problem', problem);
     },
     sendtoApplication(categories) {
-      this.get('application').set('categories', categories);
-      this.get('application').set('showCategoryList', true);
+      this.application.set('categories', categories);
+      this.application.set('showCategoryList', true);
     },
   }
 

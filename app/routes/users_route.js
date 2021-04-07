@@ -5,14 +5,16 @@
   * @author Amir Tahvildaran <amir@mathforum.org>
   * @since 1.0.0
   */
-import Ember from 'ember';
+import { hash } from 'rsvp';
+
+import Route from '@ember/routing/route';
 
 
 
 
 
 
-export default Ember.Route.extend({
+export default Route.extend({
   beforeModel: function () {
     const user = this.modelFor('application');
     const isStudent = user.get('isStudent');
@@ -22,9 +24,9 @@ export default Ember.Route.extend({
     }
   },
   model: function () {
-    return Ember.RSVP.hash({
-      users: this.get('store').findAll('user'),
-      organizations: this.get('store').findAll('organization'),
+    return hash({
+      users: this.store.findAll('user'),
+      organizations: this.store.findAll('organization'),
     });
   },
 

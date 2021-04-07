@@ -1,36 +1,38 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['details-list-item'],
-  utils: Ember.inject.service('utility-methods'),
+  utils: service('utility-methods'),
 
-  doShowRemoveIcon: function () {
-    if (this.get('cannotBeRemoved')) {
+  doShowRemoveIcon: computed('cannotBeRemoved', 'displayValue', function () {
+    if (this.cannotBeRemoved) {
       return false;
     }
-    const val = this.get('displayValue');
-    const children = this.get('children');
+    const val = this.displayValue;
+    const children = this.children;
 
     if (children) {
       children.map((child) => {
         let val = child.displayValue;
-        if (!this.get('utils').isNullOrUndefined(val)) {
+        if (!this.utils.isNullOrUndefined(val)) {
           this.set('hasValidChild', true);
         }
       });
     }
 
-    return !this.get('utils').isNullOrUndefined(val) || this.get('hasValidChild');
-  }.property('cannotBeRemoved', 'displayValue'),
+    return !this.utils.isNullOrUndefined(val) || this.hasValidChild;
+  }),
 
   actions: {
     editValue() {
-      this.get('editValue')(this.get('associatedStep'));
+      this.editValue(this.associatedStep);
     },
   }
 });

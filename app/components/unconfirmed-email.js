@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
@@ -7,13 +8,13 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: ['unconfirmed-page'],
   emailErrors: [],
 
   actions: {
     sendEmail: function () {
-      Ember.$.get('/auth/resend/confirm')
+      $.get('/auth/resend/confirm')
         .then((res) => {
           if (res.isSuccess) {
             this.set('emailSuccess', true);

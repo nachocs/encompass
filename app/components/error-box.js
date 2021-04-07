@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { later } from '@ember/runloop';
+import Component from '@ember/component';
 import $ from 'jquery';
 
 
@@ -6,7 +7,7 @@ import $ from 'jquery';
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['error-box', 'required', 'animated', 'fadeIn'],
 
   actions: {
@@ -15,11 +16,11 @@ export default Ember.Component.extend({
       $(`#${id}`).removeClass('fadeIn');
       $(`#${id}`).addClass('fadeOut');
 
-      if (this.get('resetError')) {
-        this.get('resetError')();
+      if (this.resetError) {
+        this.resetError();
       }
 
-      Ember.run.later(() => {
+      later(() => {
         $(`#${id}`).remove();
       }, 500);
     }

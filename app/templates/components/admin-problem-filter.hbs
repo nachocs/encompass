@@ -1,29 +1,11 @@
 <div class="choose-filter-admin">
   <span class="filter-text">Find Problems by</span>
-    {{selectize-input
-    inputId="admin-filter-select"
-    initialOptions=mainOptions
-    initialItems=initialMainFilterItems
-    onItemAdd=(action "setMainFilter")
-    maxItems=1
-    labelField="label"
-    valueField="value"}}
+    <SelectizeInput @inputId="admin-filter-select" @initialOptions={{mainOptions}} @initialItems={{initialMainFilterItems}} @onItemAdd={{action "setMainFilter"}} @maxItems={{1}} @labelField="label" @valueField="value" />
 </div>
 
 {{#if showOrgFilter}}
   <div class="filter-admin">
-    {{selectize-input
-    inputId="all-org-filter"
-    initialOptions=orgOptions
-    onItemAdd=(action "updateMultiSelect")
-    onItemRemove=(action "updateMultiSelect")
-    maxItems=3
-    labelField="name"
-    valueField="id"
-    searchField="name"
-    propToUpdate="selectedValues"
-    placeholder="Organization name..."
-    }}
+    <SelectizeInput @inputId="all-org-filter" @initialOptions={{orgOptions}} @onItemAdd={{action "updateMultiSelect"}} @onItemRemove={{action "updateMultiSelect"}} @maxItems={{3}} @labelField="name" @valueField="id" @searchField="name" @propToUpdate="selectedValues" @placeholder="Organization name..." />
   </div>
   {{#if areCurrentSelections}}
     <ul class="secondary-filter-options">
@@ -32,7 +14,7 @@
           <label for={{option.value}} class="checkbox-label">
             <i class="checkbox-icon {{option.icon}}"></i>
             <span class="checkbox-text">{{option.label}}</span>
-            {{input id=option.value type="checkbox" checked=option.isApplied change=(action "updateOrgSubFilters")}}
+            <Input @id={{option.value}} @type="checkbox" @checked={{option.isApplied}} @change={{action "updateOrgSubFilters"}} />
           </label>
         </li>
       {{/each}}
@@ -42,22 +24,7 @@
 
 {{#if showUserFilter}}
   <div class="filter-admin">
-    {{selectize-input
-    store=store
-    inputId="all-user-filter"
-    onItemAdd=(action "updateMultiSelect")
-    onItemRemove=(action "updateMultiSelect")
-    maxItems=3
-    labelField="username"
-    valueField="id"
-    searchField="username"
-    model="user"
-    queryParamsKey="usernameSearch"
-    propToUpdate="selectedValues"
-    propName=mainFilter
-    isAsync=true
-    placeholder="Username..."
-    }}
+    <SelectizeInput @store={{store}} @inputId="all-user-filter" @onItemAdd={{action "updateMultiSelect"}} @onItemRemove={{action "updateMultiSelect"}} @maxItems={{3}} @labelField="username" @valueField="id" @searchField="username" @model="user" @queryParamsKey="usernameSearch" @propToUpdate="selectedValues" @propName={{mainFilter}} @isAsync={{true}} @placeholder="Username..." />
   </div>
 {{/if}}
 
@@ -68,7 +35,7 @@
       <label for={{option.value}} class="checkbox-label">
         <i class="checkbox-icon {{option.icon}}"></i>
         <span class="checkbox-text">{{option.label}}</span>
-        {{input id=option.value type="checkbox" checked=option.isApplied change=(action "updateSecondLevel")}}
+        <Input @id={{option.value}} @type="checkbox" @checked={{option.isApplied}} @change={{action "updateSecondLevel"}} />
       </label>
     </li>
     {{/each}}

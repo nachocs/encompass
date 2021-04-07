@@ -1,11 +1,8 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Mixin from '@ember/object/mixin';
+import { isEmpty } from '@ember/utils';
 
-
-
-
-
-
-export default Ember.Mixin.create({
+export default Mixin.create({
   emailRegEx: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
   usernameRegEx: /^[a-z0-9_]{3,30}$/,
   passwordMinLength: 10,
@@ -24,7 +21,8 @@ export default Ember.Mixin.create({
     taken: 'Email address has already been used',
   },
   usernameErrors: {
-    invalid: 'Username must be all lowercase, at least 3 characters and can only contain the following special characters _',
+    invalid:
+      'Username must be all lowercase, at least 3 characters and can only contain the following special characters _',
     missing: 'Username is required',
     taken: 'Username already exists',
   },
@@ -35,63 +33,73 @@ export default Ember.Mixin.create({
     mismatch: 'Passwords do not match',
   },
 
-  isEmailRequired: function () {
-    return this.get('selectedType') !== 'Student';
-  }.property('selectedType'),
+  isEmailRequired: computed('selectedType', function () {
+    return this.selectedType !== 'Student';
+  }),
 
-  isEmailValid: function () {
-    let email = this.get('email');
+  isEmailValid: computed('email', 'isEmailDirty', function () {
+    let email = this.email;
 
-    if (!this.get('isEmailDirty') && !Ember.isEmpty(email)) {
+    if (!this.isEmailDirty && !isEmpty(email)) {
       this.set('isEmailDirty', true);
     }
     return this.validateEmail(email);
-  }.property('email', 'isEmailDirty'),
+  }),
 
   // We don't want error being displayed when form loads initially
-  isEmailInvalid: Ember.computed('isEmailValid', 'isEmailDirty', function () {
-    return this.get('isEmailDirty') && !this.get('isEmailValid');
+  isEmailInvalid: computed('isEmailValid', 'isEmailDirty', function () {
+    return this.isEmailDirty && !this.isEmailValid;
   }),
 
-  doEmailsMatch: function () {
-    return this.get('email') === this.get('confirmEmail');
-  }.property('email', 'confirmEmail'),
-
-  isPasswordValid: function () {
-    if (!this.get('isPasswordDirty') && !Ember.isEmpty(this.get('password'))) {
-      this.set('isPasswordDirty', true);
-    }
-    //TODO: stricter password req
-    if (Ember.isEmpty(this.get('password'))) {
-      return false;
-    }
-    let length = this.get('password').length;
-    let min = this.get('passwordMinLength');
-    let max = this.get('passwordMaxLength');
-
-    return length >= min && length <= max;
-  }.property('password', 'isPasswordValid', 'passwordMinLength', 'passwordMaxLength'),
-
-  isPasswordInvalid: Ember.computed('isPasswordValid', 'isPasswordDirty', function () {
-    return this.get('isPasswordDirty') && !this.get('isPasswordValid');
+  doEmailsMatch: computed('email', 'confirmEmail', function () {
+    return this.email === this.confirmEmail;
   }),
 
-  doPasswordsMatch: function () {
-    return this.get('password') === this.get('confirmPassword');
-  }.property('password', 'confirmPassword'),
+  isPasswordValid: computed(
+    'password',
+    'isPasswordValid',
+    'passwordMinLength',
+    'passwordMaxLength',
+    function () {
+      if (!this.isPasswordDirty && !isEmpty(this.password)) {
+        this.set('isPasswordDirty', true);
+      }
+      //TODO: stricter password req
+      if (isEmpty(this.password)) {
+        return false;
+      }
+      let length = this.password.length;
+      let min = this.passwordMinLength;
+      let max = this.passwordMaxLength;
+
+      return length >= min && length <= max;
+    }
+  ),
+
+  isPasswordInvalid: computed(
+    'isPasswordValid',
+    'isPasswordDirty',
+    function () {
+      return this.isPasswordDirty && !this.isPasswordValid;
+    }
+  ),
+
+  doPasswordsMatch: computed('password', 'confirmPassword', function () {
+    return this.password === this.confirmPassword;
+  }),
 
   validateEmail: function (email) {
     if (!email) {
       return false;
     }
-    var emailPattern = new RegExp(this.get('emailRegEx'));
+    var emailPattern = new RegExp(this.emailRegEx);
     return emailPattern.test(email);
   },
 
   actions: {
     usernameValidate(username) {
       if (username) {
-        var usernamePattern = new RegExp(this.get('usernameRegEx'));
+        var usernamePattern = new RegExp(this.usernameRegEx);
         var usernameTest = usernamePattern.test(username);
 
         if (usernameTest === false) {
@@ -123,7 +131,10 @@ export default Ember.Mixin.create({
         return /\s/g.test(string);
       }
 
-      if (password.length < this.get('passwordMinLength') || password.length > this.get('passwordMaxLength')) {
+      if (
+        password.length < this.passwordMinLength ||
+        password.length > this.passwordMaxLength
+      ) {
         this.set('passwordError', this.get('passwordErrors.invalid'));
       } else {
         this.set('passwordError', null);
@@ -139,7 +150,16 @@ export default Ember.Mixin.create({
       }
     },
     resetErrors(e) {
-      const errors = ['missingCredentials', 'noTermsAndConditions', 'usernameError', 'emailError', 'passwordError', 'errorMessage', 'emailExistsError', 'postErrors'];
+      const errors = [
+        'missingCredentials',
+        'noTermsAndConditions',
+        'usernameError',
+        'emailError',
+        'passwordError',
+        'errorMessage',
+        'emailExistsError',
+        'postErrors',
+      ];
 
       for (let error of errors) {
         if (this.get(error)) {
@@ -147,5 +167,5 @@ export default Ember.Mixin.create({
         }
       }
     },
-  }
+  },
 });

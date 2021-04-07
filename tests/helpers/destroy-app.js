@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 
 
 
@@ -6,5 +6,5 @@ import Ember from 'ember';
 
 
 export default function destroyApp(application) {
-  Ember.run(application, 'destroy');
+  run(application, 'destroy');
 }

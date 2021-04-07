@@ -1,154 +1,298 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { alias, or } from '@ember/object/computed';
 /*global _:false */
-import Ember from 'ember';
+import { later } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import { isEqual } from '@ember/utils';
 import $ from 'jquery';
 import moment from 'moment';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'workspace-list-container',
   showList: true,
   showGrid: false,
   toggleTrashed: false,
   toggleHidden: false,
-  utils: Ember.inject.service('utility-methods'),
+  utils: service('utility-methods'),
 
   sortProperties: ['name'],
   workspaceToDelete: null,
-  alert: Ember.inject.service('sweet-alert'),
+  alert: service('sweet-alert'),
 
   searchOptions: ['all', 'name', 'owner', 'collaborators'],
   searchCriterion: 'all',
-  sortCriterion: { name: 'Newest', sortParam: { lastModifiedDate: -1 }, doCollate: true, type: 'lastModifiedDate' },
+  sortCriterion: {
+    name: 'Newest',
+    sortParam: { lastModifiedDate: -1 },
+    doCollate: true,
+    type: 'lastModifiedDate',
+  },
   sortOptions: {
     name: [
       { sortParam: null, icon: '' },
-      { name: 'A-Z', sortParam: { name: 1 }, doCollate: true, icon: "fas fa-sort-alpha-down sort-icon", type: 'name' },
-      { name: 'Z-A', sortParam: { name: -1 }, doCollate: true, icon: "fas fa-sort-alpha-up sort-icon", type: 'name' },
+      {
+        name: 'A-Z',
+        sortParam: { name: 1 },
+        doCollate: true,
+        icon: 'fas fa-sort-alpha-down sort-icon',
+        type: 'name',
+      },
+      {
+        name: 'Z-A',
+        sortParam: { name: -1 },
+        doCollate: true,
+        icon: 'fas fa-sort-alpha-up sort-icon',
+        type: 'name',
+      },
     ],
     lastModifiedDate: [
       { sortParam: null, icon: '' },
-      { id: 3, name: 'Newest', sortParam: { lastModifiedDate: -1 }, doCollate: false, icon: "fas fa-arrow-down sort-icon", type: 'lastModifiedDate' },
-      { id: 4, name: 'Oldest', sortParam: { lastModifiedDate: 1 }, doCollate: false, icon: "fas fa-arrow-up sort-icon", type: 'lastModifiedDate' }
+      {
+        id: 3,
+        name: 'Newest',
+        sortParam: { lastModifiedDate: -1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-down sort-icon',
+        type: 'lastModifiedDate',
+      },
+      {
+        id: 4,
+        name: 'Oldest',
+        sortParam: { lastModifiedDate: 1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-up sort-icon',
+        type: 'lastModifiedDate',
+      },
     ],
     submissions: [
       { sortParam: null, icon: '' },
-      { name: 'Most', sortParam: { submissions: -1 }, doCollate: false, icon: "fas fa-arrow-down sort-icon", type: 'submissions' },
-      { name: 'Fewest', sortParam: { submissions: 1 }, doCollate: false, icon: "fas fa-arrow-up sort-icon", type: 'submissions' }
+      {
+        name: 'Most',
+        sortParam: { submissions: -1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-down sort-icon',
+        type: 'submissions',
+      },
+      {
+        name: 'Fewest',
+        sortParam: { submissions: 1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-up sort-icon',
+        type: 'submissions',
+      },
     ],
     selections: [
       { sortParam: null, icon: '' },
-      { name: 'Most', sortParam: { selections: -1 }, doCollate: false, icon: "fas fa-arrow-down sort-icon", type: 'selections' },
-      { name: 'Fewest', sortParam: { selections: 1 }, doCollate: false, icon: "fas fa-arrow-up sort-icon", type: 'selections' }
+      {
+        name: 'Most',
+        sortParam: { selections: -1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-down sort-icon',
+        type: 'selections',
+      },
+      {
+        name: 'Fewest',
+        sortParam: { selections: 1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-up sort-icon',
+        type: 'selections',
+      },
     ],
     comments: [
       { sortParam: null, icon: '' },
-      { name: 'Most', sortParam: { comments: -1 }, doCollate: false, icon: "fas fa-arrow-down sort-icon", type: 'comments' },
-      { name: 'Fewest', sortParam: { comments: 1 }, doCollate: false, icon: "fas fa-arrow-up sort-icon", type: 'comments' }
+      {
+        name: 'Most',
+        sortParam: { comments: -1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-down sort-icon',
+        type: 'comments',
+      },
+      {
+        name: 'Fewest',
+        sortParam: { comments: 1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-up sort-icon',
+        type: 'comments',
+      },
     ],
     responses: [
       { sortParam: null, icon: '' },
-      { name: 'Most', sortParam: { responses: -1 }, doCollate: false, icon: "fas fa-arrow-down sort-icon", type: 'responses' },
-      { name: 'Fewest', sortParam: { responses: 1 }, doCollate: false, icon: "fas fa-arrow-up sort-icon", type: 'responses' }
+      {
+        name: 'Most',
+        sortParam: { responses: -1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-down sort-icon',
+        type: 'responses',
+      },
+      {
+        name: 'Fewest',
+        sortParam: { responses: 1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-up sort-icon',
+        type: 'responses',
+      },
     ],
     owner: [
       { sortParam: null, icon: '' },
-      { name: 'A-Z', sortParam: { owner: 1 }, doCollate: true, icon: "fas fa-sort-alpha-down sort-icon", type: 'owner' },
-      { owner: 'Z-A', sortParam: { owner: -1 }, doCollate: true, icon: "fas fa-sort-alpha-up sort-icon", type: 'owner' },
+      {
+        name: 'A-Z',
+        sortParam: { owner: 1 },
+        doCollate: true,
+        icon: 'fas fa-sort-alpha-down sort-icon',
+        type: 'owner',
+      },
+      {
+        owner: 'Z-A',
+        sortParam: { owner: -1 },
+        doCollate: true,
+        icon: 'fas fa-sort-alpha-up sort-icon',
+        type: 'owner',
+      },
     ],
     collabs: [
       { sortParam: null, icon: '' },
-      { name: 'Most', sortParam: { permissions: -1 }, doCollate: false, icon: "fas fa-arrow-down sort-icon", type: 'collabs' },
-      { name: 'Fewest', sortParam: { permissions: 1 }, doCollate: false, icon: "fas fa-arrow-up sort-icon", type: 'collabs' }
-    ]
+      {
+        name: 'Most',
+        sortParam: { permissions: -1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-down sort-icon',
+        type: 'collabs',
+      },
+      {
+        name: 'Fewest',
+        sortParam: { permissions: 1 },
+        doCollate: false,
+        icon: 'fas fa-arrow-up sort-icon',
+        type: 'collabs',
+      },
+    ],
   },
   modeOptions: [
-    { id: 1, label: 'All', value: ['public', 'private'], isChecked: true, icon: 'fas fa-list' },
-    { id: 2, label: 'Public', value: ['public'], isChecked: false, icon: 'fas fa-globe-americas' },
-    { id: 3, label: 'Private', value: ['private'], isChecked: false, icon: 'fas fa-unlock' },
+    {
+      id: 1,
+      label: 'All',
+      value: ['public', 'private'],
+      isChecked: true,
+      icon: 'fas fa-list',
+    },
+    {
+      id: 2,
+      label: 'Public',
+      value: ['public'],
+      isChecked: false,
+      icon: 'fas fa-globe-americas',
+    },
+    {
+      id: 3,
+      label: 'Private',
+      value: ['private'],
+      isChecked: false,
+      icon: 'fas fa-unlock',
+    },
   ],
   selectedMode: ['public', 'private', 'org'],
 
   moreMenuOptions: [
-    { label: 'Copy', value: 'copy', action: 'copyWorkspace', icon: 'fas fa-copy' },
-    { label: 'Assign', value: 'assign', action: 'assignWorkspace', icon: 'fas fa-list-ul' },
-    { label: 'Hide', value: 'hide', action: 'hideWorkspace', icon: 'fas fa-archive' },
-    { label: 'Delete', value: 'delete', action: 'deleteWorkspace', icon: 'fas fa-trash' },
+    {
+      label: 'Copy',
+      value: 'copy',
+      action: 'copyWorkspace',
+      icon: 'fas fa-copy',
+    },
+    {
+      label: 'Assign',
+      value: 'assign',
+      action: 'assignWorkspace',
+      icon: 'fas fa-list-ul',
+    },
+    {
+      label: 'Hide',
+      value: 'hide',
+      action: 'hideWorkspace',
+      icon: 'fas fa-archive',
+    },
+    {
+      label: 'Delete',
+      value: 'delete',
+      action: 'deleteWorkspace',
+      icon: 'fas fa-trash',
+    },
   ],
 
-  adminFilter: Ember.computed.alias('filter.primaryFilters.inputs.all'),
+  adminFilter: alias('filter.primaryFilters.inputs.all'),
 
+  primaryFilterValue: alias('primaryFilter.value'),
+  doUseSearchQuery: or('isSearchingWorkspaces', 'isDisplayingSearchResults'),
 
-  primaryFilterValue: Ember.computed.alias('primaryFilter.value'),
-  doUseSearchQuery: Ember.computed.or('isSearchingWorkspaces', 'isDisplayingSearchResults'),
-
-  listResultsMessage: function () {
-    let msg;
-    // let userOrgName = this.get('userOrgName');
-    if (this.get('isFetchingWorkspaces')) {
-      if (this.get('showLoadingMessage')) {
-        msg = 'Loading results... Thank you for your patience.';
-
-      } else {
-        msg = '';
+  listResultsMessage: computed(
+    'criteriaTooExclusive',
+    'isDisplayingSearchResults',
+    'workspaces.@each.isTrashed',
+    'isFetchingWorkspaces',
+    'showLoadingMessage',
+    function () {
+      let msg;
+      // let userOrgName = this.get('userOrgName');
+      if (this.isFetchingWorkspaces) {
+        if (this.showLoadingMessage) {
+          msg = 'Loading results... Thank you for your patience.';
+        } else {
+          msg = '';
+        }
+        return msg;
       }
-      return msg;
-    }
-    if (this.get('criteriaTooExclusive')) {
-      msg = 'No results found. Please try expanding your filter criteria.';
-      return msg;
-    }
-
-    if (this.get('isDisplayingSearchResults')) {
-      let countDescriptor = 'workspaces';
-      let verb;
-      let criterion = this.get('searchCriterion');
-      if (criterion === 'all') {
-        verb = 'contain';
-      } else {
-        verb = 'contains';
+      if (this.criteriaTooExclusive) {
+        msg = 'No results found. Please try expanding your filter criteria.';
+        return msg;
       }
-      let total = this.get('workspacesMetadata.total');
-      if (total === 1) {
-        countDescriptor = 'workspace';
+
+      if (this.isDisplayingSearchResults) {
+        let countDescriptor = 'workspaces';
+        let verb;
+        let criterion = this.searchCriterion;
         if (criterion === 'all') {
+          verb = 'contain';
+        } else {
           verb = 'contains';
         }
+        let total = this.get('workspacesMetadata.total');
+        if (total === 1) {
+          countDescriptor = 'workspace';
+          if (criterion === 'all') {
+            verb = 'contains';
+          }
+        }
+        let typeDescription = `whose ${criterion} ${verb}`;
+        if (this.searchCriterion === 'all') {
+          typeDescription = `that ${verb}`;
+        }
+        msg = `Based off your filter criteria, we found ${this.get(
+          'workspacesMetadata.total'
+        )} ${countDescriptor} ${typeDescription} "${this.searchQuery}"`;
+        return msg;
+      }
+      msg = `${this.get('workspacesMetadata.total')} workspaces found`;
 
+      let toggleTrashed = this.toggleTrashed;
+
+      if (toggleTrashed) {
+        msg = `${msg} - <strong>Displaying Trashed Workspaces</strong>`;
       }
-      let typeDescription = `whose ${criterion} ${verb}`;
-      if (this.get('searchCriterion') === 'all') {
-        typeDescription = `that ${verb}`;
-      }
-      msg = `Based off your filter criteria, we found ${this.get('workspacesMetadata.total')} ${countDescriptor} ${typeDescription} "${this.get('searchQuery')}"`;
+
       return msg;
     }
-    msg = `${this.get('workspacesMetadata.total')} workspaces found`;
-
-    let toggleTrashed = this.get('toggleTrashed');
-
-    if (toggleTrashed) {
-      msg = `${msg} - <strong>Displaying Trashed Workspaces</strong>`;
-    }
-
-    return msg;
-
-  }.property('criteriaTooExclusive', 'isDisplayingSearchResults', 'workspaces.@each.isTrashed', 'isFetchingWorkspaces', 'showLoadingMessage'),
-
+  ),
 
   init: function () {
-    this.getUserOrg()
-      .then((name) => {
-        this.set('userOrgName', name);
-        this.configureFilter();
-        this.configurePrimaryFilter();
-        this.getWorkspaces();
-      });
+    this.getUserOrg().then((name) => {
+      this.set('userOrgName', name);
+      this.configureFilter();
+      this.configurePrimaryFilter();
+      this.getWorkspaces();
+    });
     this._super(...arguments);
   },
 
@@ -157,7 +301,12 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       if (org) {
         return org.get('name');
       } else {
-        this.get('alert').showModal('warning', 'You currently do not belong to any organization', 'Please add or request an organization in order to get the best user experience', 'Ok');
+        this.alert.showModal(
+          'warning',
+          'You currently do not belong to any organization',
+          'Please add or request an organization in order to get the best user experience',
+          'Ok'
+        );
         return 'undefined';
       }
     });
@@ -168,7 +317,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     for (let attr of attributes) {
       let prop = this.get(attr);
       let modelAttr = this.model[attr];
-      if (!Ember.isEqual(prop, modelAttr)) {
+      if (!isEqual(prop, modelAttr)) {
         this.set(attr, modelAttr);
         let metaPropName = `${attr}Metadata`;
         let meta = modelAttr.get('meta');
@@ -187,96 +336,94 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       this.send('setGrid');
     }
 
-    let doHideOutlet = this.get('doHideOutlet');
+    let doHideOutlet = this.doHideOutlet;
     if (_.isUndefined(doHideOutlet)) {
       this.set('doHideOutlet', this.get('model.hideOutlet'));
-
     }
-    if (this.get('doHideOutlet') === false) {
+    if (this.doHideOutlet === false) {
       this.$('#outlet').removeClass('hidden');
     }
     this._super(...arguments);
   },
 
   configureFilter: function () {
-    let currentUserOrgName = this.get('userOrgName');
+    let currentUserOrgName = this.userOrgName;
 
     let filter = {
-      primaryFilters:
-      {
-        selectedValue: "mine",
+      primaryFilters: {
+        selectedValue: 'mine',
         inputs: {
           mine: {
-            label: "Mine",
-            value: "mine",
+            label: 'Mine',
+            value: 'mine',
             isChecked: true,
-            icon: "fas fa-user",
+            icon: 'fas fa-user',
             order: 1,
             secondaryFilters: {
-              selectedValues: ["createdBy", "owner"],
+              selectedValues: ['createdBy', 'owner'],
               inputs: {
                 createdBy: {
-                  label: "Created By Me",
-                  value: "createdBy",
+                  label: 'Created By Me',
+                  value: 'createdBy',
                   isChecked: true,
                   isApplied: true,
-                  icon: "fas fa-wrench"
+                  icon: 'fas fa-wrench',
                 },
                 owner: {
                   label: 'Owner',
-                  value: "owner",
+                  value: 'owner',
                   isChecked: true,
                   isApplied: true,
-                  icon: "fas fa-building"
-                }
-              }
-            }
+                  icon: 'fas fa-building',
+                },
+              },
+            },
           },
           collab: {
-            label: "Collaborator",
-            value: "collab",
+            label: 'Collaborator',
+            value: 'collab',
             isChecked: false,
-            icon: "fas fa-users",
+            icon: 'fas fa-users',
             order: 2,
           },
           myOrg: {
-            label: "My Org",
-            value: "myOrg",
+            label: 'My Org',
+            value: 'myOrg',
             isChecked: false,
-            icon: "fas fa-university",
+            icon: 'fas fa-university',
             order: 3,
           },
           everyone: {
-            label: "Public",
-            value: "everyone",
+            label: 'Public',
+            value: 'everyone',
             isChecked: false,
-            icon: "fas fa-globe-americas",
+            icon: 'fas fa-globe-americas',
             order: 4,
-          }
-        }
-      }
+          },
+        },
+      },
     };
     let isAdmin = this.get('currentUser.isAdmin');
-    let isPdadmin = this.get('currentUser.accountType') === "P";
+    let isPdadmin = this.get('currentUser.accountType') === 'P';
     if (isPdadmin) {
       filter.primaryFilters.inputs.myOrg.secondaryFilters = {
-        selectedValues: ["orgProblems", "fromOrg"],
+        selectedValues: ['orgProblems', 'fromOrg'],
         inputs: {
           orgProblems: {
             label: `Visbile to ${currentUserOrgName}`,
-            value: "orgProblems",
+            value: 'orgProblems',
             isChecked: true,
             isApplied: true,
-            icon: "fas fa-dot-circle"
+            icon: 'fas fa-dot-circle',
           },
           fromOrg: {
             label: `${currentUserOrgName} Workspaces`,
-            value: "fromOrg",
+            value: 'fromOrg',
             isChecked: true,
             isApplied: true,
-            icon: "fas fa-users"
-          }
-        }
+            icon: 'fas fa-users',
+          },
+        },
       };
     }
 
@@ -286,7 +433,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       filter.primaryFilters.inputs.all = {
         label: 'All',
         value: 'all',
-        icon: "fas fa-infinity",
+        icon: 'fas fa-infinity',
         isChecked: true,
         order: 0,
         secondaryFilters: {
@@ -294,51 +441,51 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
           initialItems: ['org'],
           inputs: {
             org: {
-              label: "Organization",
-              value: "org",
+              label: 'Organization',
+              value: 'org',
               selectedValues: [],
               subFilters: {
-                selectedValues: ["fromOrg", "orgWorkspaces"],
+                selectedValues: ['fromOrg', 'orgWorkspaces'],
                 inputs: {
                   fromOrg: {
                     label: `Created or Owned by Members`,
-                    value: "fromOrg",
+                    value: 'fromOrg',
                     isChecked: true,
                     isApplied: true,
-                    icon: "fas fa-users"
+                    icon: 'fas fa-users',
                   },
                   orgWorkspaces: {
                     label: `Visibile to Members`,
-                    value: "orgWorkspaces",
+                    value: 'orgWorkspaces',
                     isChecked: true,
                     isApplied: true,
-                    icon: "fas fa-dot-circle"
+                    icon: 'fas fa-dot-circle',
                   },
-                }
-              }
+                },
+              },
             },
             creator: {
-              label: "Creator",
-              value: "creator",
-              selectedValues: []
+              label: 'Creator',
+              value: 'creator',
+              selectedValues: [],
             },
             owner: {
-              label: "Owner",
-              value: "owner",
-              selectedValues: []
+              label: 'Owner',
+              value: 'owner',
+              selectedValues: [],
             },
-          }
-        }
+          },
+        },
       };
     }
     this.set('filter', filter);
   },
 
-  modeFilter: function () {
+  modeFilter: computed('selectedMode', function () {
     return {
-      $in: this.get('selectedMode')
+      $in: this.selectedMode,
     };
-  }.property('selectedMode'),
+  }),
 
   configurePrimaryFilter() {
     let primaryFilters = this.get('filter.primaryFilters');
@@ -353,7 +500,9 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   buildMineFilter() {
     let filter = {};
     let userId = this.get('currentUser.id');
-    let secondaryValues = this.get('primaryFilter.secondaryFilters.selectedValues');
+    let secondaryValues = this.get(
+      'primaryFilter.secondaryFilters.selectedValues'
+    );
 
     let includeCreated = _.indexOf(secondaryValues, 'createdBy') !== -1;
     let includeOwner = _.indexOf(secondaryValues, 'owner') !== -1;
@@ -376,7 +525,6 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     return filter;
   },
 
-
   buildPublicFilter() {
     let filter = {};
 
@@ -387,21 +535,24 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   buildMyOrgFilter() {
     let filter = {};
-    let userOrgId = this.get('currentUser').get('organization.id');
-    let secondaryValues = this.get('primaryFilter.secondaryFilters.selectedValues');
+    let userOrgId = this.currentUser.get('organization.id');
+    let secondaryValues = this.get(
+      'primaryFilter.secondaryFilters.selectedValues'
+    );
     filter.$or = [];
 
     if (secondaryValues) {
-      let includeOrgWorkspaces = _.indexOf(secondaryValues, 'orgProblems') !== -1;
+      let includeOrgWorkspaces =
+        _.indexOf(secondaryValues, 'orgProblems') !== -1;
       let includeFromOrg = _.indexOf(secondaryValues, 'fromOrg') !== -1;
 
       if (!includeOrgWorkspaces && !includeFromOrg) {
-        this.set("criteriaTooExclusive", true);
+        this.set('criteriaTooExclusive', true);
         return;
       }
 
       if (includeOrgWorkspaces) {
-        this.set("selectedMode", ["org"]);
+        this.set('selectedMode', ['org']);
         filter.$or.push({ organization: userOrgId });
       }
 
@@ -410,7 +561,6 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         filter.includeFromOrg = true;
         //find all workspaces who's owner's org is same as yours
       }
-
     } else {
       filter.mode = 'org';
       filter.$or.push({ organization: userOrgId });
@@ -420,9 +570,10 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   buildAllFilter() {
     let filter = {};
-    let adminFilter = this.get('adminFilter');
+    let adminFilter = this.adminFilter;
     let currentVal = adminFilter.secondaryFilters.selectedValue;
-    let selectedValues = adminFilter.secondaryFilters.inputs[currentVal].selectedValues;
+    let selectedValues =
+      adminFilter.secondaryFilters.inputs[currentVal].selectedValues;
 
     let isEmpty = _.isEmpty(selectedValues);
 
@@ -433,10 +584,13 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return {};
       }
       // recommended, fromOrg
-      let secondaryValues = this.get('adminFilter.secondaryFilters.inputs.org.subFilters.selectedValues');
+      let secondaryValues = this.get(
+        'adminFilter.secondaryFilters.inputs.org.subFilters.selectedValues'
+      );
 
       let includeFromOrg = _.indexOf(secondaryValues, 'fromOrg') !== -1;
-      let includeOrgWorkspaces = _.indexOf(secondaryValues, 'orgWorkspaces') !== -1;
+      let includeOrgWorkspaces =
+        _.indexOf(secondaryValues, 'orgWorkspaces') !== -1;
 
       // immediately return 0 results
       if (!includeFromOrg && !includeOrgWorkspaces) {
@@ -449,7 +603,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       filter.all.org.organizations = selectedValues;
       // mode "org" and organization prop
       if (includeOrgWorkspaces) {
-        this.set("selectedMode", ["org"]);
+        this.set('selectedMode', ['org']);
       }
       //
       if (includeFromOrg) {
@@ -477,7 +631,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   buildCollabFilter() {
-    const utils = this.get('utils');
+    const utils = this.utils;
     const collabWorkspaces = this.get('currentUser.collabWorkspaces');
 
     let ids;
@@ -487,7 +641,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       ids = collabWorkspaces;
     }
     // user is not a collaborator for any workspaces
-    if (!this.get('utils').isNonEmptyArray(ids)) {
+    if (!this.utils.isNonEmptyArray(ids)) {
       this.set('criteriaTooExclusive', true);
       return filter;
     }
@@ -498,46 +652,46 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   buildModeFilter: function () {
     //privacy setting determined from privacy drop down on main display
-    let mode = this.get('modeFilter');
+    let mode = this.modeFilter;
     return {
-      $in: mode
+      $in: mode,
     };
   },
 
   buildSortBy: function () {
-    if (this.get('searchByRelevance')) {
+    if (this.searchByRelevance) {
       return {
         sortParam: {
-          score: { $meta: "textScore" }
+          score: { $meta: 'textScore' },
         },
         doCollate: false,
-        byRelevance: true
+        byRelevance: true,
       };
     }
 
-    let criterion = this.get('sortCriterion');
+    let criterion = this.sortCriterion;
     if (!criterion) {
       return { title: 1, doCollate: true };
     }
     let { sortParam, doCollate } = criterion;
     return {
       sortParam,
-      doCollate
+      doCollate,
     };
   },
 
   buildSearchBy: function () {
-    let criterion = this.get('searchCriterion');
-    let query = this.get('searchQuery');
+    let criterion = this.searchCriterion;
+    let query = this.searchQuery;
     return {
       criterion,
-      query
+      query,
     };
   },
 
   buildFilterBy: function () {
-    let primaryFilterValue = this.get('primaryFilterValue');
-    let isPdadmin = this.get('currentUser.accountType') === "P";
+    let primaryFilterValue = this.primaryFilterValue;
+    let isPdadmin = this.get('currentUser.accountType') === 'P';
     let filterBy;
 
     if (primaryFilterValue === 'mine') {
@@ -567,40 +721,45 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       filterBy.mode = { $in: ['public'] };
     } else if (primaryFilterValue === 'myOrg') {
       if (isPdadmin) {
-        let mode = this.get('modeFilter');
+        let mode = this.modeFilter;
         filterBy.mode = mode;
       } else {
         filterBy.mode = { $in: ['org'] };
       }
     } else {
-      let mode = this.get('modeFilter');
+      let mode = this.modeFilter;
       filterBy.mode = mode;
     }
 
     return filterBy;
   },
 
-  displayWorkspaces: function () {
-    let hiddenWorkspaces = this.get('currentUser.hiddenWorkspaces');
-    let workspaces = this.get('workspaces');
-    let visibileWorkspaces = workspaces.filter((workspace) => {
-      if (!hiddenWorkspaces.includes(workspace.id)) {
-        return workspace;
-      }
-    });
+  displayWorkspaces: computed(
+    'workspaces.@each.isTrashed',
+    'toggleTrashed',
+    'currentUser.hiddenWorkspaces',
+    function () {
+      let hiddenWorkspaces = this.get('currentUser.hiddenWorkspaces');
+      let workspaces = this.workspaces;
+      let visibileWorkspaces = workspaces.filter((workspace) => {
+        if (!hiddenWorkspaces.includes(workspace.id)) {
+          return workspace;
+        }
+      });
 
-    if (visibileWorkspaces) {
-      if (this.get("toggleTrashed")) {
-        return visibileWorkspaces;
-      } else if (this.get('toggleHidden')) {
-        // this.get('store').findRecord('workspace', hiddenWorkspaces[0]).then((workspaces) => {
-        //   console.log(workspaces.id);
-        // });
-      } else {
-        return visibileWorkspaces.rejectBy("isTrashed");
+      if (visibileWorkspaces) {
+        if (this.toggleTrashed) {
+          return visibileWorkspaces;
+        } else if (this.toggleHidden) {
+          // this.get('store').findRecord('workspace', hiddenWorkspaces[0]).then((workspaces) => {
+          //   console.log(workspaces.id);
+          // });
+        } else {
+          return visibileWorkspaces.rejectBy('isTrashed');
+        }
       }
     }
-  }.property('workspaces.@each.isTrashed', 'toggleTrashed', 'currentUser.hiddenWorkspaces'),
+  ),
 
   buildQueryParams: function (page, isTrashedOnly) {
     let params = {};
@@ -616,7 +775,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     let sortBy = this.buildSortBy();
     let filterBy = this.buildFilterBy();
 
-    if (this.get('criteriaTooExclusive')) {
+    if (this.criteriaTooExclusive) {
       // display message or just 0 results
       this.set('workspaces', []);
       this.set('workspacesMetadata', null);
@@ -625,83 +784,87 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     }
     params = {
       sortBy,
-      filterBy
+      filterBy,
     };
 
     if (page) {
       params.page = page;
     }
 
-    if (this.get('doUseSearchQuery')) {
+    if (this.doUseSearchQuery) {
       let searchBy = this.buildSearchBy();
       params.searchBy = searchBy;
     }
     return params;
   },
 
-  handleLoadingMessage: function () {
+  handleLoadingMessage: observer('isFetchingWorkspaces', function () {
     const that = this;
-    if (!this.get('isFetchingWorkspaces')) {
+    if (!this.isFetchingWorkspaces) {
       this.set('showLoadingMessage', false);
       return;
     }
-    Ember.run.later(function () {
-      if (that.isDestroyed || that.isDestroying || !that.get('isFetchingWorkspaces')) {
+    later(function () {
+      if (
+        that.isDestroyed ||
+        that.isDestroying ||
+        !that.get('isFetchingWorkspaces')
+      ) {
         return;
       }
       that.set('showLoadingMessage', true);
     }, 300);
-  }.observes('isFetchingWorkspaces'),
+  }),
 
   getWorkspaces: function (page, isTrashedOnly = false, isHiddenOnly = false) {
     this.set('isFetchingWorkspaces', true);
     let queryParams = this.buildQueryParams(page, isTrashedOnly);
 
-    if (this.get('criteriaTooExclusive')) {
-      if (this.get('isFetchingWorkspaces')) {
+    if (this.criteriaTooExclusive) {
+      if (this.isFetchingWorkspaces) {
         this.set('isFetchingWorkspaces', false);
       }
       return;
     }
 
-    this.store.query('workspace',
-      queryParams
-    ).then((results) => {
-      this.removeMessages('workspaceLoadErrors');
-      this.set('workspaces', results);
-      this.set('workspacesMetadata', results.get('meta'));
-      this.set('isFetchingWorkspaces', false);
-
-
-      let isSearching = this.get('isSearchingWorkspaces');
-
-      if (isSearching) {
-        this.set('isDisplayingSearchResults', true);
-        this.set('isSearchingWorkspaces', false);
-      }
-
-      if (this.get('searchByRelevance')) {
-        this.set('searchByRelevance', false);
-      }
-
-      if (this.get('isChangingPage')) {
-        this.set('isChangingPage', false);
-      }
-
-      if (isHiddenOnly) {
-        console.log('getWorkspaces and isHiddenOnly is', isHiddenOnly);
-      }
-    }).catch((err) => {
-      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        this.handleErrors(err, 'workspaceLoadErrors');
+    this.store
+      .query('workspace', queryParams)
+      .then((results) => {
+        this.removeMessages('workspaceLoadErrors');
+        this.set('workspaces', results);
+        this.set('workspacesMetadata', results.get('meta'));
         this.set('isFetchingWorkspaces', false);
-      }
-    });
+
+        let isSearching = this.isSearchingWorkspaces;
+
+        if (isSearching) {
+          this.set('isDisplayingSearchResults', true);
+          this.set('isSearchingWorkspaces', false);
+        }
+
+        if (this.searchByRelevance) {
+          this.set('searchByRelevance', false);
+        }
+
+        if (this.isChangingPage) {
+          this.set('isChangingPage', false);
+        }
+
+        if (isHiddenOnly) {
+          console.log('getWorkspaces and isHiddenOnly is', isHiddenOnly);
+        }
+      })
+      .catch((err) => {
+        if (!this.isDestroyed && !this.isDestroying) {
+          this.handleErrors(err, 'workspaceLoadErrors');
+          this.set('isFetchingWorkspaces', false);
+        }
+      });
   },
 
-  currentAsOf: function () {
-    return moment(this.get('since')).format('H:mm');
-  }.property(),
+  currentAsOf: computed(function () {
+    return moment(this.since).format('H:mm');
+  }),
 
   listFilter: 'all',
 
@@ -713,56 +876,64 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     // for now just show most recently created at top
     return list.sortBy('lastModifiedDate').reverse();
-
   },
 
-  displayList: function () {
-    const filterKey = {
-      all: 'allWorkspaces',
-      mine: 'ownWorkspaces',
-      public: 'publicWorkspaces'
-    };
+  displayList: computed(
+    'listFilter',
+    'workspaces.@each.isTrashed',
+    function () {
+      const filterKey = {
+        all: 'allWorkspaces',
+        mine: 'ownWorkspaces',
+        public: 'publicWorkspaces',
+      };
 
-    const filter = this.get('listFilter');
+      const filter = this.listFilter;
 
-    if (_.isUndefined(filter) || _.isUndefined(filterKey[filter])) {
-      return this.get('workspaces').rejectBy('isTrashed');
+      if (_.isUndefined(filter) || _.isUndefined(filterKey[filter])) {
+        return this.workspaces.rejectBy('isTrashed');
+      }
+
+      const listName = filterKey[filter];
+      let displayList = this.get(listName);
+      let sorted = this.sortDisplayList(displayList);
+
+      // if (sorted) {
+      //   this.set('displayList', sorted);
+      //   return sorted;
+      // } else {
+      //   this.set('displayList', this.get(listName));
+      // }
+      return sorted;
     }
+  ),
 
-    const listName = filterKey[filter];
-    let displayList = this.get(listName);
-    let sorted = this.sortDisplayList(displayList);
-
-    // if (sorted) {
-    //   this.set('displayList', sorted);
-    //   return sorted;
-    // } else {
-    //   this.set('displayList', this.get(listName));
-    // }
-    return sorted;
-
-  }.property('listFilter', 'workspaces.@each.isTrashed'),
-
-  setOwnWorkspaces: function () {
-    const currentUser = this.get('currentUser');
-    const workspaces = this.get('workspaces').rejectBy('isTrashed');
+  setOwnWorkspaces: observer('workspaces.@each.isTrashed', function () {
+    const currentUser = this.currentUser;
+    const workspaces = this.workspaces.rejectBy('isTrashed');
 
     this.set('ownWorkspaces', workspaces.filterBy('owner.id', currentUser.id));
-  }.observes('workspaces.@each.isTrashed'),
+  }),
 
-  setAllWorkspaces: function () {
-    this.set('allWorkspaces', this.get('workspaces').rejectBy('isTrashed'));
-  }.observes('workspaces.@each.isTrashed'),
+  setAllWorkspaces: observer('workspaces.@each.isTrashed', function () {
+    this.set('allWorkspaces', this.workspaces.rejectBy('isTrashed'));
+  }),
 
-  setPublicWorkspaces: function () {
-    const workspaces = this.get('workspaces').rejectBy('isTrashed');
+  setPublicWorkspaces: observer('workspaces.@each.isTrashed', function () {
+    const workspaces = this.workspaces.rejectBy('isTrashed');
     this.set('publicWorkspaces', workspaces.filterBy('mode', 'public'));
-  }.observes('workspaces.@each.isTrashed'),
+  }),
 
   actions: {
     showModal: function (ws) {
       this.set('workspaceToDelete', ws);
-      this.get('alert').showModal('warning', 'Are you sure you want to delete this workspace?', null, 'Yes, delete it')
+      this.alert
+        .showModal(
+          'warning',
+          'Are you sure you want to delete this workspace?',
+          null,
+          'Yes, delete it'
+        )
         .then((result) => {
           if (result.value) {
             this.send('trashWorkspace', ws);
@@ -770,21 +941,21 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         });
     },
     refreshList() {
-      let isTrashedOnly = this.get('toggleTrashed');
-      let isHiddenOnly = this.get('toggleHidden');
+      let isTrashedOnly = this.toggleTrashed;
+      let isHiddenOnly = this.toggleHidden;
       this.getWorkspaces(null, isTrashedOnly, isHiddenOnly);
     },
     toggleFilter: function (key) {
-      if (key === this.get('listFilter')) {
+      if (key === this.listFilter) {
         return;
       }
       this.set('listFilter', key);
     },
     triggerShowTrashed() {
-      this.send('triggerFetch', this.get('toggleTrashed'));
+      this.send('triggerFetch', this.toggleTrashed);
     },
     triggerShowHidden() {
-      this.send('triggerFetch', this.get('toggleHidden'));
+      this.send('triggerFetch', this.toggleHidden);
     },
     clearSearchResults: function () {
       this.set('searchQuery', null);
@@ -807,13 +978,13 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
     initiatePageChange: function (page) {
       this.set('isChangingPage', true);
-      let isTrashedOnly = this.get('toggleTrashed');
-      let isHiddenOnly = this.get('toggleHidden');
+      let isTrashedOnly = this.toggleTrashed;
+      let isHiddenOnly = this.toggleHidden;
       this.getWorkspaces(page, isTrashedOnly, isHiddenOnly);
     },
 
     updateFilter: function (id, checked) {
-      let filter = this.get('filter');
+      let filter = this.filter;
       let keys = Object.keys(filter);
       if (!keys.includes(id)) {
         return;
@@ -857,6 +1028,6 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
     toCopyWorkspace(workspace) {
       this.sendAction('toCopyWorkspace', workspace);
-    }
-  }
+    },
+  },
 });

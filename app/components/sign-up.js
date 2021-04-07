@@ -1,5 +1,9 @@
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import $ from 'jquery';
+
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 import UserSignupMixin from '../mixins/user_signup_mixin';
 
@@ -8,15 +12,15 @@ import UserSignupMixin from '../mixins/user_signup_mixin';
 
 
 
-export default Ember.Component.extend(ErrorHandlingMixin, UserSignupMixin, {
+export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
   classNames: ['signup-page'],
   missingCredentials: false,
   noTermsAndConditions: false,
   agreedToTerms: false,
   org: null,
   postErrors: [],
-  similarity: Ember.inject.service('string-similarity'),
-  alert: Ember.inject.service('sweet-alert'),
+  similarity: service('string-similarity'),
+  alert: service('sweet-alert'),
 
   init: function () {
     this._super(...arguments);
@@ -30,7 +34,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, UserSignupMixin, {
       if (!data) {
         return reject('Invalid data');
       }
-      Ember.$.post({
+      $.post({
         url: '/auth/signup',
         data: data
       })
@@ -45,7 +49,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, UserSignupMixin, {
   getSimilarOrgs(orgRequest) {
     let stopWords = ['university', 'college', 'school', 'the', 'and', 'of', 'for', ' '];
 
-    let orgs = this.get('organizations');
+    let orgs = this.organizations;
 
     if (!orgs) {
       return [];
@@ -53,19 +57,19 @@ export default Ember.Component.extend(ErrorHandlingMixin, UserSignupMixin, {
 
     let sliced = orgs.toArray().slice();
 
-    let requestCompare = this.get('similarity').convertStringForCompare(orgRequest, stopWords);
+    let requestCompare = this.similarity.convertStringForCompare(orgRequest, stopWords);
 
     let similarOrgs = _.filter(sliced, (org => {
       let name = org.get('name');
-      let compare = this.get('similarity').convertStringForCompare(name, stopWords);
-      let score = this.get('similarity').compareTwoStrings(compare, requestCompare);
+      let compare = this.similarity.convertStringForCompare(name, stopWords);
+      let score = this.similarity.compareTwoStrings(compare, requestCompare);
       return score > 0.5;
     }));
     return similarOrgs;
   },
 
-  orgOptions: function () {
-    let orgs = this.get('organizations');
+  orgOptions: computed('orgs.[]', function () {
+    let orgs = this.organizations;
 
     if (!orgs) {
       return [];
@@ -80,13 +84,13 @@ export default Ember.Component.extend(ErrorHandlingMixin, UserSignupMixin, {
 
     });
     return mapped;
-  }.property('orgs.[]'),
+  }),
 
   createOrgRequestFilter(orgRequest) {
     if (!orgRequest) {
       return;
     }
-    let orgs = this.get('organizations');
+    let orgs = this.organizations;
     let requestLower = orgRequest.trim().toLowerCase();
     let orgNamesLower = orgs.map((org) => {
       return org.get('name').toLowerCase();
@@ -125,12 +129,12 @@ export default Ember.Component.extend(ErrorHandlingMixin, UserSignupMixin, {
         return;
       }
 
-      if (!this.get('agreedToTerms')) {
+      if (!this.agreedToTerms) {
         that.set('noTermsAndConditions', true);
         return;
       }
 
-      if (this.get('usernameError')) {
+      if (this.usernameError) {
         return;
       }
 
@@ -153,7 +157,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, UserSignupMixin, {
 
       if (orgRequest) {
 
-        let orgs = this.get('organizations');
+        let orgs = this.organizations;
         let matchingOrg = orgs.findBy('name', orgRequest);
         if (matchingOrg) {
           // duplicate name request
@@ -216,7 +220,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, UserSignupMixin, {
         return;
       }
 
-      let org = this.get('organizations').findBy('id', val);
+      let org = this.organizations.findBy('id', val);
       if (!org) {
         return;
       }
@@ -237,7 +241,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, UserSignupMixin, {
         }
         modalSelectOptions[input] = `Yes, I am sure I want to create ${input}`;
 
-        this.get('alert').showPromptSelect('Similar Orgs Found', modalSelectOptions, 'Choose existing org or confirm request', text)
+        this.alert.showPromptSelect('Similar Orgs Found', modalSelectOptions, 'Choose existing org or confirm request', text)
           .then((result) => {
             if (result.value) {
               // user confirmed org request

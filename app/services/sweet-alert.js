@@ -1,6 +1,6 @@
-import Ember from "ember";
+import Service from '@ember/service';
 
-export default Ember.Service.extend({
+export default Service.extend({
   title: null,
   type: null,
   toast: true,
@@ -16,16 +16,16 @@ export default Ember.Service.extend({
   setBackgroundColor: function (type) {
     switch (type) {
       case "success":
-        this.set("backgroundColor", this.get("successColor"));
+        this.set("backgroundColor", this.successColor);
         break;
       case "error":
-        this.set("backgroundColor", this.get("errorColor"));
+        this.set("backgroundColor", this.errorColor);
         break;
       case "warning":
-        this.set("backgroundColor", this.get("warningColor"));
+        this.set("backgroundColor", this.warningColor);
         break;
       case "info":
-        this.set("backgroundColor", this.get("infoColor"));
+        this.set("backgroundColor", this.infoColor);
         break;
       default:
         this.set("backgroundColor", "#fff");
@@ -50,7 +50,7 @@ export default Ember.Service.extend({
       toast: true,
       showConfirmButton: showConfirmButton,
       confirmButtonText: confirmButtonText,
-      background: this.get("backgroundColor"),
+      background: this.backgroundColor,
     });
   },
 

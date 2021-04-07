@@ -1,19 +1,16 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import { not } from '@ember/object/computed';
+import Service from '@ember/service';
+import { isEmpty } from '@ember/utils';
 import $ from 'jquery';
 
-
-
-
-
-
-
-export default Ember.Service.extend({
+export default Service.extend({
   formId: null,
   inputs: [],
   requiredInputs: null,
   invalidInputs: null,
   isPristine: null, // if user has not interacted with form yet
-  isDirty: Ember.computed.not('isPristine'), // if user has interacted
+  isDirty: not('isPristine'), // if user has interacted
   isSubmitted: null, // true if user has tried to submit form
 
   setupListeners: function (formId) {
@@ -27,14 +24,14 @@ export default Ember.Service.extend({
   },
 
   reqInputOnChange: function ($el) {
-    const id = this.get('formId');
+    const id = this.formId;
     const $invalidInputs = this.getInvalidInputs(id);
     this.set('invalidInputs', $invalidInputs);
-    if (this.get('isPristine')) {
+    if (this.isPristine) {
       this.set('isPristine', false);
     }
-    this.get('isValid');
-    if (this.get('isSubmitted')) {
+    this.isValid;
+    if (this.isSubmitted) {
       this.handleRequiredInputErrors($el);
     }
   },
@@ -53,7 +50,7 @@ export default Ember.Service.extend({
         $radioSet.toggleClass('required-error', false);
       }
     } else {
-      isElInvalid = Ember.isEmpty($el.val());
+      isElInvalid = isEmpty($el.val());
       if (isElInvalid) {
         $el.toggleClass('required-error', true);
       } else {
@@ -61,7 +58,7 @@ export default Ember.Service.extend({
       }
     }
 
-    this.get('checkForm')();
+    this.checkForm();
   },
 
   init() {
@@ -76,18 +73,18 @@ export default Ember.Service.extend({
     this.setupListeners(formId);
   },
 
-  isValid: function () {
-    if (this.get('isPristine')) {
+  isValid: computed('invalidInputs.[]', 'isPristine', function () {
+    if (this.isPristine) {
       return false;
     }
-    const id = this.get('formId');
+    const id = this.formId;
     const $invalids = this.getInvalidInputs(id);
 
-    return this.get('isDirty') && Ember.isEmpty($invalids);
-  }.property('invalidInputs.[]', 'isPristine'),
+    return this.isDirty && isEmpty($invalids);
+  }),
 
-  isInvalid: Ember.computed('isDirty', 'isValid', function () {
-    return this.get('isDirty') && !this.get('isValid');
+  isInvalid: computed('isDirty', 'isValid', function () {
+    return this.isDirty && !this.isValid;
   }),
 
   isMissingRequiredFields: function (id) {
@@ -96,7 +93,7 @@ export default Ember.Service.extend({
 
   getInputs: function (formId) {
     const $form = $(formId);
-    let $inputs = $form.find("input");
+    let $inputs = $form.find('input');
     return $inputs;
   },
 
@@ -105,18 +102,17 @@ export default Ember.Service.extend({
     if (!$form) {
       return;
     }
-    let reqs = $form.find("input[required]");
+    let reqs = $form.find('input[required]');
 
     this.set('requiredInputs', reqs);
     return reqs;
   },
 
   getInvalidInputs: function (formId) {
-    let $invalids = this.getRequiredInputs(formId)
-      .filter(function (ix, inp) {
-        let val = $(this).val();
-        return Ember.isEmpty(val);
-      });
+    let $invalids = this.getRequiredInputs(formId).filter(function (ix, inp) {
+      let val = $(this).val();
+      return isEmpty(val);
+    });
     this.set('invalidInputs', $invalids);
     return $invalids;
   },
@@ -130,11 +126,11 @@ export default Ember.Service.extend({
         return reject(new Error('Invalid form id!'));
       }
 
-      if (!this.get('isSubmitted')) {
+      if (!this.isSubmitted) {
         this.set('isSubmitted', true);
       }
 
-      ret.isValid = this.get('isValid');
+      ret.isValid = this.isValid;
 
       if (ret.isValid) {
         return resolve(ret);
@@ -151,7 +147,7 @@ export default Ember.Service.extend({
 
   clearForm: function () {
     this.set('isPristine', true);
-    let $inputs = this.getInputs(this.get('formId'));
+    let $inputs = this.getInputs(this.formId);
     $inputs.each(function () {
       if ($(this).is(':radio') || $(this).is(':checkbox')) {
         $(this).prop('checked', false);
@@ -161,5 +157,5 @@ export default Ember.Service.extend({
         $(this).val(null);
       }
     });
-  }
+  },
 });

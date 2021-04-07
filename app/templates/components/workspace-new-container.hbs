@@ -1,22 +1,7 @@
 <div class="flex-container-full">
   {{#if showSubmissionViewer}}
     <div class="flex-item-full filter-options collapse" id="filter-list-side">
-      {{submissions-filter
-        store=store
-        onSearch=(action "setFilterCriteria")
-        sections=model.sections
-        assignments=model.assignments
-        users = model.users
-        selectedFolderSet=selectedFolderSet
-        selectedAssignment=selectedAssignment
-        selectedSection=selectedSection
-        selectedProblem=selectedProblem
-        selectedStudents=selectedStudents
-        selectedTeacher=selectedTeacher
-        startDate=startDate
-        endDate=endDate
-        isTrashedOnly=toggleTrashed
-      }}
+      <SubmissionsFilter @store={{store}} @onSearch={{action "setFilterCriteria"}} @sections={{model.sections}} @assignments={{model.assignments}} @users={{model.users}} @selectedFolderSet={{selectedFolderSet}} @selectedAssignment={{selectedAssignment}} @selectedSection={{selectedSection}} @selectedProblem={{selectedProblem}} @selectedStudents={{selectedStudents}} @selectedTeacher={{selectedTeacher}} @startDate={{startDate}} @endDate={{endDate}} @isTrashedOnly={{toggleTrashed}} />
 
 
 
@@ -61,7 +46,7 @@
             {{/if}}
           </div>
           <div class="side-icons">
-            {{my-select content=revisionsSelectOptions cannotBeNull=true selectedValue=selectedRevisionOption action=(action (mut selectedRevisionOption))}}
+            <MySelect @content={{revisionsSelectOptions}} @cannotBeNull={{true}} @selectedValue={{selectedRevisionOption}} @action={{action (mut selectedRevisionOption)}} />
             <i class="fas fa-redo-alt refresh-icon" {{action 'refreshList'}} title="Refresh Submission list"></i>
           </div>
         </div>
@@ -70,57 +55,11 @@
             <div class="sort-bar-item toggle-all">
               <input type="checkbox" onclick={{action "toggleCheckAllAnswers"}}>
             </div>
-            {{
-              toggle-control
-              classToAdd="sort-bar-item student"
-              onUpdate=(action "updateSortCriterion")
-              initialState=1
-              options=sortOptions.student
-              label="Student"
-              parentProp=sortCriterion
-              type="student"
-              activeType=sortCriterion.type
-            }}
-            {{
-              toggle-control
-              classToAdd="sort-bar-item revisions"
-              onUpdate=(action "updateSortCriterion")
-              initialState=0
-              options=sortOptions.revisions
-              label="Revisions"
-              type="revisions"
-              activeType=sortCriterion.type
-            }}
-            {{
-              toggle-control
-              classToAdd="sort-bar-item explanation"
-              onUpdate=(action "updateSortCriterion")
-              initialState=0
-              options=sortOptions.explanation
-              label="Explanation"
-              type="explanation"
-              activeType=sortCriterion.type
-            }}
-            {{
-              toggle-control
-              classToAdd="sort-bar-item section"
-              onUpdate=(action "updateSortCriterion")
-              initialState=0
-              options=sortOptions.section
-              label="Class"
-              type="section"
-              activeType=sortCriterion.type
-            }}
-            {{
-              toggle-control
-              classToAdd="sort-bar-item createDate"
-              onUpdate=(action "updateSortCriterion")
-              initialState=0
-              options=sortOptions.createDate
-              label="Date"
-              type="createDate"
-              activeType=sortCriterion.type
-            }}
+            <ToggleControl @classToAdd="sort-bar-item student" @onUpdate={{action "updateSortCriterion"}} @initialState={{1}} @options={{sortOptions.student}} @label="Student" @parentProp={{sortCriterion}} @type="student" @activeType={{sortCriterion.type}} />
+            <ToggleControl @classToAdd="sort-bar-item revisions" @onUpdate={{action "updateSortCriterion"}} @initialState={{0}} @options={{sortOptions.revisions}} @label="Revisions" @type="revisions" @activeType={{sortCriterion.type}} />
+            <ToggleControl @classToAdd="sort-bar-item explanation" @onUpdate={{action "updateSortCriterion"}} @initialState={{0}} @options={{sortOptions.explanation}} @label="Explanation" @type="explanation" @activeType={{sortCriterion.type}} />
+            <ToggleControl @classToAdd="sort-bar-item section" @onUpdate={{action "updateSortCriterion"}} @initialState={{0}} @options={{sortOptions.section}} @label="Class" @type="section" @activeType={{sortCriterion.type}} />
+            <ToggleControl @classToAdd="sort-bar-item createDate" @onUpdate={{action "updateSortCriterion"}} @initialState={{0}} @options={{sortOptions.createDate}} @label="Date" @type="createDate" @activeType={{sortCriterion.type}} />
             <div class="sort-bar-item more"></div>
           </div>
           {{#if isFetchingAnswers}}
@@ -134,10 +73,7 @@
           {{else if isRequestTooLarge}}
             {{tooLargeRequestErrorMessage}}
           {{else}}
-          {{submission-viewer-list answers=sortedAnswers metadata=answersMetadata isList=true isGrid=false moreMenuOptions=moreMenuOptions store=store
-            onSelect=(action "updateSelectedAnswers")
-            selectedAnswers=selectedAnswers
-            threads=submissionThreads}}
+          <SubmissionViewerList @answers={{sortedAnswers}} @metadata={{answersMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{store}} @onSelect={{action "updateSelectedAnswers"}} @selectedAnswers={{selectedAnswers}} @threads={{submissionThreads}} />
           {{/if}}
         </div>
       </div>
@@ -145,14 +81,7 @@
     {{/if}}
   </div>
   {{#if showWorkspaceSettingsMenu}}
-    {{workspace-new-settings
-      store=store
-      users=model.users
-      folderSets=model.folderSets
-      onProceed=(action "createWorkspace")
-      onBack=(action "toSearchFilter")
-      createWorkspaceError=createWorkspaceError
-    }}
+    <WorkspaceNewSettings @store={{store}} @users={{model.users}} @folderSets={{model.folderSets}} @onProceed={{action "createWorkspace"}} @onBack={{action "toSearchFilter"}} @createWorkspaceError={{createWorkspaceError}} />
   {{/if}}
   {{#if showSubmissionViewer}}
     <div class="toggle-filter-menu">

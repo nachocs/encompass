@@ -1,3 +1,4 @@
+import { computed } from '@ember/object';
 /**
  * # Workspace Controller
  * @description This controller for the workspace assists in linking between submissions
@@ -5,23 +6,23 @@
  * @author Amir Tahvildaran <amir@mathforum.org>, Damola Mabogunje <damola@mathforum.org>
  * @since 1.0.0
  */
-import Ember from "ember";
+import Controller, { inject as controller } from '@ember/controller';
 import CurrentUserMixin from "../mixins/current_user_mixin";
 
-export default Ember.Controller.extend(CurrentUserMixin, {
-  comments: Ember.inject.controller(),
+export default Controller.extend(CurrentUserMixin, {
+  comments: controller(),
 
   currentSelection: null, //ENC-397, ENC-398
 
-  showOverlay: function () {
-    return this.get("makingSelection") || this.get("taggingSelection");
-  }.property("makingSelection", "taggingSelection"),
+  showOverlay: computed("makingSelection", "taggingSelection", function () {
+    return this.makingSelection || this.taggingSelection;
+  }),
 
   actions: {
     popupMaskClicked: function () {
       this.transitionToRoute(
         "workspace.submission",
-        this.get("currentSubmission")
+        this.currentSubmission
       );
     },
     tagSelection: function (selection, tags) {},

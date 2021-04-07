@@ -6,27 +6,29 @@
  It cleans up it's window event binding
  It also currently marks 'editing' false on the controller (room for improvement)
 */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import Mixin from '@ember/object/mixin';
 import $ from 'jquery';
 
 
-export default Ember.Mixin.create({
-  alert: Ember.inject.service('sweet-alert'),
+export default Mixin.create({
+  alert: service('sweet-alert'),
 
   confirmText: 'You have unsaved changes which you may lose.  Are you sure you want to leave?',
 
   activate: function () {
     var route = this;
-    $(window).on('beforeunload.' + route.get('controllerName') + '.confirm', function () {
+    $(window).on('beforeunload.' + route.controllerName + '.confirm', function () {
       if (route.controller.get('confirmLeaving')) {
-        return route.get('confirmText');
+        return route.confirmText;
       }
     });
   },
 
   deactivate: function () {
     var route = this;
-    $(window).off('beforeunload.' + route.get('controllerName') + '.confirm');
+    $(window).off('beforeunload.' + route.controllerName + '.confirm');
   },
 
   actions: {
@@ -35,10 +37,10 @@ export default Ember.Mixin.create({
     },
 
     willTransition: function (transition) {
-      var controller = this.get('controller');
-      if (controller.get('confirmLeaving')) {
+      var controller = this.controller;
+      if (controller.confirmLeaving) {
         transition.abort();
-        this.get('alert').showModal('question', 'Are you sure you want to leave?', 'Any progress will not be saved', 'Yes')
+        this.alert.showModal('question', 'Are you sure you want to leave?', 'Any progress will not be saved', 'Yes')
           .then((result) => {
             if (result.value) {
               controller.set('editing', false);

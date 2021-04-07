@@ -1,9 +1,9 @@
-import Ember from 'ember';
+// import Resolver from './resolver';
+import Application from '@ember/application';
 import loadInitializers from 'ember-load-initializers';
+import Resolver from 'ember-resolver';
 import $ from 'jquery';
 import config from './config/environment';
-import Resolver from './resolver';
-
 
 
 
@@ -21,20 +21,19 @@ if (TEST_MODE) {
   PRINT_DEBUG_TO_CONSOLE = false;
   rootElement = '#testing-location';
 }
-Ember.run.backburner.DEBUG = true;
+// Ember.run.backburner.DEBUG = true;
 
 
-const App = Ember.Application.extend({
-  modulePrefix: config.modulePrefix,
-  podModulePrefix: config.podModulePrefix,
-  Resolver,
-  LOG_TRANSITIONS: PRINT_DEBUG_TO_CONSOLE,
-  LOG_TRANSITIONS_INTERNAL: PRINT_DEBUG_TO_CONSOLE,
-  LOG_VIEW_LOOKUPS: PRINT_DEBUG_TO_CONSOLE,
-  LOG_ACTIVE_GENERATION: PRINT_DEBUG_TO_CONSOLE,
-  LOG_BINDINGS: PRINT_DEBUG_TO_CONSOLE
-});
-window.Encompass = App;
+// const App = Ember.Application.extend({
+//   modulePrefix: config.modulePrefix,
+//   podModulePrefix: config.podModulePrefix,
+//   Resolver,
+//   LOG_TRANSITIONS: PRINT_DEBUG_TO_CONSOLE,
+//   LOG_TRANSITIONS_INTERNAL: PRINT_DEBUG_TO_CONSOLE,
+//   LOG_VIEW_LOOKUPS: PRINT_DEBUG_TO_CONSOLE,
+//   LOG_ACTIVE_GENERATION: PRINT_DEBUG_TO_CONSOLE,
+//   LOG_BINDINGS: PRINT_DEBUG_TO_CONSOLE
+// });
 
 // if (QUNIT) {
 //   Encompass.setupForTesting();
@@ -42,6 +41,11 @@ window.Encompass = App;
 // }
 
 
-loadInitializers(App, config.modulePrefix);
+export default class App extends Application {
+  modulePrefix = config.modulePrefix;
+  podModulePrefix = config.podModulePrefix;
+  Resolver = Resolver;
+}
 
-export default App;
+loadInitializers(App, config.modulePrefix);
+window.Encompass = App;

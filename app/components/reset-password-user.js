@@ -1,39 +1,36 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 // Used for when a logged in user is resetting either their own password or another user's password
-import Ember from 'ember';
+import $ from 'jquery';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(
-  ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   ElementId: 'reset-password-user',
-  alert: Ember.inject.service('sweet-alert'),
+  alert: service('sweet-alert'),
   displayResetForm: true,
   fieldType: 'password',
   postErrors: [],
 
-  doPasswordsMatch: function () {
-    return this.get('password') === this.get('confirmPassword');
-  }.property('password', 'confirmPassword'),
+  doPasswordsMatch: computed('password', 'confirmPassword', function () {
+    return this.password === this.confirmPassword;
+  }),
 
-  isShowingPassword: Ember.computed(function () {
-    var showing = this.get('showingPassword');
+  isShowingPassword: computed(function () {
+    var showing = this.showingPassword;
     return showing;
   }),
 
   actions: {
     resetPassword: function () {
-      const password = this.get('password');
-      const confirmPassword = this.get('confirmPassword');
+      const password = this.password;
+      const confirmPassword = this.confirmPassword;
 
       if (!password || !confirmPassword) {
         this.set('missingRequiredFields', true);
       }
 
-      if (!this.get('doPasswordsMatch')) {
+      if (!this.doPasswordsMatch) {
         this.set('matchError', true);
         return;
       }
@@ -42,18 +39,25 @@ export default Ember.Component.extend(
 
       const resetPasswordData = {
         password,
-        ssoId
+        ssoId,
       };
       const that = this;
 
-      return Ember.$.post({
+      return $.post({
         url: `/auth/resetuser`,
-        data: resetPasswordData
+        data: resetPasswordData,
       })
         .then((res) => {
           if (res._id && res._id === ssoId) {
             that.get('handleResetSuccess')(res);
-            this.get('alert').showToast('success', 'Password Reset', 'bottom-end', 3000, false, null);
+            this.alert.showToast(
+              'success',
+              'Password Reset',
+              'bottom-end',
+              3000,
+              false,
+              null
+            );
           } else {
             let err;
             if (res.info) {
@@ -74,7 +78,7 @@ export default Ember.Component.extend(
     },
 
     showPassword: function () {
-      var isShowingPassword = this.get('showingPassword');
+      var isShowingPassword = this.showingPassword;
       if (isShowingPassword === false) {
         this.set('showingPassword', true);
         this.set('fieldType', 'text');
@@ -91,7 +95,6 @@ export default Ember.Component.extend(
           this.set(error, false);
         }
       }
-    }
-  }
-
+    },
+  },
 });

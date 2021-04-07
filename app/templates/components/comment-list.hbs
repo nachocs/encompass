@@ -6,12 +6,12 @@
 
 {{#if canComment}}
   <div class="label-select {{newCommentLabel}}">
-    {{my-select content=labelOptions cannotBeNull=true selectedValue=newCommentLabel action=(action (mut newCommentLabel))}}
+    <MySelect @content={{labelOptions}} @cannotBeNull={{true}} @selectedValue={{newCommentLabel}} @action={{action (mut newCommentLabel)}} />
   </div>
 {{/if}}
 <div class="compose-comment">
   {{#if canComment}}
-      {{textarea tabindex=1 id="commentTextarea" classBinding="onSelection" placeholder=newCommentPlaceholder value=newComment autofocus="autofocus"}}
+      <Textarea @tabindex={{1}} @id="commentTextarea" @classBinding="onSelection" placeholder={{newCommentPlaceholder}} @value={{newComment}} @autofocus="autofocus" />
     {{else}}
     {{#if isParentWorkspace}}
       <p class="info">Parent / Combined Workspaces do not support the creation of new comments.
@@ -49,7 +49,7 @@
               <input type="checkbox" checked={{doUseSinceDate}} name="doUseSinceDate" onclick={{action "updateFilter" "doUseSinceDate"}}>
               <span>
                 <span class="radio-text">Since</span>
-                {{input type="text" placeholder="mm/dd/yyyy" value=sinceDate}}
+                <Input @type="text" placeholder="mm/dd/yyyy" @value={{sinceDate}} />
                 {{#if showApplyDate}}
                   <button {{action "applySinceDate"}}>Apply</button>
                 {{/if}}
@@ -60,15 +60,7 @@
       </span>
     </div>
     <div class="comment-flex-item search">
-  {{search-bar
-    onSearch=(action "searchComments")
-    basePlaceholder="Search for comments"
-    inputValue=commentFilterText
-    doSearchOnInputChange=true
-    doDebounce=true
-    constraints=searchConstraints
-    clearSearchResults=(action "clearSearchResults")
-  }}
+  <SearchBar @onSearch={{action "searchComments"}} @basePlaceholder="Search for comments" @inputValue={{commentFilterText}} @doSearchOnInputChange={{true}} @doDebounce={{true}} @constraints={{searchConstraints}} @clearSearchResults={{action "clearSearchResults"}} />
 </div>
   </div>
 
@@ -91,28 +83,20 @@
       <p class="error-message">{{error}}</p>
     {{/each}}
     {{#if invalidDateError}}
-      {{error-box error=invalidDateError showDismiss=true resetError=(action (mut invalidDateError) null)}}
+      <ErrorBox @error={{invalidDateError}} @showDismiss={{true}} @resetError={{action (mut invalidDateError) null}} />
     {{/if}}
     {{#if showLoadingMessage}}
       Searching for comments. Thank you for your patience.
     {{else}}
     <ul>
       {{#each sortedDisplayList as |comment|}}
-        {{workspace-comment
-          wsComments=comments
-          comment=comment
-          currentWorkspace=currentWorkspace
-          reuseComment=(action "reuseComment")
-          deleteComment=(action "deleteComment")
-          currentSelection=currentSelection
-          isParentWorkspace=isParentWorkspace
-          }}
+        <WorkspaceComment @wsComments={{comments}} @comment={{comment}} @currentWorkspace={{currentWorkspace}} @reuseComment={{action "reuseComment"}} @deleteComment={{action "deleteComment"}} @currentSelection={{currentSelection}} @isParentWorkspace={{isParentWorkspace}} />
         {{else}}
         <p class="info">{{emptyResultsMessage}}</p>
       {{/each}}
     </ul>
     {{#if showPaginationControl}}
-      {{pagination-control details=commentsMetadata initiatePageChange=(action "initiatePageChange")}}
+      <PaginationControl @details={{commentsMetadata}} @initiatePageChange={{action "initiatePageChange"}} />
     {{/if}}
     {{/if}}
   </div>

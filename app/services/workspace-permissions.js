@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
@@ -8,8 +8,8 @@ import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
 
-export default Ember.Service.extend(CurrentUserMixin, {
-  utils: Ember.inject.service('utility-methods'),
+export default Service.extend(CurrentUserMixin, {
+  utils: service('utility-methods'),
 
   isAdmin() {
     return this.get('currentUser.isAdmin');
@@ -20,12 +20,12 @@ export default Ember.Service.extend(CurrentUserMixin, {
   },
 
   isOwner(ws) {
-    let ownerId = this.get('utils').getBelongsToId(ws, 'owner');
+    let ownerId = this.utils.getBelongsToId(ws, 'owner');
     return ownerId === this.get('currentUser.id');
   },
 
   isCreator(ws) {
-    let creatorId = this.get('utils').getBelongsToId(ws, 'createdBy');
+    let creatorId = this.utils.getBelongsToId(ws, 'createdBy');
     return creatorId === this.get('currentUser.id');
   },
 
@@ -33,9 +33,9 @@ export default Ember.Service.extend(CurrentUserMixin, {
     if (!this.isPdAdmin()) {
       return false;
     }
-    let utils = this.get('utils');
+    let utils = this.utils;
 
-    let userOrgId = utils.getBelongsToId(this.get('currentUser'), 'organization');
+    let userOrgId = utils.getBelongsToId(this.currentUser, 'organization');
     let wsOrgId = utils.getBelongsToId(ws, 'organization');
 
     return userOrgId === wsOrgId;
@@ -74,7 +74,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
   },
 
   canEdit(ws, recordType, requiredPermissionLevel) {
-    const utils = this.get('utils');
+    const utils = this.utils;
 
     if (!utils.isNonEmptyObject(ws)) {
       return false;

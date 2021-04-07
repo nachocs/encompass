@@ -2,14 +2,14 @@
  * Passed in by parent:
  * - hide
  */
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNameBindings: ['hide'],
   newFolderName: '',
 
@@ -25,7 +25,7 @@ export default Ember.Component.extend({
     },
 
     save: function () {
-      var newName = this.get('newFolderName');
+      var newName = this.newFolderName;
       this.sendAction("newFolder", newName);
 
       this.set('hide', true);

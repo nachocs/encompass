@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 
 
 
 
 
 
-export default Ember.Helper.helper(function (params) {
+export default buildHelper(function (params) {
   var number = params[0];
   var singular = params[1];
   var plural = params[2];

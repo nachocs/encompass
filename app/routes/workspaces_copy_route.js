@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { hash } from 'rsvp';
 import AuthenticatedRoute from '../routes/_authenticated_route';
 
 
@@ -11,11 +11,11 @@ export default AuthenticatedRoute.extend({
   },
 
   model: function () {
-    const store = this.get('store');
-    this.set('workspaceToCopy', this.get('workspaceId'));
-    return Ember.RSVP.hash({
+    const store = this.store;
+    this.set('workspaceToCopy', this.workspaceId);
+    return hash({
       folderSets: store.findAll('folderSet'),
-      workspaceToCopy: this.get('workspaceId'),
+      workspaceToCopy: this.workspaceId,
     });
 
   },

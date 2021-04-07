@@ -17,7 +17,7 @@
 			{{/if}}
 			{{#if canEditFolder}}
 				<div class="edit-folder-name">
-					{{input value=model.name focus-out='editFolderName'}}
+					<Input @value={{model.name}} @focus-out="editFolderName" />
 				</div>
 			{{/if}}
 			{{#each updateRecordErrors as |error|}}
@@ -47,20 +47,7 @@
 {{#if model.isExpanded}}
     <ul class="subfolders">
       {{#each model.sortedChildren as |folder|}}
-        {{folder-elem
-					store=store
-					model=folder
-					currentWorkspace=currentWorkspace
-					folderList=folderList
-					editFolderMode=editFolderMode
-					putInFolder=putInFolder
-					dropped=dropped
-					canEditFolders=canEditFolders
-      		canDeleteFolders=canDeleteFolders
-					wsTaggings=wsTaggings
-					currentSubmission=currentSubmission
-					currentSelection=currentSelection
-				}}
+        <FolderElem @store={{store}} @model={{folder}} @currentWorkspace={{currentWorkspace}} @folderList={{folderList}} @editFolderMode={{editFolderMode}} @putInFolder={{putInFolder}} @dropped={{dropped}} @canEditFolders={{canEditFolders}} @canDeleteFolders={{canDeleteFolders}} @wsTaggings={{wsTaggings}} @currentSubmission={{currentSubmission}} @currentSelection={{currentSelection}} />
       {{/each}}
     </ul>
 {{/if}}

@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 import VmtHostMixin from '../mixins/vmt-host';
@@ -8,7 +9,7 @@ import VmtHostMixin from '../mixins/vmt-host';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, VmtHostMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, VmtHostMixin, ErrorHandlingMixin, {
   classNames: ['vmt-search'],
 
   searchConstraints: {
@@ -23,7 +24,7 @@ export default Ember.Component.extend(CurrentUserMixin, VmtHostMixin, ErrorHandl
 
   actions: {
     submitSearch() {
-      let searchText = this.get('searchText');
+      let searchText = this.searchText;
 
       let trimmed = typeof searchText === 'string' ? searchText.trim() : '';
 
@@ -34,7 +35,7 @@ export default Ember.Component.extend(CurrentUserMixin, VmtHostMixin, ErrorHandl
 
       let url = `${vmtHost}/enc/search?resourceName=${trimmed}`;
 
-      Ember.$.get({
+      $.get({
         url,
         xhrFields: {
           withCredentials: true
@@ -48,8 +49,8 @@ export default Ember.Component.extend(CurrentUserMixin, VmtHostMixin, ErrorHandl
             rooms: [],
           }
           */
-          if (this.get('handleSearchResults')) {
-            this.get('handleSearchResults')(results);
+          if (this.handleSearchResults) {
+            this.handleSearchResults(results);
           }
         })
         .catch((err) => {

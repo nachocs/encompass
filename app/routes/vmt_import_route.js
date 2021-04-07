@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { hash } from 'rsvp';
 import AuthenticatedRoute from '../routes/_authenticated_route';
 
 
@@ -6,9 +6,9 @@ export default AuthenticatedRoute.extend({
   controllerName: 'vmt-import',
 
   model() {
-    return Ember.RSVP.hash({
-      folderSets: this.get('store').findAll('folderSet'),
-      users: this.get('store').findAll('user'),
+    return hash({
+      folderSets: this.store.findAll('folderSet'),
+      users: this.store.findAll('user'),
     });
   },
 

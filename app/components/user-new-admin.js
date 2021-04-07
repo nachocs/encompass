@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { later } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import $ from 'jquery';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
@@ -9,9 +11,9 @@ import UserSignupMixin from '../mixins/user_signup_mixin';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, UserSignupMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, UserSignupMixin, {
   elementId: 'user-new-admin',
-  alert: Ember.inject.service('sweet-alert'),
+  alert: service('sweet-alert'),
   errorMessage: null,
   username: '',
   password: '',
@@ -34,7 +36,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
       if (!data) {
         return reject('Invalid data');
       }
-      Ember.$.post({
+      $.post({
         url: '/auth/signup',
         data: data
       })
@@ -57,7 +59,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
       let orgReq;
       // make sure user did not type in existing org
       if (typeof org === 'string') {
-        let orgs = this.get('organizations');
+        let orgs = this.organizations;
         let matchingOrg = orgs.findBy('name', org);
         if (matchingOrg) {
           this.set('org', matchingOrg);
@@ -93,14 +95,14 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
 
   actions: {
     confirmOrg: function () {
-      let org = this.get('org');
+      let org = this.org;
       if (typeof org === 'string') {
-        let orgs = this.get('organizations');
+        let orgs = this.organizations;
         let matchingOrg = orgs.findBy('name', org);
         if (matchingOrg) {
           this.send('newUser');
         } else {
-          this.get('alert').showModal('question', `Are you sure you want to create ${org}`, null, 'Yes')
+          this.alert.showModal('question', `Are you sure you want to create ${org}`, null, 'Yes')
             .then((result) => {
               if (result.value) {
                 this.send('newUser');
@@ -114,14 +116,14 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
     },
 
     newUser: function () {
-      var username = this.get('username');
-      var password = this.get('password');
-      var firstName = this.get('firstName');
-      var lastName = this.get('lastName');
-      var email = this.get('email');
-      var organization = this.get('org');
-      var location = this.get('location');
-      var accountType = this.get('selectedType');
+      var username = this.username;
+      var password = this.password;
+      var firstName = this.firstName;
+      var lastName = this.lastName;
+      var email = this.email;
+      var organization = this.org;
+      var location = this.location;
+      var accountType = this.selectedType;
       var accountTypeLetter;
       if (accountType) {
         accountTypeLetter = accountType.charAt(0).toUpperCase();
@@ -130,8 +132,8 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
         $('.account').show();
         return;
       }
-      var isAuthorized = this.get('isAuthorized');
-      var currentUserId = this.get('currentUser').get('id');
+      var isAuthorized = this.isAuthorized;
+      var currentUserId = this.currentUser.get('id');
 
       if (!username || !password) {
         this.set('errorMessage', true);
@@ -185,12 +187,12 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
 
       return this.handleOrg(organization)
         .then((org) => {
-          let newUserData = this.get('newUserData');
+          let newUserData = this.newUserData;
           newUserData.organization = org;
           return this.createNewUser(newUserData)
             .then((res) => {
               if (res.username) {
-                this.get('alert').showToast('success', `${res.username} created`, 'bottom-end', 3000, null, false);
+                this.alert.showToast('success', `${res.username} created`, 'bottom-end', 3000, null, false);
                 return this.sendAction('toUserInfo', res.username);
               }
               if (res.message === 'There already exists a user with that username') {
@@ -225,7 +227,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
 
     closeError: function (error) {
       $(`.${error}`).addClass('fadeOutRight');
-      Ember.run.later(() => {
+      later(() => {
         $(`.${error}`).removeClass('fadeOutRight');
         $(`.${error}`).hide();
       }, 500);

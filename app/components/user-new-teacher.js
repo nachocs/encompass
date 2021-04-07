@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 import UserSignupMixin from '../mixins/user_signup_mixin';
@@ -8,9 +10,9 @@ import UserSignupMixin from '../mixins/user_signup_mixin';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, UserSignupMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, UserSignupMixin, {
   elementId: 'user-new-teacher',
-  alert: Ember.inject.service('sweet-alert'),
+  alert: service('sweet-alert'),
   errorMessage: null,
   username: '',
   password: '',
@@ -25,7 +27,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
       if (!data) {
         return reject('Invalid data');
       }
-      Ember.$.post({
+      $.post({
         url: '/auth/signup',
         data: data
       })
@@ -41,11 +43,11 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
 
   actions: {
     newUser: function () {
-      var username = this.get('username');
-      var password = this.get('password');
-      var firstName = this.get('firstName');
-      var lastName = this.get('lastName');
-      var currentUser = this.get('currentUser');
+      var username = this.username;
+      var password = this.password;
+      var firstName = this.firstName;
+      var lastName = this.lastName;
+      var currentUser = this.currentUser;
       var currentUserId = currentUser.get('id');
       var organization = currentUser.get('organization.id');
 
@@ -54,7 +56,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
         return;
       }
 
-      if (this.get('passwordError') || this.get('usernameError')) {
+      if (this.passwordError || this.usernameError) {
         return;
       }
 
@@ -74,7 +76,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, User
         .then((res) => {
 
           if (res.username) {
-            this.get('alert').showToast('success', `${res.username} created`, 'bottom-end', 3000, null, false);
+            this.alert.showToast('success', `${res.username} created`, 'bottom-end', 3000, null, false);
             return this.sendAction('toUserInfo', res.username);
           }
           if (res.message === 'There already exists a user with that username') {

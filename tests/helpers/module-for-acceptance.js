@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { resolve } from 'rsvp';
 import { module } from 'qunit';
 import destroyApp from '../helpers/destroy-app';
 import startApp from '../helpers/start-app';
@@ -7,8 +7,6 @@ import startApp from '../helpers/start-app';
 
 
 
-
-const { RSVP: { resolve } } = Ember;
 
 export default function (name, options = {}) {
   module(name, {

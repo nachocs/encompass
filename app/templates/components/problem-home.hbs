@@ -7,7 +7,7 @@
     <ul class="info">
       {{#each publicProblems as |problem|}}
       <li>
-        {{#link-to 'problem' problem.id}}{{problem.title}} {{/link-to}} created on {{format-date  problem.createDate 'MMM Do YYYY'}}
+        <LinkTo @route="problem" @model={{problem.id}}>{{problem.title}} </LinkTo> created on {{format-date  problem.createDate 'MMM Do YYYY'}}
       </li>
       {{/each}}
     </ul>
@@ -15,7 +15,7 @@
     <h1>Welcome to the Problems Page</h1>
     <p>Click on a problem name to see more info, edit or add it to your problem list</p>
     <p class="or">Or</p>
-  {{#link-to 'problems.new' id="problem-new-link" class="new-link-btn"}}<span>Create New Problem</span>{{/link-to}}
+  <LinkTo @route="problems.new" @id="problem-new-link" class="new-link-btn"><span>Create New Problem</span></LinkTo>
   {{/if}}
 {{/if}}
 
@@ -25,7 +25,7 @@
 {{/unless}}
 {{#if showCategories}}
   <button {{action 'showCategories'}}>Hide Category Menu</button>
-  {{categories-menu categories=categoryTree store=store}}
+  <CategoriesMenu @categories={{categoryTree}} @store={{store}} />
 {{/if}}
 </div>
 {{!-- <section>

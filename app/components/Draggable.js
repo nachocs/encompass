@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 import { App as Encompass } from '../app';
 import './DragNDrop';
 
@@ -7,11 +7,11 @@ import './DragNDrop';
 
 
 
-Encompass.DragNDrop.Draggable = Ember.Mixin.create({
+Encompass.DragNDrop.Draggable = Mixin.create({
   attributeBindings: 'draggable',
   draggable: 'true',
   dragStart: function (event) {
     var dataTransfer = event.originalEvent.dataTransfer;
-    dataTransfer.setData('text/plain', this.get('elementId'));
+    dataTransfer.setData('text/plain', this.elementId);
   }
 });

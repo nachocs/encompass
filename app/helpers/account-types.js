@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 
 
 
 
 
 
-export default Ember.Helper.helper(function (accountType) {
+export default buildHelper(function (accountType) {
   if (accountType[0] === "A") {
     return 'Admin';
   } else if (accountType[0] === "T") {

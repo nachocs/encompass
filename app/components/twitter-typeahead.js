@@ -15,10 +15,10 @@ export default Ember.Component.extend({
   didReceiveAttrs() {
     this._super(...arguments);
     let templates = {};
-    let notFound = this.get('showNotFound');
-    let header = this.get('header');
-    let footer = this.get('footer');
-    let pending = this.get('pending');
+    let notFound = this.showNotFound;
+    let header = this.header;
+    let footer = this.footer;
+    let pending = this.pending;
 
     if (notFound) {
       templates.notFound = notFound;
@@ -46,8 +46,8 @@ export default Ember.Component.extend({
     let options = this.getOptions();
     let dataSetOptions = this.getDataSetOptions();
 
-    let path = this.get('optionLabelPath');
-    let selectedValue = this.get('selectedValue');
+    let path = this.optionLabelPath;
+    let selectedValue = this.selectedValue;
 
     const that = this;
 
@@ -80,7 +80,7 @@ export default Ember.Component.extend({
       }
     });
 
-    if (this.get('setSelectedValueOnChange')) {
+    if (this.setSelectedValueOnChange) {
       this.$('.typeahead').on('typeahead:change', function (ev, val) {
 
         if (that.get('isDestroyed') || that.get('isDestroying')) {
@@ -119,9 +119,9 @@ export default Ember.Component.extend({
   },
 
   getOptions: function () {
-    let minLength = this.get('minLength');
-    let limit = this.get('limit');
-    let async = this.get('isAsync');
+    let minLength = this.minLength;
+    let limit = this.limit;
+    let async = this.isAsync;
     let hint = false;
     let highlight = true;
 
@@ -146,14 +146,14 @@ export default Ember.Component.extend({
   },
 
   getDataSetOptions: function () {
-    let name = this.get('listName');
-    let dataList = this.get('dataList');
-    let sourceFunction = this.get('sourceFunction');
-    let path = this.get('optionLabelPath');
-    let display = this.get('display');
-    let templates = this.get('templates');
-    let isAsync = this.get('isAsync');
-    let debounceTime = this.get('debounceTime');
+    let name = this.listName;
+    let dataList = this.dataList;
+    let sourceFunction = this.sourceFunction;
+    let path = this.optionLabelPath;
+    let display = this.display;
+    let templates = this.templates;
+    let isAsync = this.isAsync;
+    let debounceTime = this.debounceTime;
 
     if (!debounceTime) {
       debounceTime = 100;
@@ -190,7 +190,7 @@ export default Ember.Component.extend({
 
   substringMatcher: function (data) {
     // data should be array of ember objects
-    let path = this.get('optionLabelPath');
+    let path = this.optionLabelPath;
     if (!path) {
       path = 'id';
     }

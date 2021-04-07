@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import MtAuthMixin from '../mixins/mt_auth_mixin';
 
 
@@ -9,7 +9,7 @@ import MtAuthMixin from '../mixins/mt_auth_mixin';
   * @author Daniel Kelly
   * @since 1.0.2
   */
-export default Ember.Route.extend(MtAuthMixin, {
+export default Route.extend(MtAuthMixin, {
   beforeModel() {
     this.authenticate();
     this._super(...arguments);

@@ -1,16 +1,11 @@
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
 import DS from 'ember-data';
 import Auditable from '../models/_auditable_mixin';
 
-
-
-
-
-
-
 export default DS.Model.extend(Auditable, {
-  answerId: Ember.computed.alias('id'),
+  answerId: alias('id'),
   studentName: DS.attr('string'),
   problem: DS.belongsTo('problem'),
   answer: DS.attr('string'),
@@ -26,33 +21,40 @@ export default DS.Model.extend(Auditable, {
   workspacesToUpdate: DS.attr(''),
   vmtRoomInfo: DS.attr(),
 
-  isVmt: function () {
+  isVmt: computed('vmtRoomInfo.roomId', function () {
     let id = this.get('vmtRoomInfo.roomId');
-    let checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    let checkForHexRegExp = new RegExp('^[0-9a-fA-F]{24}$');
 
     return checkForHexRegExp.test(id);
-  }.property('vmtRoomInfo.roomId'),
+  }),
 
-  student: function () {
-    if (this.get('isVmt')) {
-      return this.get('vmtRoomInfo.participants.firstObject') || 'Unknown';
-    }
-    const creatorUsername = this.get('createdBy.username');
-    if (creatorUsername && creatorUsername !== 'old_pows_user') {
-      return creatorUsername;
-    }
-    const studentName = this.get('studentName');
-    if (typeof studentName === 'string') {
-      return studentName.trim();
-    }
+  student: computed(
+    'createdBy.username',
+    'studentNames.[]',
+    'studentName',
+    'isVmt',
+    'vmtRoomInfo.participants.[]',
+    function () {
+      if (this.isVmt) {
+        return this.get('vmtRoomInfo.participants.firstObject') || 'Unknown';
+      }
+      const creatorUsername = this.get('createdBy.username');
+      if (creatorUsername && creatorUsername !== 'old_pows_user') {
+        return creatorUsername;
+      }
+      const studentName = this.studentName;
+      if (typeof studentName === 'string') {
+        return studentName.trim();
+      }
 
-    const names = this.get('studentNames');
+      const names = this.studentNames;
 
-    if (Array.isArray(names)) {
-      let firstStringName = _.find(names, _.isString);
-      if (firstStringName) {
-        return firstStringName.trim();
+      if (Array.isArray(names)) {
+        let firstStringName = _.find(names, _.isString);
+        if (firstStringName) {
+          return firstStringName.trim();
+        }
       }
     }
-  }.property('createdBy.username', 'studentNames.[]', 'studentName', 'isVmt', 'vmtRoomInfo.participants.[]'),
+  ),
 });

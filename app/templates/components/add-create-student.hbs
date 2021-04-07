@@ -1,18 +1,6 @@
     <div class="student-search">
      <h3>Add Existing User<i title="Start typing an existing username to see suggestions" class="fas fa-info-circle fa-sm"></i></h3>
-      {{selectize-input
-      store=store
-      inputId="select-add-student"
-      maxItems=1
-      initialOptions=initialStudentOptions
-      onItemAdd=(action "updateStudents")
-      model="user"
-      isAsync=true
-      labelField="username"
-      searchField="username"
-      valueField="id"
-      queryParamsKey="usernameSearch"
-      }}
+      <SelectizeInput @store={{store}} @inputId="select-add-student" @maxItems={{1}} @initialOptions={{initialStudentOptions}} @onItemAdd={{action "updateStudents"}} @model="user" @isAsync={{true}} @labelField="username" @searchField="username" @valueField="id" @queryParamsKey="usernameSearch" />
     </div>
 
     <div class="student-create">
@@ -21,7 +9,7 @@
         <fieldset>
           <div class="create-student-input">
             <label for="usingDefaultPassword">Use class password for all students?</label>
-            {{input type="checkbox" checked=isUsingDefaultPassword name="usingDefaultPassword"}}
+            <Input @type="checkbox" @checked={{isUsingDefaultPassword}} @name="usingDefaultPassword" />
           </div>
           {{#if isUsingDefaultPassword}}
             <div class="create-student-input">
@@ -33,7 +21,7 @@
                 {{/if}}
               </label>
               {{#if isEditingSectionPassword}}
-                {{input id="defaultPassword" type=fieldType value=sectionPassword placeholder="default password" action="checkError" on="key-down"}}
+                <Input @id="defaultPassword" @type={{fieldType}} @value={{sectionPassword}} placeholder="default password" @action="checkError" @on="key-down" />
                 <button id="show-password-btn" {{action "showPassword"}}>
                   {{#if showingPassword}}
                     <i class="fas fa-eye-slash"></i>
@@ -48,7 +36,7 @@
                       <button id="show-password-btn" {{action (mut isShowingClassPassword) false}}><i class="fas fa-eye-slash"></i></button>
                     </p>
                   {{else}}
-                    {{input class="hidden-class-pass" disabled=true value=sectionPassword type="password"}}
+                    <Input class="hidden-class-pass" @disabled={{true}} @value={{sectionPassword}} @type="password" />
                     <button id="show-password-btn" {{action (mut isShowingClassPassword) true}}><i class="fas fa-eye"></i></button>
 
                   {{/if}}
@@ -64,23 +52,23 @@
           <div class="student-info">
             <div class="create-student-input">
             <label for="username">Username<span class="required-star">*</span></label>
-            {{input id="username" type="text" value=username placeholder="username" action="usernameValidate" on="key-down"}}
+            <Input @id="username" @type="text" @value={{username}} placeholder="username" @action="usernameValidate" @on="key-down" />
           </div>
 
           <div class="create-student-input">
             <label for="first-name">First Name (Optional)</label>
-            {{input id="first-name" type="text" value=firstName placeholder="first name" action="checkError" on="key-down"}}
+            <Input @id="first-name" @type="text" @value={{firstName}} placeholder="first name" @action="checkError" @on="key-down" />
           </div>
           <div class="create-student-input">
             <label for="last-name">Last Name (Optional)</label>
-            {{input id="last-name" type="text" value=lastName placeholder="last name" action="checkError" on="key-down"}}
+            <Input @id="last-name" @type="text" @value={{lastName}} placeholder="last name" @action="checkError" @on="key-down" />
           </div>
 
           {{#unless isUsingDefaultPassword}}
             <div class="create-student-input">
 
                 <label for="addpassword">Password<span class="required-star">*</span></label>
-                {{input id="password" type=fieldType value=password placeholder="password" action="checkError" on="key-down"}}
+                <Input @id="password" @type={{fieldType}} @value={{password}} placeholder="password" @action="checkError" @on="key-down" />
                   <button id="show-password-btn" {{action "showPassword"}}>
                     {{#if showingPassword}}
                       <i class="fas fa-eye-slash"></i>

@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
@@ -6,9 +7,9 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
 
-export default Ember.Component.extend(ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: 'pagination-control',
-  showPageNavigation: Ember.computed('details.pageCount', function () {
+  showPageNavigation: computed('details.pageCount', function () {
     let count = this.get('details.pageCount');
     return count && count > 1;
   }),
@@ -31,7 +32,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
           gotoPage = 1;
         }
 
-        this.get('initiatePageChange')(gotoPage);
+        this.initiatePageChange(gotoPage);
         return;
       }
       // otherwise user clicked left (-1) or right arrow (1)
@@ -57,7 +58,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
           pageToLoad = currentPage + 1;
         }
       }
-      this.get('initiatePageChange')(pageToLoad);
+      this.initiatePageChange(pageToLoad);
       return;
 
     },

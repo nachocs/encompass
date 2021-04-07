@@ -1,17 +1,12 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import { alias } from '@ember/object/computed';
 import DS from 'ember-data';
 import Auditable from '../models/_auditable_mixin';
-
-
-
-
-
-
 
 export default DS.Model.extend(Auditable, {
   firstName: DS.attr('string'),
   lastName: DS.attr('string'),
-  userId: Ember.computed.alias('id'),
+  userId: alias('id'),
   email: DS.attr('string'),
   avatar: DS.attr('string'),
   organization: DS.belongsTo('organization'),
@@ -35,59 +30,68 @@ export default DS.Model.extend(Auditable, {
   actingRole: DS.attr('string'),
   notifications: DS.hasMany('notifications', { inverse: 'recipient' }),
 
-  actingRoleName: function () {
-    let actingRole = this.get('actingRole');
-    if (this.get('accountType') === "P") {
-      (actingRole === 'teacher') ? actingRole = 'pdadmin' : actingRole = 'student';
-    } else if (this.get('accountType') === "A") {
-      (actingRole === 'teacher') ? actingRole = 'admin' : actingRole = 'student';
+  actingRoleName: computed('actingRole', function () {
+    let actingRole = this.actingRole;
+    if (this.accountType === 'P') {
+      actingRole === 'teacher'
+        ? (actingRole = 'pdadmin')
+        : (actingRole = 'student');
+    } else if (this.accountType === 'A') {
+      actingRole === 'teacher'
+        ? (actingRole = 'admin')
+        : (actingRole = 'student');
     }
     return actingRole;
-  }.property('actingRole'),
-  isAdmin: function () {
-    return this.get('accountType') === 'A';
-  }.property('accountType'),
-  isTeacher: function () {
-    return this.get('accountType') === 'T';
-  }.property('accountType'),
-  isStudent: function () {
-    return this.get('accountType') === 'S' || this.get('actingRole') === 'student';
-  }.property('accountType', 'actingRole'),
-  isPdAdmin: function () {
-    return this.get('accountType') === 'P';
-  }.property('accountType'),
-  isAuthenticated: function () {
-    return !this.get('isGuest');
-  }.property('isGuest'),
-  isAuthz: function () {
-    return (this.get('isAdmin') || this.get('isAuthorized'));
-  }.property('isAdmin', 'isAuthorized'),
-  displayName: function () {
-    var display = this.get('name');
+  }),
+  isAdmin: computed('accountType', function () {
+    return this.accountType === 'A';
+  }),
+  isTeacher: computed('accountType', function () {
+    return this.accountType === 'T';
+  }),
+  isStudent: computed('accountType', 'actingRole', function () {
+    return this.accountType === 'S' || this.actingRole === 'student';
+  }),
+  isPdAdmin: computed('accountType', function () {
+    return this.accountType === 'P';
+  }),
+  isAuthenticated: computed('isGuest', function () {
+    return !this.isGuest;
+  }),
+  isAuthz: computed('isAdmin', 'isAuthorized', function () {
+    return this.isAdmin || this.isAuthorized;
+  }),
+  displayName: computed('name', 'username', 'isLoaded', function () {
+    var display = this.name;
     if (!display) {
-      display = this.get('username');
+      display = this.username;
     }
     return display;
-  }.property('name', 'username', 'isLoaded'),
+  }),
   lastSeen: DS.attr('date'),
-  needAdditionalInfo: function () {
-    const authorized = this.get('isAuthz');
-    if (authorized) {
+  needAdditionalInfo: computed(
+    'googleId',
+    'requestReason',
+    'isAuthz',
+    function () {
+      const authorized = this.isAuthz;
+      if (authorized) {
+        return false;
+      }
+
+      const googleId = this.googleId;
+
+      if (!googleId) {
+        return false;
+      }
+      const requestReason = this.requestReason;
+
+      if (!requestReason) {
+        return true;
+      }
       return false;
     }
-
-    const googleId = this.get('googleId');
-
-    if (!googleId) {
-      return false;
-    }
-    const requestReason = this.get('requestReason');
-
-    if (!requestReason) {
-      return true;
-    }
-    return false;
-  }.property('googleId', 'requestReason', 'isAuthz'),
+  ),
 
   shouldSendAuthEmail: DS.attr('boolean'),
   collabWorkspaces: DS.attr(),

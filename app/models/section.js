@@ -1,5 +1,5 @@
-import Ember from 'ember';
-import DS from 'ember-data';
+import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
+import { alias } from '@ember/object/computed';
 import Auditable from '../models/_auditable_mixin';
 
 
@@ -7,13 +7,13 @@ import Auditable from '../models/_auditable_mixin';
 
 
 
-export default DS.Model.extend(Auditable, {
-  sectionId: Ember.computed.alias('id'),
-  name: DS.attr('string'),
-  organization: DS.belongsTo('organization', { inverse: null }),
-  teachers: DS.hasMany('user', { inverse: null }),
-  sectionPassword: DS.attr('string'),
-  students: DS.hasMany('user', { inverse: null }),
-  problems: DS.hasMany('problem'),
-  assignments: DS.hasMany('assignment')
+export default Model.extend(Auditable, {
+  sectionId: alias('id'),
+  name: attr('string'),
+  organization: belongsTo('organization', { inverse: null }),
+  teachers: hasMany('user', { inverse: null }),
+  sectionPassword: attr('string'),
+  students: hasMany('user', { inverse: null }),
+  problems: hasMany('problem'),
+  assignments: hasMany('assignment')
 });

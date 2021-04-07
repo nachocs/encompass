@@ -1,21 +1,22 @@
+import { computed } from '@ember/object';
 /**
   * # Application Controller
   * @description The controller for the application. Right now, we use this primarily for keeping track of the current user
   * @authors Damola Mabogunje <damola@mathforum.org>, Amir Tahvildaran <amir@mathforum.org>
   * @since 1.0.0
 */
-import Ember from 'ember';
+import Controller from '@ember/controller';
 
 
-export default Ember.Controller.extend({
+export default Controller.extend({
   showCategoryList: false,
   isHidden: false,
   selectedCategories: [],
   isTouchScreen: false,
 
-  currentUser: function () {
-    return this.get('model');
-  }.property('model'),
+  currentUser: computed('model', function () {
+    return this.model;
+  }),
 
 
   // resizeDisplay: function() {
@@ -30,7 +31,7 @@ export default Ember.Controller.extend({
       this.set('showCategoryList', false);
     },
     searchCategory: function (category) {
-      this.get('selectedCategories').pushObject(category);
+      this.selectedCategories.pushObject(category);
     },
     handleFirstTouch() {
       this.set('isTouchScreen', true);

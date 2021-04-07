@@ -3,7 +3,7 @@ import AuthenticatedRoute from '../routes/_authenticated_route';
 
 export default AuthenticatedRoute.extend(CurrentUserMixin, {
   model: function () {
-    return this.get('store').query('responseThread', {
+    return this.store.query('responseThread', {
       threadType: 'all',
       page: 1,
       limit: 50,

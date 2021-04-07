@@ -14,7 +14,7 @@
 
   <div class="nav-goto">
     <label for="gotoPage">Go to Page</label>
-    {{input class="goto-page" type="number" value=publicGoToPage}}
+    <Input class="goto-page" @type="number" @value={{publicGoToPage}} />
     <button {{action "getPage" null publicGoToPage}}>Go</button>
   </div>
   </div>

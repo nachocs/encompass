@@ -16,7 +16,7 @@
       </div>
       <div class="row-value">
         {{#if isEditing}}
-          {{input type="text" class="text-input" id="edit-name-input" value=workspace.name}}
+          <Input @type="text" class="text-input" @id="edit-name-input" @value={{workspace.name}} />
         {{else}}
           {{workspace.name}}
         {{/if}}
@@ -28,24 +28,9 @@
       </div>
       <div class="row-value">
         {{#if isEditing}}
-          {{selectize-input
-          store=store
-          inputId="owner-select"
-          maxItems=1
-          initialItems=initialOwnerItem
-          onItemAdd=(action "setOwner")
-          onItemRemove=(action "setOwner")
-          labelField="username"
-          valueField="id"
-          searchField="username"
-          model="user"
-          queryParamsKey="usernameSearch"
-          isAsync=true
-          placeholder="Search by username"
-          preload="focus"
-          }}
+          <SelectizeInput @store={{store}} @inputId="owner-select" @maxItems={{1}} @initialItems={{initialOwnerItem}} @onItemAdd={{action "setOwner"}} @onItemRemove={{action "setOwner"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @queryParamsKey="usernameSearch" @isAsync={{true}} @placeholder="Search by username" @preload="focus" />
         {{else}}
-          {{#link-to 'user' workspace.owner.username}}{{workspace.owner.username}}{{/link-to}}
+          <LinkTo @route="user" @model={{workspace.owner.username}}>{{workspace.owner.username}}</LinkTo>
         {{/if}}
       </div>
     </div>
@@ -55,7 +40,7 @@
       </div>
       <div class="row-value">
         {{#if isEditing}}
-          {{my-select cannotBeNull=true selectedValue=selectedMode content=modes action=(action (mut selectedMode))}}
+          <MySelect @cannotBeNull={{true}} @selectedValue={{selectedMode}} @content={{modes}} @action={{action (mut selectedMode)}} />
         {{else}}
           {{workspace.mode}}
         {{/if}}
@@ -68,26 +53,10 @@
         </div>
         <div data-test="linked-assn" class="row-value">
           {{#if isEditing}}
-            {{selectize-input
-            store=store
-            inputId="linked-assignment-select"
-            maxItems=1
-            initialItems=initialLinkedAssignmentItem
-            onItemAdd=(action "setLinkedAssignment")
-            onItemRemove=(action "setLinkedAssignment")
-            labelField="name"
-            valueField="id"
-            searchField="name"
-            model="assignment"
-            topLevelQueryParams="filterBy"
-            queryParamsKey="name"
-            isAsync=true
-            placeholder="Search for an assignment by name"
-            preload="focus"
-            }}
+            <SelectizeInput @store={{store}} @inputId="linked-assignment-select" @maxItems={{1}} @initialItems={{initialLinkedAssignmentItem}} @onItemAdd={{action "setLinkedAssignment"}} @onItemRemove={{action "setLinkedAssignment"}} @labelField="name" @valueField="id" @searchField="name" @model="assignment" @topLevelQueryParams="filterBy" @queryParamsKey="name" @isAsync={{true}} @placeholder="Search for an assignment by name" @preload="focus" />
           {{else}}
           {{#if linkedAssignment}}
-              {{#link-to 'assignment' linkedAssignment.id}}{{linkedAssignment.name}}{{/link-to}}
+              <LinkTo @route="assignment" @model={{linkedAssignment.id}}>{{linkedAssignment.name}}</LinkTo>
             {{else}}
             N/A
             {{/if}}
@@ -101,7 +70,7 @@
       </div>
       <div data-test="allow-updates" class="row-value">
         {{#if isEditing}}
-          {{my-select cannotBeNull=true selectedValue=selectedAutoUpdateSetting content=yesNoMySelect action=(action (mut selectedAutoUpdateSetting))}}
+          <MySelect @cannotBeNull={{true}} @selectedValue={{selectedAutoUpdateSetting}} @content={{yesNoMySelect}} @action={{action (mut selectedAutoUpdateSetting)}} />
         {{else}}
           {{yes-no workspace.doAllowSubmissionUpdates}}
         {{/if}}
@@ -112,13 +81,13 @@
           <button {{action "updateWithExistingWork"}} class="primary-button">Update Workspace</button>
           <div class="update-results">
             {{#if missingLinkedAssignment}}
-              {{error-box error="Please link an assignment first." showDismiss=true resetError=(action (mut missingLinkedAssignment) null)}}
+              <ErrorBox @error="Please link an assignment first." @showDismiss={{true}} @resetError={{action (mut missingLinkedAssignment) null}} />
             {{/if}}
             {{#each updateErrors as |error|}}
-              {{error-box error=error showDismiss=true resetError=(action "removeErrorFromArray" 'updateErrors' error)}}
+              <ErrorBox @error={{error}} @showDismiss={{true}} @resetError={{action "removeErrorFromArray" "updateErrors" error}} />
             {{/each}}
             {{#each serverErrors as |error|}}
-              {{error-box error=error showDismiss=true resetError=(action "removeErrorFromArray" 'serverErrors' error)}}
+              <ErrorBox @error={{error}} @showDismiss={{true}} @resetError={{action "removeErrorFromArray" "serverErrors" error}} />
             {{/each}}
           </div>
 
@@ -154,7 +123,7 @@
           <ul class="child-workspaces">
             {{#each childWorkspaces as |ws|}}
             <li>
-              {{#link-to 'workspace.work' ws.id}}{{ws.name}}{{/link-to}}
+              <LinkTo @route="workspace.work" @model={{ws.id}}>{{ws.name}}</LinkTo>
             </li>
             {{else}}
            <li>N/A</li>
@@ -170,7 +139,7 @@
       </div>
       <div data-test="allow-updates" class="row-value">
         {{#if isEditing}}
-          {{my-select cannotBeNull=true selectedValue=selectedAutoUpdateSetting content=yesNoMySelect action=(action (mut selectedAutoUpdateSetting))}}
+          <MySelect @cannotBeNull={{true}} @selectedValue={{selectedAutoUpdateSetting}} @content={{yesNoMySelect}} @action={{action (mut selectedAutoUpdateSetting)}} />
         {{else}}
           {{yes-no workspace.doAutoUpdateFromChildren}}
         {{/if}}
@@ -181,13 +150,13 @@
           <button {{action "updateWithExistingWork"}} class="primary-button" data-test="parent-ws-update">Update Parent Workspace</button>
           <div class="update-results">
             {{#if missingChildWorkspaces}}
-              {{error-box error="No child workspaces to update from" showDismiss=true resetError=(action (mut missingChildWorkspaces) null)}}
+              <ErrorBox @error="No child workspaces to update from" @showDismiss={{true}} @resetError={{action (mut missingChildWorkspaces) null}} />
             {{/if}}
             {{#each updateErrors as |error|}}
-              {{error-box error=error showDismiss=true resetError=(action "removeErrorFromArray" 'updateErrors' error)}}
+              <ErrorBox @error={{error}} @showDismiss={{true}} @resetError={{action "removeErrorFromArray" "updateErrors" error}} />
             {{/each}}
             {{#each serverErrors as |error|}}
-              {{error-box error=error showDismiss=true resetError=(action "removeErrorFromArray" 'serverErrors' error)}}
+              <ErrorBox @error={{error}} @showDismiss={{true}} @resetError={{action "removeErrorFromArray" "serverErrors" error}} />
             {{/each}}
             {{#each-in createdParentData as |recordType records|}}
               {{#if records}}

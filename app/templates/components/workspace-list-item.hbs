@@ -4,19 +4,19 @@
       {{{public-private workspace.mode}}}
     </div>
     <div class="item-section info-item">
-      {{#link-to 'workspace.info' workspace.id}}
+      <LinkTo @route="workspace.info" @model={{workspace.id}}>
       <i class="fa fa-info-circle workspace_info" aria-hidden="true"></i>
-      {{/link-to}}
+      </LinkTo>
     </div>
     <div class="item-section name">
-      {{#link-to 'workspace.work' workspace.id class="workspace-name"}}
+      <LinkTo @route="workspace.work" @model={{workspace.id}} class="workspace-name">
         <span class={{if workspace.isTrashed 'strikethrough'}}>{{{workspace.name}}}</span>
-      {{/link-to}}
+      </LinkTo>
     </div>
     <div class="item-section last-viewed">
-      {{#link-to 'workspace.work' workspace.id class="workspace-last-viewed"}}
+      <LinkTo @route="workspace.work" @model={{workspace.id}} class="workspace-last-viewed">
         {{format-date workspace.lastModifiedDateComp 'L'}}
-      {{/link-to}}
+      </LinkTo>
     </div>
     <div class="item-section submissions">
       {{workspace.submissionsLength}}
@@ -91,12 +91,12 @@
     </div>
     <div class="item-card row-2">
       <div class="item-card name">
-        {{#link-to 'workspace.work' workspace.id class="workspace-name"}}
+        <LinkTo @route="workspace.work" @model={{workspace.id}} class="workspace-name">
           <span class={{if workspace.isTrashed 'strikethrough'}}>{{{workspace.name}}}</span>
-            {{#link-to 'workspace.info' workspace.id}}
+            <LinkTo @route="workspace.info" @model={{workspace.id}}>
               <i class="fa fa-info-circle workspace_info" aria-hidden="true"></i>
-            {{/link-to}}
-        {{/link-to}}
+            </LinkTo>
+        </LinkTo>
       </div>
     </div>
     <div class="item-card row-3">

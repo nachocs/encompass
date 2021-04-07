@@ -1,5 +1,5 @@
+import Model, { belongsTo } from '@ember-data/model';
 import Ember from 'ember';
-import DS from 'ember-data';
 import Auditable from '../models/_auditable_mixin';
 
 
@@ -8,11 +8,11 @@ import Auditable from '../models/_auditable_mixin';
 
 
 
-export default DS.Model.extend(Ember.Copyable, Auditable, {
-  workspace: DS.belongsTo('workspace', { async: false }),
-  selection: DS.belongsTo('selection'),
-  folder: DS.belongsTo('folder'),
-  originalTagging: DS.belongsTo('tagging', { inverse: null }),
+export default Model.extend(Ember.Copyable, Auditable, {
+  workspace: belongsTo('workspace', { async: false }),
+  selection: belongsTo('selection'),
+  folder: belongsTo('folder'),
+  originalTagging: belongsTo('tagging', { inverse: null }),
 
   copy: function (deep) {
     var clone = this.toJSON();

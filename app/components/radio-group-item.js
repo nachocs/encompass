@@ -1,24 +1,25 @@
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['radio-group-item'],
 
-  isSelected: function () {
-    const selectedValue = this.get('selectedValue');
-    const value = this.get('value');
+  isSelected: computed('selectedValue', 'value', function () {
+    const selectedValue = this.selectedValue;
+    const value = this.value;
 
     return _.isEqual(selectedValue, value);
-  }.property('selectedValue', 'value'),
+  }),
 
   actions: {
     onClick(val) {
-      this.get('onClick')(val);
+      this.onClick(val);
     }
   }
 });

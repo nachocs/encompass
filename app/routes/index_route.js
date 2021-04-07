@@ -1,16 +1,16 @@
 /**
   */
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 
 
 
 
 
 
-export default Ember.Route.extend({
+export default Route.extend({
   model: function () {
     let user = this.modelFor('application');
-    let assignments = this.get("store").findAll("assignment");
+    let assignments = this.store.findAll("assignment");
     return { "assignments": assignments, "user": user };
   },
   renderTemplate: function () {

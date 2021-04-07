@@ -1,8 +1,8 @@
-import Ember from "ember";
+import Service, { inject as service } from '@ember/service';
 
-export default Ember.Service.extend({
-  base: Ember.inject.service("edit-permissions"),
-  utils: Ember.inject.service("utility-methods"),
+export default Service.extend({
+  base: service("edit-permissions"),
+  utils: service("utility-methods"),
   // admins, creators,
 
   // permission tiers for assignments
@@ -20,11 +20,11 @@ export default Ember.Service.extend({
       return 4;
     }
     // assignments do not have org field but section does
-    if (this.get("base").isRecordInPdDomain(section)) {
+    if (this.base.isRecordInPdDomain(section)) {
       return 3;
     }
 
-    if (this.get("base").isCreator(assignment)) {
+    if (this.base.isCreator(assignment)) {
       return 2;
     }
 
@@ -41,13 +41,13 @@ export default Ember.Service.extend({
       return;
     }
 
-    let assnSectionId = this.get("utils").getBelongsToId(assignment, "section");
+    let assnSectionId = this.utils.getBelongsToId(assignment, "section");
     if (assnSectionId !== section.get("id")) {
       return false;
     }
 
-    let teacherIds = this.get("utils").getHasManyIds(section, "teachers");
-    if (!this.get("utils").isNonEmptyArray(teacherIds)) {
+    let teacherIds = this.utils.getHasManyIds(section, "teachers");
+    if (!this.utils.isNonEmptyArray(teacherIds)) {
       return false;
     }
     return teacherIds.includes(this.get("base.userId"));
@@ -76,7 +76,7 @@ export default Ember.Service.extend({
       return true;
     }
 
-    if (this.get("base").isCreator(assignment)) {
+    if (this.base.isCreator(assignment)) {
       return true;
     }
 
@@ -105,13 +105,13 @@ export default Ember.Service.extend({
       return true;
     }
 
-    if (this.get("base").isCreator(assignment)) {
+    if (this.base.isCreator(assignment)) {
       return true;
     }
   },
 
   haveAnswersBeenSubmitted(assignment) {
-    let answerIds = this.get("utils").getHasManyIds(assignment, "answers");
-    return this.get("utils").isNonEmptyArray(answerIds);
+    let answerIds = this.utils.getHasManyIds(assignment, "answers");
+    return this.utils.isNonEmptyArray(answerIds);
   },
 });

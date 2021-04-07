@@ -9,19 +9,19 @@
         <p class="info">To upload images in .jpg or .png format, please use the explanation html editor (by clicking on the square icon in the toolbar). {{!--To upload a pdf, please use the separate file upload input.--}}</p>
         <div class="new-answer-input brief-summary">
           <label for="answer">Brief Summary <span class="required-star">*</span></label>
-          {{textarea name="brief-summary" cols="80" value=answer rows="3" placeholder="Brief Summary..."}}
-          {{input id="answer" required="true" type="hidden" value=answer}}
+          <Textarea @name="brief-summary" @cols="80" @value={{answer}} @rows="3" placeholder="Brief Summary..." />
+          <Input @id="answer" required="true" @type="hidden" @value={{answer}} />
         </div>
         {{#each briefSummaryErrors as |error|}}
-          {{error-box error=error resetError=(action (mut briefSummaryErrors) null) showDismiss=true}}
+          <ErrorBox @error={{error}} @resetError={{action (mut briefSummaryErrors) null}} @showDismiss={{true}} />
         {{/each}}
         <div class="new-answer-input explanation">
           <label for="explanation">Explain your ideas and how you figured them out <span class="required-star">*</span></label>
 
-          {{quill-container onEditorChange=(action "updateQuillText") attrSectionId=quillEditorId startingText=explanationText}}
+          <QuillContainer @onEditorChange={{action "updateQuillText"}} @attrSectionId={{quillEditorId}} @startingText={{explanationText}} />
         </div>
         {{#each explanationErrors as |error|}}
-          {{error-box error=error resetError=(action (mut explanationErrors) null) showDismiss=true}}
+          <ErrorBox @error={{error}} @resetError={{action (mut explanationErrors) null}} @showDismiss={{true}} />
         {{/each}}
         <div class="new-answer-input uploaded-file">
           {{!-- <label for="uploadedFile">Upload PDF</label> --}}
@@ -54,7 +54,7 @@
               </ul>
             </div>
           </div>
-          {{twitter-typeahead selectedValue=studentToAdd selectedItems=contributors onSelect="addStudent" dataList=section.students placeholder="username" optionLabelPath="username" allowMultiple=true}}
+          <TwitterTypeahead @selectedValue={{studentToAdd}} @selectedItems={{contributors}} @onSelect="addStudent" @dataList={{section.students}} @placeholder="username" @optionLabelPath="username" @allowMultiple={{true}} />
 
           {{#if addStudentError}}
               <p class="error-message"></p>Sorry, that user is not in your class.
@@ -64,13 +64,13 @@
           {{/if}}
       </fieldset>
       {{#if isMissingRequiredFields}}
-        {{error-box error="Please provide all required fields." showDismiss=true resetError=(action (mut isMissingRequiredFields) null)}}
+        <ErrorBox @error="Please provide all required fields." @showDismiss={{true}} @resetError={{action (mut isMissingRequiredFields) null}} />
       {{/if}}
       {{#if overSizedFileError}}
-        {{error-box error=overSizedFileError showDismiss=true resetError=(action (mut overSizedFileError) null)}}
+        <ErrorBox @error={{overSizedFileError}} @showDismiss={{true}} @resetError={{action (mut overSizedFileError) null}} />
       {{/if}}
       {{#if isExplanationTooLarge}}
-        {{error-box error=tooLargeExplanationMsg showDismiss=true resetError=(action (mut isExplanationTooLarge) null)}}
+        <ErrorBox @error={{tooLargeExplanationMsg}} @showDismiss={{true}} @resetError={{action (mut isExplanationTooLarge) null}} />
       {{/if}}
     </form>
   </section>

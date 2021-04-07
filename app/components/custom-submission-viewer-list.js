@@ -1,16 +1,16 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: 'custom-submission-viewer-list',
   isChecked: false,
 
   didReceiveAttributes() {
-    if (!Array.isArray(this.get('selectedSubmissionIds'))) {
+    if (!Array.isArray(this.selectedSubmissionIds)) {
       this.set('selectedSubmissionIds', []);
     }
     this._super(...arguments);
@@ -18,24 +18,24 @@ export default Ember.Component.extend({
 
   actions: {
     onSelect: function (submissionId) {
-      this.get('onSelect')(submissionId);
+      this.onSelect(submissionId);
     },
     toggleSelect: function () {
-      this.set('isChecked', !this.get('isChecked'));
-      if (this.get('isChecked')) {
+      this.set('isChecked', !this.isChecked);
+      if (this.isChecked) {
         this.send('selectAll');
       } else {
         this.send('unselectAll');
       }
     },
     selectAll: function () {
-      this.get('onSelectAll')();
+      this.onSelectAll();
     },
     unselectAll: function () {
-      this.get('onUnselectAll')();
+      this.onUnselectAll();
     },
     doneSelecting: function () {
-      this.get('onDoneSelecting')();
+      this.onDoneSelecting();
     },
   }
 });

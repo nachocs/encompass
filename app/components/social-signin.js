@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 import MtAuthMixin from '../mixins/mt_auth_mixin';
 
 
@@ -6,12 +7,12 @@ import MtAuthMixin from '../mixins/mt_auth_mixin';
 
 
 
-export default Ember.Component.extend(MtAuthMixin, {
+export default Component.extend(MtAuthMixin, {
   content: null,
 
-  googleUrl: function () {
+  googleUrl: computed(function () {
     return this.getSsoGoogleUrl();
-  }.property(),
+  }),
 
   actions: {
   }

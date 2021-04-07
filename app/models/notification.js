@@ -1,18 +1,18 @@
-import DS from 'ember-data';
+import Model, { attr, belongsTo } from '@ember-data/model';
 import Auditable from '../models/_auditable_mixin';
 
 
-export default DS.Model.extend(Auditable, {
-  text: DS.attr('string'),
-  primaryRecordType: DS.attr('string'),
-  notificationType: DS.attr('string'),
-  submission: DS.belongsTo('submission', { inverse: null }),
-  workspace: DS.belongsTo('workspace'),
-  response: DS.belongsTo('response'),
-  recipient: DS.belongsTo('user'),
-  assignment: DS.belongsTo('assignment'),
-  problem: DS.belongsTo('problem'),
-  section: DS.belongsTo('section'),
-  organziation: DS.belongsTo('organization'),
-  wasSeen: DS.attr('boolean', { defaultValue: false })
+export default Model.extend(Auditable, {
+  text: attr('string'),
+  primaryRecordType: attr('string'),
+  notificationType: attr('string'),
+  submission: belongsTo('submission', { inverse: null }),
+  workspace: belongsTo('workspace'),
+  response: belongsTo('response'),
+  recipient: belongsTo('user'),
+  assignment: belongsTo('assignment'),
+  problem: belongsTo('problem'),
+  section: belongsTo('section'),
+  organziation: belongsTo('organization'),
+  wasSeen: attr('boolean', { defaultValue: false })
 });

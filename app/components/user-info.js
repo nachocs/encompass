@@ -1,19 +1,17 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { later } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import moment from 'moment';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'user-info',
-  alert: Ember.inject.service('sweet-alert'),
-  utils: Ember.inject.service('utility-methods'),
-  basePermissions: Ember.inject.service('edit-permissions'),
+  alert: service('sweet-alert'),
+  utils: service('utility-methods'),
+  basePermissions: service('edit-permissions'),
 
   isEditing: false,
   authorized: null,
@@ -31,24 +29,31 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   didReceiveAttrs: function () {
     this.set('isEditing', false);
-    let user = this.get('user');
+    let user = this.user;
     if (user.get('sections')) {
       this.getUserSections();
     }
     this.set('org', null);
-    this.removeMessages('updateRecordErrors', 'createRecordErrors', 'findRecordErrors');
+    this.removeMessages(
+      'updateRecordErrors',
+      'createRecordErrors',
+      'findRecordErrors'
+    );
 
-    this.store.findAll('organization').then((orgs) => {
-      this.set('orgList', orgs);
-      this.removeMessages('loadOrgErrors');
-    }).catch((err) => {
-      this.handleErrors(err, 'loadOrgsErrors');
-    });
+    this.store
+      .findAll('organization')
+      .then((orgs) => {
+        this.set('orgList', orgs);
+        this.removeMessages('loadOrgErrors');
+      })
+      .catch((err) => {
+        this.handleErrors(err, 'loadOrgsErrors');
+      });
   },
 
-  canEdit: Ember.computed('user.id', function () {
-    let user = this.get('user');
-    let currentUser = this.get('currentUser');
+  canEdit: computed('user.id', function () {
+    let user = this.user;
+    let currentUser = this.currentUser;
 
     if (!user || !currentUser) {
       return;
@@ -64,7 +69,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       return true;
     }
 
-    let creatorId = this.get('utils').getBelongsToId(user, 'createdBy');
+    let creatorId = this.utils.getBelongsToId(user, 'createdBy');
 
     // is creator
     if (currentUser.get('id') === creatorId) {
@@ -72,29 +77,28 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     }
 
     // pd admin for user's org
-    if (this.get('basePermissions').isRecordInPdDomain(user)) {
+    if (this.basePermissions.isRecordInPdDomain(user)) {
       return true;
     }
     return false;
   }),
 
-  canConfirm: Ember.computed('user.id', function () {
-
+  canConfirm: computed('user.id', function () {
     if (this.get('basePermissions.isActingAdmin')) {
       return true;
     }
-    if (this.get('basePermissions').isRecordInPdDomain(this.get('user'))) {
+    if (this.basePermissions.isRecordInPdDomain(this.user)) {
       return true;
     }
     return false;
   }),
 
-  unconfirmedEmail: Ember.computed('user.id', function () {
+  unconfirmedEmail: computed('user.id', function () {
     return !this.get('user.isEmailConfirmed');
   }),
 
-  getUserSections: function () {
-    let user = this.get('user');
+  getUserSections: observer('user.id', function () {
+    let user = this.user;
     let sections = user.get('sections');
 
     if (sections) {
@@ -102,26 +106,33 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return section.sectionId;
       });
 
-      this.get('store').query('section', {
-        ids: sectionIds
-      }).then((sections) => {
-        this.set('userSections', sections);
-      });
+      this.store
+        .query('section', {
+          ids: sectionIds,
+        })
+        .then((sections) => {
+          this.set('userSections', sections);
+        });
     }
-  }.observes('user.id'),
+  }),
 
-  removeSuccessMessages: function () {
-    const succesStates = ['resetPasswordSuccess'];
+  removeSuccessMessages: observer(
+    'isResettingPassword',
+    'isEditing',
+    'user.id',
+    function () {
+      const succesStates = ['resetPasswordSuccess'];
 
-    for (let state of succesStates) {
-      if (this.get(state)) {
-        this.set(state, false);
+      for (let state of succesStates) {
+        if (this.get(state)) {
+          this.set(state, false);
+        }
       }
     }
-  }.observes('isResettingPassword', 'isEditing', 'user.id'),
+  ),
 
-  accountTypes: Ember.computed(function () {
-    let accountType = this.get('currentUser').get('accountType');
+  accountTypes: computed(function () {
+    let accountType = this.currentUser.get('accountType');
     let accountTypes;
 
     if (accountType === 'A') {
@@ -137,44 +148,44 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     return accountTypes;
   }),
 
-  lastSeenDate: function () {
-    var last = this.get('lastSeen');
+  lastSeenDate: computed('lastSeen', function () {
+    var last = this.lastSeen;
     if (last) {
       return moment(last).fromNow();
     }
     return 'never';
-  }.property('lastSeen'),
+  }),
 
-  tourDate: function () {
-    var date = this.get('seenTour');
+  tourDate: computed('user.seenTour', function () {
+    var date = this.seenTour;
     if (date) {
       return moment(date).fromNow();
     }
     return 'no';
-  }.property('user.seenTour'),
+  }),
 
-  authorizedBy: function () {
+  authorizedBy: observer('user.isAuthorized', function () {
     let isAuth = this.get('user.isAuthorized');
     let authBy = this.get('user.authorizedBy.content');
     if (isAuth && !authBy) {
-      let user = this.get('user');
-      user.set('authorizedBy', this.get('currentUser'));
+      let user = this.user;
+      user.set('authorizedBy', this.currentUser);
       user.set('shouldSendAuthEmail', true);
     }
-  }.observes('user.isAuthorized'),
+  }),
 
   actions: {
     editUser: function () {
-      let user = this.get('user');
+      let user = this.user;
       this.set('userEmail', user.get('email'));
       let accountType = user.get('accountType');
-      if (accountType === "S") {
+      if (accountType === 'S') {
         this.set('selectedType', 'Student');
-      } else if (accountType === "T") {
+      } else if (accountType === 'T') {
         this.set('selectedType', 'Teacher');
-      } else if (accountType === "A") {
+      } else if (accountType === 'A') {
         this.set('selectedType', 'Admin');
-      } else if (accountType === "P") {
+      } else if (accountType === 'P') {
         this.set('selectedType', 'Pd Admin');
       } else {
         this.set('selectedType', 'null');
@@ -185,18 +196,29 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     checkOrgExists: function () {
-      let user = this.get('user');
+      let user = this.user;
       let userOrg = user.get('organization').get('content');
       let userOrgRequest = user.get('organizationRequest');
-      let org = this.get('org');
-      let orgReq = this.get('orgReq');
+      let org = this.org;
+      let orgReq = this.orgReq;
 
-      let options = [Boolean(userOrg), Boolean(userOrgRequest), Boolean(org), Boolean(orgReq)];
+      let options = [
+        Boolean(userOrg),
+        Boolean(userOrgRequest),
+        Boolean(org),
+        Boolean(orgReq),
+      ];
 
       if (options.includes(true)) {
         this.send('saveUser');
       } else {
-        this.get('alert').showModal('warning', 'Are you sure you want to save a user that has no organization?', 'Users should belong to an organization to improve the EnCoMPASS experience', 'Yes')
+        this.alert
+          .showModal(
+            'warning',
+            'Are you sure you want to save a user that has no organization?',
+            'Users should belong to an organization to improve the EnCoMPASS experience',
+            'Yes'
+          )
           .then((result) => {
             if (result.value) {
               this.send('saveUser');
@@ -206,12 +228,12 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     saveUser: function () {
-      let currentUser = this.get('currentUser');
-      let user = this.get('user');
-      let org = this.get('org');
-      let orgReq = this.get('orgReq');
+      let currentUser = this.currentUser;
+      let user = this.user;
+      let org = this.org;
+      let orgReq = this.orgReq;
 
-      let orgs = this.get('orgList');
+      let orgs = this.orgList;
       let matchingOrg = orgs.findBy('name', orgReq);
       if (matchingOrg) {
         org = matchingOrg;
@@ -219,7 +241,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
 
       // should we check to see if any information was actually updated before updating modified by/date?
-      let accountType = this.get('selectedType');
+      let accountType = this.selectedType;
       let accountTypeLetter = accountType.charAt(0).toUpperCase();
       user.set('accountType', accountTypeLetter);
 
@@ -229,8 +251,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       if (orgReq) {
         user.set('organizationRequest', orgReq);
       }
-      user.set('email', this.get('userEmail'));
-
+      user.set('email', this.userEmail);
 
       //if is authorized is now true, then we need to set the value of authorized by to current user
       if (user.get('hasDirtyAttributes')) {
@@ -239,15 +260,25 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         user.set('lastModifiedDate', newDate);
 
         // so server knows whether to make request to sso server
-        user.set('isConfirmingEmail', this.get('isConfirmingEmail'));
+        user.set('isConfirmingEmail', this.isConfirmingEmail);
 
-        user.save().then(() => {
-          this.get('alert').showToast('success', 'User updated', 'bottom-end', 3000, false, null);
-          this.set('isEditing', false);
-          this.removeMessages('updateRecordErrors');
-        }).catch((err) => {
-          this.handleErrors(err, 'updateRecordErrors', user);
-        });
+        user
+          .save()
+          .then(() => {
+            this.alert.showToast(
+              'success',
+              'User updated',
+              'bottom-end',
+              3000,
+              false,
+              null
+            );
+            this.set('isEditing', false);
+            this.removeMessages('updateRecordErrors');
+          })
+          .catch((err) => {
+            this.handleErrors(err, 'updateRecordErrors', user);
+          });
       }
       this.set('isEditing', false);
     },
@@ -262,9 +293,9 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     resetPassword: function () {
       this.set('isResettingPassword', true);
-      Ember.run.later(() => {
+      later(() => {
         $('html, body').animate({
-          scrollTop: $(document).height()
+          scrollTop: $(document).height(),
         });
       }, 100);
     },
@@ -274,9 +305,15 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     confirmOrgModal: function () {
-      let user = this.get('user');
+      let user = this.user;
       let reqOrg = user.get('organizationRequest');
-      this.get('alert').showModal('question', `Are you sure you want to create a new organization?`, `This will create a brand new organization called ${reqOrg}`, 'Yes')
+      this.alert
+        .showModal(
+          'question',
+          `Are you sure you want to create a new organization?`,
+          `This will create a brand new organization called ${reqOrg}`,
+          'Yes'
+        )
         .then((result) => {
           if (result.value) {
             this.send('createNewOrg');
@@ -285,74 +322,124 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     createNewOrg: function () {
-      let user = this.get('user');
-      let currentUser = this.get('currentUser');
+      let user = this.user;
+      let currentUser = this.currentUser;
       let reqOrg = user.get('organizationRequest');
       let newOrg = this.store.createRecord('organization', {
         name: reqOrg,
-        createdBy: currentUser
+        createdBy: currentUser,
       });
-      newOrg.save()
+      newOrg
+        .save()
         .then((org) => {
           this.removeMessages('createRecordErrors');
-          let user = this.get('user');
+          let user = this.user;
           let orgName = org.get('name');
           user.set('organization', org);
           this.set('orgReq', null);
           user.set('organizationRequest', null);
-          user.save().then((user) => {
-            this.get('alert').showToast('success', `${orgName} Created`, 'bottom-end', 3000, false, null);
-            this.set('orgModal', false);
-            this.removeMessages('updateRecordErrors');
-          }).catch((err) => {
-            this.handleErrors(err, 'updateRecordErrors', user);
-          });
-        }).catch((err) => {
+          user
+            .save()
+            .then((user) => {
+              this.alert.showToast(
+                'success',
+                `${orgName} Created`,
+                'bottom-end',
+                3000,
+                false,
+                null
+              );
+              this.set('orgModal', false);
+              this.removeMessages('updateRecordErrors');
+            })
+            .catch((err) => {
+              this.handleErrors(err, 'updateRecordErrors', user);
+            });
+        })
+        .catch((err) => {
           this.handleErrors(err, 'createRecordErrors', newOrg);
         });
     },
 
     removeOrg: function () {
-      let user = this.get('user');
+      let user = this.user;
       user.set('organizationRequest', null);
-      user.save().then((res) => {
-        // handle success
-        this.removeMessages('updateRecordErrors');
-      }).catch((err) => {
-        this.handleErrors(err, 'updateRecordErrors', user);
-      });
+      user
+        .save()
+        .then((res) => {
+          // handle success
+          this.removeMessages('updateRecordErrors');
+        })
+        .catch((err) => {
+          this.handleErrors(err, 'updateRecordErrors', user);
+        });
     },
 
     deleteUser: function () {
-      let user = this.get('user');
+      let user = this.user;
       let username = user.get('username');
-      this.get('alert').showModal('warning', `Are you sure want to delete ${username}?`, 'You can always restore this user later', 'Delete').then((result) => {
-        if (result.value) {
-          user.set('isTrashed', true);
-          user.save().then(() => {
-            this.get('alert').showToast('success', `${username} successfully deleted`, 'bottom-end', 4000, true, 'Undo')
-              .then((result) => {
-                if (result.value) {
-                  user.set('isTrashed', false);
-                  user.save().then(() => {
-                    this.get('alert').showToast('success', `${username} successfully restored`, 'bottom-end', 3000, false, null);
-                  });
-                }
-              });
-          });
-        }
-      });
+      this.alert
+        .showModal(
+          'warning',
+          `Are you sure want to delete ${username}?`,
+          'You can always restore this user later',
+          'Delete'
+        )
+        .then((result) => {
+          if (result.value) {
+            user.set('isTrashed', true);
+            user.save().then(() => {
+              this.alert
+                .showToast(
+                  'success',
+                  `${username} successfully deleted`,
+                  'bottom-end',
+                  4000,
+                  true,
+                  'Undo'
+                )
+                .then((result) => {
+                  if (result.value) {
+                    user.set('isTrashed', false);
+                    user.save().then(() => {
+                      this.alert.showToast(
+                        'success',
+                        `${username} successfully restored`,
+                        'bottom-end',
+                        3000,
+                        false,
+                        null
+                      );
+                    });
+                  }
+                });
+            });
+          }
+        });
     },
 
     restoreUser: function () {
-      let user = this.get('user');
+      let user = this.user;
       let username = user.get('username');
-      this.get('alert').showModal('question', `Are you sure want to restore ${username}?`, null, 'Yes')
+      this.alert
+        .showModal(
+          'question',
+          `Are you sure want to restore ${username}?`,
+          null,
+          'Yes'
+        )
         .then((result) => {
           if (result.value) {
             user.set('isTrashed', false);
             user.save().then(() => {
-              this.get('alert').showToast('success', `${username} successfully restored`, 'bottom-end', 4000, true, 'Undo');
+              this.alert.showToast(
+                'success',
+                `${username} successfully restored`,
+                'bottom-end',
+                4000,
+                true,
+                'Undo'
+              );
             });
           }
         });
@@ -368,16 +455,19 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     handleResetSuccess: function (updatedUser) {
-      const user = this.get('user');
+      const user = this.user;
 
-      return this.store.findRecord('user', user.id).then((user) => {
-        this.set('user', user);
-        this.set('isResettingPassword', false);
-        this.set('resetPasswordSuccess', true);
-        this.removeMessages('findRecordErrors');
-      }).catch((err) => {
-        this.handleErrors(err, 'findRecordErrors');
-      });
+      return this.store
+        .findRecord('user', user.id)
+        .then((user) => {
+          this.set('user', user);
+          this.set('isResettingPassword', false);
+          this.set('resetPasswordSuccess', true);
+          this.removeMessages('findRecordErrors');
+        })
+        .catch((err) => {
+          this.handleErrors(err, 'findRecordErrors');
+        });
     },
 
     clearTour: function () {
@@ -389,7 +479,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
     onManualConfirm() {
       // clicked manual confirm email box
-      let user = this.get('user');
+      let user = this.user;
 
       if (user) {
         let isConfirmingEmail = !user.get('isEmailConfirmed');
@@ -397,7 +487,6 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         this.set('isConfirmingEmail', isConfirmingEmail);
         user.toggleProperty('isEmailConfirmed');
       }
-    }
-  }
+    },
+  },
 });
-

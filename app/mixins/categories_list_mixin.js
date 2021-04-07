@@ -1,11 +1,13 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import { inject as controller } from '@ember/controller';
+import Mixin from '@ember/object/mixin';
 
 
 
 
 
 
-export default Ember.Mixin.create({
-  application: Ember.inject.controller(),
-  selectedCategories: Ember.computed.alias('application.selectedCategories'),
+export default Mixin.create({
+  application: controller(),
+  selectedCategories: alias('application.selectedCategories'),
 });

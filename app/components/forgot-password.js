@@ -1,21 +1,21 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { isEmpty } from '@ember/utils';
+import $ from 'jquery';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   classNames: ['forgot-page'],
   postErrors: [],
 
   validateEmail: function () {
-    var email = this.get('email');
+    var email = this.email;
     if (!email) {
       return false;
     }
-    var emailPattern = new RegExp(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/);
+    var emailPattern = new RegExp(
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+    );
     var emailTest = emailPattern.test(email);
 
     if (emailTest === false) {
@@ -25,18 +25,17 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
     if (emailTest === true) {
       return true;
     }
-
   },
-  isEmailValid: function () {
-    if (!this.get('isEmailDirty') && !Ember.isEmpty(this.get('email'))) {
+  isEmailValid: computed('email', function () {
+    if (!this.isEmailDirty && !isEmpty(this.email)) {
       this.set('isEmailDirty', true);
     }
     return this.validateEmail();
-  }.property('email'),
+  }),
 
   // We don't want error being displayed when form loads initially
-  isEmailInvalid: Ember.computed('isEmailValid', 'isEmailDirty', function () {
-    return this.get('isEmailDirty') && !this.get('isEmailValid') && !Ember.isEmpty(this.get('email'));
+  isEmailInvalid: computed('isEmailValid', 'isEmailDirty', function () {
+    return this.isEmailDirty && !this.isEmailValid && !isEmpty(this.email);
   }),
 
   clearFields: function () {
@@ -48,8 +47,8 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
 
   actions: {
     handleRequest: function () {
-      const email = this.get('email');
-      const username = this.get('username');
+      const email = this.email;
+      const username = this.username;
 
       if (!email && !username) {
         this.set('missingRequiredFields', true);
@@ -64,12 +63,12 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
       const that = this;
       const forgotPasswordData = {
         email,
-        username
+        username,
       };
 
-      return Ember.$.post({
+      return $.post({
         url: '/auth/forgot',
-        data: forgotPasswordData
+        data: forgotPasswordData,
       })
         .then((res) => {
           if (res.isSuccess) {
@@ -84,7 +83,12 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
         });
     },
     resetMessages: function () {
-      const messages = ['forgotPasswordErr', 'missingRequiredFields', 'tooMuchData', 'resetEmailSent'];
+      const messages = [
+        'forgotPasswordErr',
+        'missingRequiredFields',
+        'tooMuchData',
+        'resetEmailSent',
+      ];
 
       for (let message of messages) {
         if (this.get(message)) {
@@ -92,5 +96,5 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
         }
       }
     },
-  }
+  },
 });

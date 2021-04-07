@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
@@ -6,7 +6,7 @@ import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, {
+export default Component.extend(CurrentUserMixin, {
   elementId: 'section-home',
   classNames: ['home-view'],
 

@@ -1,15 +1,16 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: 'problem-list',
   classNames: ['problem-list', 'left-list'],
-  containerData: Ember.computed.alias("parentView"),
-  containerActions: Ember.computed.alias("parentView.actions"),
+  containerData: alias("parentView"),
+  containerActions: alias("parentView.actions"),
 
   dataLoadErrors: [],
 
@@ -27,7 +28,7 @@ export default Ember.Component.extend({
       this.sendAction("toProblemInfo", problem);
     },
     refreshList() {
-      this.get('refreshList')();
+      this.refreshList();
     }
   }
 

@@ -2,7 +2,7 @@
   <header class="list-header">
     <h1>Assignments</h1>
     {{#unless currentUser.isStudent}}
-      {{#link-to 'assignments.new' id='assignment-new-btn' class="new-link-btn"}}<span>Create Assignment</span><i class="fas fa-plus"></i>{{/link-to}}
+      <LinkTo @route="assignments.new" @id="assignment-new-btn" class="new-link-btn"><span>Create Assignment</span><i class="fas fa-plus"></i></LinkTo>
     {{/unless}}
     <div class="clear"></div>
   </header>
@@ -15,9 +15,9 @@
           {{#if yourList}}
           {{#each yourList as |assignment|}}
             {{#if assignment.name}}
-              <li>{{#link-to 'assignment' assignment.id classNames='assignment-new-link'}}{{assignment.name}}{{/link-to}}</li>
+              <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
-              <li>{{#link-to 'assignment' assignment.id classNames='assignment-new-link'}}{{assignment.problem.title}} / {{format-date assignment.assignedDate 'MMM Do YYYY' }}{{/link-to}}</li>
+              <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date assignment.assignedDate 'MMM Do YYYY' }}</LinkTo></li>
             {{/if}}
           {{/each}}
           {{else}}
@@ -31,10 +31,10 @@
         {{#if assignmentList}}
           {{#each assignmentList as |assignment|}}
             {{#if assignment.name}}
-            <li>{{#link-to 'assignment' assignment.id classNames='assignment-new-link'}}{{assignment.name}}{{/link-to}}</li>
+            <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
-            <li>{{#link-to 'assignment' assignment.id classNames='assignment-new-link'}}{{assignment.problem.title}} / {{format-date
-              assignment.assignedDate 'MMM Do YYYY' }}{{/link-to}}</li>
+            <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date
+              assignment.assignedDate 'MMM Do YYYY' }}</LinkTo></li>
             {{/if}}
           {{/each}}
         {{else}}
@@ -48,10 +48,10 @@
           {{#if adminList}}
           {{#each adminList as |assignment|}}
             {{#if assignment.name}}
-            <li>{{#link-to 'assignment' assignment.id classNames='assignment-new-link'}}{{assignment.name}}{{/link-to}}</li>
+            <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
-            <li>{{#link-to 'assignment' assignment.id classNames='assignment-new-link'}}{{assignment.problem.title}} / {{format-date
-              assignment.assignedDate 'MMM Do YYYY' }}{{/link-to}}</li>
+            <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date
+              assignment.assignedDate 'MMM Do YYYY' }}</LinkTo></li>
             {{/if}}
           {{/each}}
           {{else}}
@@ -65,10 +65,10 @@
           {{#if pdList}}
           {{#each pdList as |assignment|}}
             {{#if assignment.name}}
-            <li>{{#link-to 'assignment' assignment.id classNames='assignment-new-link'}}{{assignment.name}}{{/link-to}}</li>
+            <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
-            <li>{{#link-to 'assignment' assignment.id classNames='assignment-new-link'}}{{assignment.problem.title}} / {{format-date
-              assignment.assignedDate 'MMM Do YYYY' }}{{/link-to}}</li>
+            <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date
+              assignment.assignedDate 'MMM Do YYYY' }}</LinkTo></li>
             {{/if}}
           {{/each}}
           {{else}}

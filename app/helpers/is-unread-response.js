@@ -1,12 +1,12 @@
 // use to indicate unread responses or responses that need approval or revisions for now
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 
 
 
 
 
 
-export default Ember.Helper.helper(function (args) {
+export default buildHelper(function (args) {
   let [response, currentUser] = args;
 
   if (!response || !currentUser) {

@@ -1,53 +1,54 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import { alias, equal } from '@ember/object/computed';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(CurrentUserMixin, {
+export default Component.extend(CurrentUserMixin, {
   elementId: 'admin-workspace-filter',
-  mainFilter: Ember.computed.alias('secondaryFilter.selectedValue'),
-  showOrgFilter: Ember.computed.equal('mainFilter', 'org'),
-  orgFilter: Ember.computed.alias('secondaryFilter.inputs.org'),
-  selectedOrgSubFilters: Ember.computed.alias('secondaryFilter.inputs.org.subFilters.selectedValues'),
+  mainFilter: alias('secondaryFilter.selectedValue'),
+  showOrgFilter: equal('mainFilter', 'org'),
+  orgFilter: alias('secondaryFilter.inputs.org'),
+  selectedOrgSubFilters: alias(
+    'secondaryFilter.inputs.org.subFilters.selectedValues'
+  ),
 
-
-  orgFilterSubOptions: function () {
+  orgFilterSubOptions: computed('orgFilter', function () {
     return _.map(this.get('orgFilter.subFilters.inputs'), (val, key) => {
       return val;
     });
-  }.property('orgFilter'),
+  }),
 
-  areCurrentSelections: function () {
-    return !_.isEmpty(this.get('selectedValues'));
-  }.property('selectedValues'),
+  areCurrentSelections: computed('selectedValues', function () {
+    return !_.isEmpty(this.selectedValues);
+  }),
 
-  currentSecondaryFilter: function () {
+  currentSecondaryFilter: computed('mainFilter', function () {
     let inputs = this.get('secondaryFilter.inputs');
-    let mainFilter = this.get('mainFilter');
+    let mainFilter = this.mainFilter;
     return inputs[mainFilter];
-  }.property('mainFilter'),
+  }),
 
-  showUserFilter: function () {
-    let val = this.get('mainFilter');
+  showUserFilter: computed('mainFilter', function () {
+    let val = this.mainFilter;
     return val === 'owner' || val === 'creator';
-  }.property('mainFilter'),
+  }),
 
-  selectedValues: function () {
-    return this.get('currentSecondaryFilter.selectedValues');
-  }.property('currentSecondaryFilter.selectedValues.[]'),
+  selectedValues: computed(
+    'currentSecondaryFilter.selectedValues.[]',
+    function () {
+      return this.get('currentSecondaryFilter.selectedValues');
+    }
+  ),
 
   clearSelectedValues: function () {
     this.set('currentSecondaryFilter.selectedValues', []);
     // this.get('onUpdate')();
   },
-  initialMainFilterItems: function () {
-    let val = this.get('mainFilter');
+  initialMainFilterItems: computed('mainFilter', function () {
+    let val = this.mainFilter;
     return [val];
-  }.property('mainFilter'),
+  }),
 
   actions: {
     setMainFilter(val, $item) {
@@ -55,11 +56,11 @@ export default Ember.Component.extend(CurrentUserMixin, {
         return;
       }
       // clear state unless current filter is pows
-      if (this.get('mainFilter') !== 'pows') {
+      if (this.mainFilter !== 'pows') {
         this.clearSelectedValues();
       }
       this.set('mainFilter', val);
-      this.get('onUpdate')();
+      this.onUpdate();
     },
     updateOrgSubFilters(e) {
       let { id } = e.target;
@@ -78,16 +79,15 @@ export default Ember.Component.extend(CurrentUserMixin, {
         return input.isApplied;
       });
 
-      let appliedValues = _.map(appliedInputs, input => input.value);
+      let appliedValues = _.map(appliedInputs, (input) => input.value);
 
       // update selectedValues on subFilters
       //
       // subFilters.selectedValues = appliedValues;
       this.set('orgFilter.subFilters.selectedValues', appliedValues);
 
-
-      if (this.get('onUpdate')) {
-        this.get('onUpdate')();
+      if (this.onUpdate) {
+        this.onUpdate();
       }
     },
 
@@ -108,8 +108,8 @@ export default Ember.Component.extend(CurrentUserMixin, {
           prop.removeObject(val);
         }
 
-        if (this.get('onUpdate')) {
-          this.get('onUpdate')();
+        if (this.onUpdate) {
+          this.onUpdate();
         }
         return;
       }
@@ -119,10 +119,9 @@ export default Ember.Component.extend(CurrentUserMixin, {
         prop.addObject(val);
       }
 
-      if (this.get('onUpdate')) {
-        this.get('onUpdate')();
+      if (this.onUpdate) {
+        this.onUpdate();
       }
-    }
-  }
-
+    },
+  },
 });

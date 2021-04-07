@@ -4,7 +4,10 @@
  * - makingSelection
  * - showingSelections
  */
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+
+import { inject as controller } from '@ember/controller';
+import Component from '@ember/component';
 import $ from 'jquery';
 import SelectionHighlighting from '../../vendor/selection-highlighting';
 
@@ -12,12 +15,12 @@ import SelectionHighlighting from '../../vendor/selection-highlighting';
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: 'selectable-area',
 
-  application: Ember.inject.controller(),
+  application: controller(),
 
-  isTouchScreen: Ember.computed.alias('application.isTouchScreen'),
+  isTouchScreen: alias('application.isTouchScreen'),
 
   init: function () {
     this._super(...arguments);
@@ -26,8 +29,8 @@ export default Ember.Component.extend({
 
   didInsertElement: function () {
     this.set('currSubId', this.get('model.id'));
-    this.set('selecting', this.get('makingSelection'));
-    this.set('showing', this.get('showingSelections'));
+    this.set('selecting', this.makingSelection);
+    this.set('showing', this.showingSelections);
 
     let containerId = 'submission_container';
     let scrollableContainer = 'al_submission';
@@ -44,7 +47,7 @@ export default Ember.Component.extend({
     // set up the SelectionHighlighting object
     this.selectionHighlighting = new SelectionHighlighting({
       selectableContainerId: containerId,
-      automaticEvent: !this.get('isTouchScreen'),
+      automaticEvent: !this.isTouchScreen,
     });
     this.selectionHighlighting.init((id) => {
       let selection = this.selectionHighlighting.getSelection(id);
@@ -55,7 +58,7 @@ export default Ember.Component.extend({
     // set up the ImageTagging object
     this.imageTagging = new window.ImageTagging({
       targetContainer: containerId,
-      isCompSelectionMode: this.get('makingSelection'),
+      isCompSelectionMode: this.makingSelection,
       scrollableContainer: scrollableContainer,
     });
     this.imageTagging.onSave((id, isUpdateOnly) => {
@@ -64,24 +67,24 @@ export default Ember.Component.extend({
       this.sendAction('addSelection', tag, isUpdateOnly);
     });
 
-    this.selectionHighlighting.loadSelections(this.get('selections'));
-    this.imageTagging.loadTags(this.get('imgTags'));
+    this.selectionHighlighting.loadSelections(this.selections);
+    this.imageTagging.loadTags(this.imgTags);
 
-    if (this.get('showingSelections')) {
+    if (this.showingSelections) {
       this.selectionHighlighting.highlightAllSelections();
       this.imageTagging.showAllTags();
     }
-    if (!this.get('makingSelection')) {
+    if (!this.makingSelection) {
       this.selectionHighlighting.disableSelection();
       this.imageTagging.disable();
     }
-    this.get('setupResizeHandler')();
+    this.setupResizeHandler();
 
   },
 
   didReceiveAttrs() {
-    let selections = this.get('sels');
-    let currentSelections = this.get('currentSelections');
+    let selections = this.sels;
+    let currentSelections = this.currentSelections;
     if (!currentSelections) {
       this.set('currentSelections', selections);
     }
@@ -96,13 +99,13 @@ export default Ember.Component.extend({
     let attrSelsLength = this.get('sels.length');
 
     if (attrSelsLength !== currentSelsLength) {
-      this.set('currentSelections', this.get('sels'));
+      this.set('currentSelections', this.sels);
     }
 
     let wasSelRemoved = currentSelsLength > attrSelsLength;
 
     //submission was changed
-    if (this.get('currSubId') !== this.get('model.id')) {
+    if (this.currSubId !== this.get('model.id')) {
       this.imageTagging.removeAllTags();
       this.set('makingSelection', false);
       this.set('showingSelections', false);
@@ -114,14 +117,14 @@ export default Ember.Component.extend({
     }
     this.setupTagging();
 
-    highlighting.loadSelections(this.get('selections'));
+    highlighting.loadSelections(this.selections);
 
-    tagging.loadTags(this.get('imgTags'));
+    tagging.loadTags(this.imgTags);
 
-    let isSelecting = this.get('makingSelection');
-    let isShowing = this.get('showingSelections');
+    let isSelecting = this.makingSelection;
+    let isShowing = this.showingSelections;
 
-    if (isSelecting !== this.get('selecting')) {
+    if (isSelecting !== this.selecting) {
       // toggled from NOT selecting to now selecting
       if (isSelecting) {
         this.set('selecting', true);
@@ -135,7 +138,7 @@ export default Ember.Component.extend({
       }
     }
 
-    if (isShowing !== this.get('showing')) {
+    if (isShowing !== this.showing) {
       if (isShowing) {
         // toggled from NOT showing selections to now showing selections
         this.set('showing', true);
@@ -214,7 +217,7 @@ export default Ember.Component.extend({
 
   actions: {
     toggleShow() {
-      this.get('toggleShow')();
+      this.toggleShow();
     }
   }
 

@@ -19,7 +19,7 @@
             <label for="title">
               <span class="label-text simptip-position-right simptip-smooth" data-tooltip={{tooltips.name}}>Class Name </span> <span class="required-star">*</span>
             </label>
-            {{input id="newSectionName" required="true" type="text" value=newSectionName placeholder="Enter class name" action="checkError" on="key-down"}}
+            <Input @id="newSectionName" required="true" @type="text" @value={{newSectionName}} placeholder="Enter class name" @action="checkError" @on="key-down" />
             {{#each nameFormErrors as |error|}}
               <p class="error-message">{{error}}</p>
             {{/each}}
@@ -32,7 +32,7 @@
                 {{#if currentUser.isTeacher}}
                 <p class="section-new-info teacher">{{teacher.username}}</p>
                 {{else}}
-                {{twitter-typeahead placeholder="Teacher's username" dataList=addableTeachers optionLabelPath="username" selectedValue=teacher minLength=2 setSelectedValueOnChange=true}}
+                <TwitterTypeahead @placeholder="Teacher's username" @dataList={{addableTeachers}} @optionLabelPath="username" @selectedValue={{teacher}} @minLength={{2}} @setSelectedValueOnChange={{true}} />
               {{/if}}
             </div>
             {{#each teacherFormErrors as |error|}}

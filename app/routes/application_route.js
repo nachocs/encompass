@@ -7,7 +7,9 @@
   * @since 1.0.0
   * @todo Manage the current user without setting on the Encompass object itself.
   */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import Route from '@ember/routing/route';
 import MtAuthMixin from '../mixins/mt_auth_mixin';
 
 
@@ -15,8 +17,8 @@ import MtAuthMixin from '../mixins/mt_auth_mixin';
 
 
 
-export default Ember.Route.extend(MtAuthMixin, { //the application route can't require authentication since it's getting the user
-  userNtfs: Ember.inject.service('user-ntfs'),
+export default Route.extend(MtAuthMixin, { //the application route can't require authentication since it's getting the user
+  userNtfs: service('user-ntfs'),
 
   beforeModel: function () {
     let that = this;
@@ -27,7 +29,7 @@ export default Ember.Route.extend(MtAuthMixin, { //the application route can't r
   },
 
   model: function () {
-    return this.get('store').queryRecord('user', { alias: 'current' });
+    return this.store.queryRecord('user', { alias: 'current' });
   },
 
   afterModel: function (user, transition) {
@@ -37,7 +39,7 @@ export default Ember.Route.extend(MtAuthMixin, { //the application route can't r
     // clicking on reset password link
 
     if (user.get('isAuthenticated')) {
-      this.get('userNtfs').setupProperties(user);
+      this.userNtfs.setupProperties(user);
     }
     const allowedPaths = ['auth.reset', 'auth.confirm', 'auth.forgot', 'auth.login', 'auth.signup'];
     const targetPath = transition.targetName;
@@ -48,7 +50,7 @@ export default Ember.Route.extend(MtAuthMixin, { //the application route can't r
     //Do we need this check for isAuthenticated here? All routes that should be authenticated
     // should be extending AuthenticatedRoute.
     if (!user.get('isAuthenticated')) {
-      this.get('store').unloadAll();
+      this.store.unloadAll();
       this.transitionTo('auth.login');
     } else if (!user.get('isEmailConfirmed') && !user.get('isStudent')) {
       this.transitionTo('unconfirmed');
@@ -94,7 +96,7 @@ export default Ember.Route.extend(MtAuthMixin, { //the application route can't r
     },
 
     doneTour: function () {
-      var user = this.get('model');
+      var user = this.model;
       user.set('seenTour', new Date());
       user.save();
       window.guiders.hideAll();

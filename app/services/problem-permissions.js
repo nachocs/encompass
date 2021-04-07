@@ -1,12 +1,12 @@
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
 
 
 
 
 
 
-export default Ember.Service.extend({
-  base: Ember.inject.service('edit-permissions'),
+export default Service.extend({
+  base: service('edit-permissions'),
   isPublic: function (problem) {
     return problem.get('privacySetting') === 'E';
   },
@@ -42,7 +42,7 @@ export default Ember.Service.extend({
     }
 
     // if creator
-    if (this.get('base').isCreator(problem)) {
+    if (this.base.isCreator(problem)) {
       return true;
     }
 
@@ -61,7 +61,7 @@ export default Ember.Service.extend({
     }
 
     // privacy setting can now only be 'O' or 'M'
-    return this.get('base').doesRecordBelongToOrg(problem);
+    return this.base.doesRecordBelongToOrg(problem);
 
   },
 
@@ -81,7 +81,7 @@ export default Ember.Service.extend({
     }
 
     // if creator
-    if (this.get('base').isCreator(problem)) {
+    if (this.base.isCreator(problem)) {
       return true;
     }
 
@@ -101,7 +101,7 @@ export default Ember.Service.extend({
 
     // privacy setting can now only be 'O' or 'M'
 
-    return this.get('base').doesRecordBelongToOrg(problem);
+    return this.base.doesRecordBelongToOrg(problem);
 
 
   },

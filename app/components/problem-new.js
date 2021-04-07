@@ -1,5 +1,8 @@
 /*global _:false */
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import $ from 'jquery';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
@@ -9,7 +12,7 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'problem-new',
   classNames: ['side-info'],
   showGeneral: true,
@@ -21,8 +24,8 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   privacySetting: null,
   checked: true,
   status: null,
-  alert: Ember.inject.service('sweet-alert'),
-  parentActions: Ember.computed.alias("parentView.actions"),
+  alert: service('sweet-alert'),
+  parentActions: alias("parentView.actions"),
   approvedProblem: false,
   noLegalNotice: null,
   showCategories: false,
@@ -57,28 +60,28 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     this._super(...arguments);
   },
 
-  observeErrors: function () {
-    let missingError = this.get('isMissingRequiredFields');
+  observeErrors: observer('title', 'privacySetting', function () {
+    let missingError = this.isMissingRequiredFields;
     if (!missingError) {
       return;
     }
-    let title = this.get('title');
-    let privacySetting = this.get('privacySetting');
+    let title = this.title;
+    let privacySetting = this.privacySetting;
     if (!!title && !!privacySetting) {
       this.set('isMissingRequiredFields', false);
     }
-  }.observes('title', 'privacySetting'),
+  }),
 
   // Empty quill editor .html() property returns <p><br></p>
   // For quill to not be empty, there must either be some text or a student
   // must have uploaded an img so there must be an img tag
   isQuillValid: function () {
-    return !this.get('isQuillEmpty') && !this.get('isQuillTooLong');
+    return !this.isQuillEmpty && !this.isQuillTooLong;
   },
 
   createProblem: function () {
     let that = this;
-    const problemStatement = this.get('problemStatement');
+    const problemStatement = this.problemStatement;
     let createdBy = that.get('currentUser');
     let title = that.get('problemTitle').trim();
     let additionalInfo = that.get('additionalInfo');
@@ -86,14 +89,14 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     let currentUser = that.get('currentUser');
     let accountType = currentUser.get('accountType');
     let organization = currentUser.get('organization');
-    let categories = this.get('selectedCategories');
+    let categories = this.selectedCategories;
     let copyrightNotice = that.get('copyrightNotice');
     let sharingAuth = that.get('sharingAuth');
     let additionalImage = that.get('additionalImage');
     let author = that.get('author');
     let keywords = that.get('keywords');
 
-    if (!this.get('approvedProblem')) {
+    if (!this.approvedProblem) {
       this.set('noLegalNotice', true);
       return;
     }
@@ -113,7 +116,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         this.set('status', 'pending');
       }
     }
-    let status = this.get('status');
+    let status = this.status;
 
     let createProblemData = that.store.createRecord('problem', {
       createdBy: createdBy,
@@ -141,7 +144,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       let isPDF = firstItem.type === 'application/pdf';
 
       if (isPDF) {
-        Ember.$.post({
+        $.post({
           url: '/pdf',
           processData: false,
           contentType: false,
@@ -154,7 +157,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
             createProblemData.save()
               .then((problem) => {
                 that.get('alert').showToast('success', 'Problem Created', 'bottom-end', 4000, false, null);
-                let parentView = this.get('parentView');
+                let parentView = this.parentView;
                 this.get('parentActions.refreshList').call(parentView);
                 that.sendAction('toProblemInfo', problem);
               })
@@ -169,7 +172,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
           that.handleErrors(err, 'imageUploadErrors');
         });
       } else {
-        Ember.$.post({
+        $.post({
           url: '/image',
           processData: false,
           contentType: false,
@@ -182,7 +185,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
             createProblemData.save()
               .then((problem) => {
                 that.get('alert').showToast('success', 'Problem Created', 'bottom-end', 4000, false, null);
-                let parentView = this.get('parentView');
+                let parentView = this.parentView;
                 this.get('parentActions.refreshList').call(parentView);
                 that.sendAction('toProblemInfo', problem);
               })
@@ -200,8 +203,8 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     } else {
       createProblemData.save()
         .then((res) => {
-          this.get('alert').showToast('success', 'Problem Created', 'bottom-end', 4000, false, null);
-          let parentView = this.get('parentView');
+          this.alert.showToast('success', 'Problem Created', 'bottom-end', 4000, false, null);
+          let parentView = this.parentView;
           this.get('parentActions.refreshList').call(parentView);
           that.sendAction('toProblemInfo', res);
         })
@@ -236,11 +239,11 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     validate: function () {
-      if (!this.get('approvedProblem')) {
+      if (!this.approvedProblem) {
         this.set('noLegalNotice', true);
         return;
       }
-      if (this.get('isMissingRequiredFields')) {
+      if (this.isMissingRequiredFields) {
         this.set('isMissingRequiredFields', null);
       } else {
         this.createProblem();
@@ -252,22 +255,22 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     showCategories: function () {
-      this.get('store').query('category', {}).then((queryCats) => {
+      this.store.query('category', {}).then((queryCats) => {
         let categories = queryCats.get('meta');
         this.set('categoryTree', categories.categories);
       });
-      this.set('showCategories', !(this.get('showCategories')));
+      this.set('showCategories', !(this.showCategories));
     },
 
     addCategories: function (category) {
-      let categories = this.get('selectedCategories');
+      let categories = this.selectedCategories;
       if (!categories.includes(category)) {
         categories.pushObject(category);
       }
     },
 
     removeCategory: function (category) {
-      let categories = this.get('selectedCategories');
+      let categories = this.selectedCategories;
       categories.removeObject(category);
     },
 
@@ -302,7 +305,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     confirmCreatePublic: function () {
-      this.get('alert').showModal('question', 'Are you sure you want to create a public problem?', 'Creating a public problem means it will be accessible to all EnCoMPASS users. You will not be able to make any changes once this problem has been used', 'Yes')
+      this.alert.showModal('question', 'Are you sure you want to create a public problem?', 'Creating a public problem means it will be accessible to all EnCoMPASS users. You will not be able to make any changes once this problem has been used', 'Yes')
         .then((result) => {
           if (result.value) {
             this.set('showCats', true);
@@ -314,7 +317,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     showGeneral: function () {
-      this.set('privacySetting', this.get('privacySetting'));
+      this.set('privacySetting', this.privacySetting);
       this.set('showGeneral', true);
       this.set('showCats', false);
       this.set('showAdditional', false);
@@ -323,28 +326,28 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     showCats: function () {
       // clear existing errors before validating
-      if (this.get('createProblemErrors')) {
+      if (this.createProblemErrors) {
         this.set('createProblemErrors', []);
       }
 
-      if (this.get('showAdditional')) {
+      if (this.showAdditional) {
         this.set('showCats', true);
         this.set('showGeneral', false);
         this.set('showAdditional', false);
         this.set('showLegal', false);
       } else {
-        this.set('problemTitle', this.get('title'));
+        this.set('problemTitle', this.title);
         let quillContent = this.$('.ql-editor').html();
         let problemStatement = quillContent.replace(/["]/g, "'");
         this.set('problemStatement', problemStatement);
-        this.set('privacySetting', this.get('privacySetting'));
+        this.set('privacySetting', this.privacySetting);
 
         let isQuillValid = this.isQuillValid();
-        if (!isQuillValid || !this.get('problemTitle') || !this.get('problemStatement') || !this.get('privacySetting')) {
+        if (!isQuillValid || !this.problemTitle || !this.problemStatement || !this.privacySetting) {
           this.set('isMissingRequiredFields', true);
           return;
         }
-        if (this.get('privacySetting') === "E") {
+        if (this.privacySetting === "E") {
           this.send('confirmCreatePublic');
         } else {
           this.set('showCats', true);
@@ -370,21 +373,21 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     nextStep: function () {
-      if (this.get('showGeneral')) {
+      if (this.showGeneral) {
         this.send('showCats');
-      } else if (this.get('showCats')) {
+      } else if (this.showCats) {
         this.send('showAdditional');
-      } else if (this.get('showAdditional')) {
+      } else if (this.showAdditional) {
         this.send('showLegal');
       }
     },
 
     backStep: function () {
-      if (this.get('showCats')) {
+      if (this.showCats) {
         this.send('showGeneral');
-      } else if (this.get('showAdditional')) {
+      } else if (this.showAdditional) {
         this.send('showCats');
-      } else if (this.get('showLegal')) {
+      } else if (this.showLegal) {
         this.send('showAdditional');
       }
     },
@@ -393,7 +396,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       if (!val) {
         return;
       }
-      let keywords = this.get('keywords');
+      let keywords = this.keywords;
 
       let isRemoval = _.isNull($item);
 

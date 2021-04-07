@@ -20,13 +20,13 @@
     <tr>
       <td>First Name</td>
       <td>
-        {{input type="text" value=firstName classNames='user-first-name'}}
+        <Input @type="text" @value={{firstName}} @classNames="user-first-name" />
       </td>
     </tr>
     <tr>
       <td>Last Name</td>
       <td>
-        {{input type="text" value=lastName classNames='user-last-name'}}
+        <Input @type="text" @value={{lastName}} @classNames="user-last-name" />
       </td>
     </tr>
     <tr>
@@ -48,19 +48,19 @@
     <tr>
       <td>Location</td>
       <td>
-        {{input type="text" value=location classNames='user-location'}}
+        <Input @type="text" @value={{location}} @classNames="user-location" />
       </td>
     </tr>
     <tr>
       <td>Account Type <span class="required-star">*</span></td>
       <td>
-        {{my-select selectedValue=selectedType prompt="Select Account Type" content=accountTypes cannotBeNull=true action=(action (mut selectedType))}}
+        <MySelect @selectedValue={{selectedType}} @prompt="Select Account Type" @content={{accountTypes}} @cannotBeNull={{true}} @action={{action (mut selectedType)}} />
       </td>
     </tr>
     <tr>
       <td>Authorized <span class="required-star">*</span></td>
       <td>
-        {{input type="checkbox" checked=isAuthorized value=isAuthorized classNames='user-isAuth'}}
+        <Input @type="checkbox" @checked={{isAuthorized}} @value={{isAuthorized}} @classNames="user-isAuth" />
       </td>
     </tr>
   </table>

@@ -25,7 +25,7 @@
         </p>
         <div class="info-content-block">
           <div class="input-container">
-            {{input id="title" required="true" type="text" value=title placeholder="Enter Problem Title" action="resetErrors" on="key-down"}}
+            <Input @id="title" required="true" @type="text" @value={{title}} placeholder="Enter Problem Title" @action="resetErrors" @on="key-down" />
           </div>
         </div>
         <p class="info-content-label statement">
@@ -33,7 +33,7 @@
           <span class="info-text-tip simptip-position-left simptip-multiline simptip-smooth" data-tooltip={{tooltips.statement}}><i class="fas fa-info-circle info-icon"></i></span>
         </p>
         <div class="info-content-block">
-          {{quill-container onEditorChange=(action "updateQuillText") startingText=problemStatement}}
+          <QuillContainer @onEditorChange={{action "updateQuillText"}} @startingText={{problemStatement}} />
         </div>
         <p class="info-content-label author">
           Author
@@ -41,7 +41,7 @@
         </p>
         <div class="info-content-block">
           <div class="input-container">
-            {{input name="author" id="author" type="text" value=author}}
+            <Input @name="author" @id="author" @type="text" @value={{author}} />
           </div>
         </div>
         <p class="info-content-label privacy">
@@ -90,7 +90,7 @@
           {{/unless}}
           {{#if showCategories}}
             <button class="cancel-button hide-cats-btn" {{action 'showCategories'}}>Hide Category Menu</button>
-            {{categories-menu categories=categoryTree store=store addCategories="addCategories"}}
+            <CategoriesMenu @categories={{categoryTree}} @store={{store}} @addCategories="addCategories" />
           {{/if}}
         </div>
         <p class="info-content-label keywords">
@@ -98,16 +98,7 @@
           <span class="info-text-tip simptip-position-left simptip-multiline simptip-smooth" data-tooltip={{tooltips.keywords}}><i class="fas fa-info-circle info-icon"></i></span>
         </p>
         <div class="info-content-block">
-          {{selectize-input
-            inputId="select-add-keywords"
-            onItemAdd=(action "updateKeywords")
-            onItemRemove=(action "updateKeywords")
-            maxItems=5
-            create=true
-            createFilter=keywordFilter
-            persist=false
-
-          }}
+          <SelectizeInput @inputId="select-add-keywords" @onItemAdd={{action "updateKeywords"}} @onItemRemove={{action "updateKeywords"}} @maxItems={{5}} @create={{true}} @createFilter={{keywordFilter}} @persist={{false}} />
         </div>
       {{/if}}
 
@@ -118,8 +109,8 @@
         </p>
         <div class="info-content-block">
           <div class="input-container">
-            {{textarea class="additional-info-area" value=additionalInfo rows="3" placeholder="Additional info..."}}
-            {{input id="additionalInfo" type="hidden" value=additionalInfo }}
+            <Textarea class="additional-info-area" @value={{additionalInfo}} @rows="3" placeholder="Additional info..." />
+            <Input @id="additionalInfo" @type="hidden" @value={{additionalInfo}} />
           </div>
         </div>
         <p class="info-content-label image">
@@ -130,7 +121,7 @@
           {{#if fileName}}
             <p class="file-name"><span class="bold">Uploaded File</span> {{fileName}} <button class="remove-cat" {{action 'removeFile'}}><i class="far fa-times-circle"></i></button></p>
           {{else}}
-            {{image-upload filesToBeUploaded=filesToBeUploaded hideSubmit=true storeFiles=(action 'setFileToUpload')}}
+            <ImageUpload @filesToBeUploaded={{filesToBeUploaded}} @hideSubmit={{true}} @storeFiles={{action "setFileToUpload"}} />
           {{/if}}
         </div>
       {{/if}}
@@ -143,7 +134,7 @@
         <div class="info-content-block">
           <div class="input-container" id="copyright-container">
             <span id="icon">&copy;</span>
-            {{input name="copyright" id="copyright" type="text" value=copyrightNotice placeholder="Add Copyright Notice"}}
+            <Input @name="copyright" @id="copyright" @type="text" @value={{copyrightNotice}} placeholder="Add Copyright Notice" />
           </div>
         </div>
         <p class="info-content-label sharing">
@@ -152,7 +143,7 @@
         </p>
         <div class="info-content-block">
           <div class="input-container">
-            {{input name="sharing" id="sharing" type="text" value=sharingAuth placeholder="Add Sharing Authorization"}}
+            <Input @name="sharing" @id="sharing" @type="text" @value={{sharingAuth}} placeholder="Add Sharing Authorization" />
           </div>
         </div>
         <p class="info-content-label legal">
@@ -160,7 +151,7 @@
           <span class="info-text-tip simptip-position-left simptip-multiline simptip-smooth" data-tooltip={{tooltips.legalNotice}}><i class="fas fa-info-circle info-icon"></i></span>
         </p>
         <div class="info-content-block">
-          {{input type="checkbox" id="legal-notice" checked=approvedProblem required="true" click=(action "resetErrors")}}
+          <Input @type="checkbox" @id="legal-notice" @checked={{approvedProblem}} required="true" @click={{action "resetErrors"}} />
           <span id="approved-problem">This problem does not contain any unapproved copywritten material</span>
         </div>
       {{/if}}
@@ -187,18 +178,18 @@
   </section>
 
   {{#each createProblemErrors as |error|}}
-    {{error-box error=error showDismiss=true}}
+    <ErrorBox @error={{error}} @showDismiss={{true}} />
   {{/each}}
   {{#each imageUploadErrors as |error|}}
-    {{error-box error=error showDismiss=true}}
+    <ErrorBox @error={{error}} @showDismiss={{true}} />
   {{/each}}
 
   {{#if isMissingRequiredFields}}
-    {{error-box error="Please provide all required fields" showDismiss=true}}
+    <ErrorBox @error="Please provide all required fields" @showDismiss={{true}} />
   {{/if}}
 
   {{#if noLegalNotice}}
-    {{error-box error="Please verify that you have permission to post this problem" showDismiss=true}}
+    <ErrorBox @error="Please verify that you have permission to post this problem" @showDismiss={{true}} />
   {{/if}}
 
 </div>

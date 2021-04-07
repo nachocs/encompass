@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: 'categories',
 
   // didReceiveAttrs: function () {
@@ -17,7 +17,7 @@ export default Ember.Component.extend({
   actions: {
     addCategory: function (category) {
       let identifier = category.identifier;
-      this.get('store').queryRecord('category', { identifier: identifier }).then((cat) => {
+      this.store.queryRecord('category', { identifier: identifier }).then((cat) => {
         this.sendAction('addCategories', cat);
       });
     },

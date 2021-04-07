@@ -20,7 +20,7 @@
       </label>
 
       {{#if isEditingName}}
-        {{input name="name" id="name" type="text" value=currentSection.name}}
+        <Input @name="name" @id="name" @type="text" @value={{currentSection.name}} />
       {{else}}
         <p data-test="section-name-display" class="section-info">{{section.name}}</p>
       {{/if}}
@@ -38,7 +38,7 @@
         <ul class="listing">
           {{#if section.assignments}}
             {{#each section.assignments as |assignment|}}
-            <li>{{#link-to 'assignment' assignment.id}}{{assignment.name}}{{/link-to}}</li>
+            <li><LinkTo @route="assignment" @model={{assignment.id}}>{{assignment.name}}</LinkTo></li>
             {{/each}}
           {{else}}
             <li>No Assignments yet</li>
@@ -69,7 +69,7 @@
                 {{#if currentUser.isStudent}}
                   {{teacher.username}}
                 {{else}}
-                  {{#link-to 'user' teacher}} {{teacher.username}} {{/link-to}}
+                  <LinkTo @route="user" @model={{teacher}}> {{teacher.username}} </LinkTo>
                 {{/if}}
 
                 {{#unless cantEdit}}
@@ -91,20 +91,7 @@
           {{#if isEditingTeachers}}
             <div class="update-teachers">
               <label>Add Teacher<i title="Start typing a teacher's username to see suggestions" class="fas fa-info-circle fa-sm"></i></label>
-                {{selectize-input
-                  store=store
-                  inputId="select-add-teacher"
-                  maxItems=1
-                  initialOptions=initialTeacherOptions
-                  onItemAdd=(action "addTeacher")
-                  model="user"
-                  isAsync=true
-                  labelField="username"
-                  searchField="username"
-                  valueField="id"
-                  customQueryParams=addTeacherQueryParams
-                  queryParamsKey="usernameSearch"
-                }}
+                <SelectizeInput @store={{store}} @inputId="select-add-teacher" @maxItems={{1}} @initialOptions={{initialTeacherOptions}} @onItemAdd={{action "addTeacher"}} @model="user" @isAsync={{true}} @labelField="username" @searchField="username" @valueField="id" @customQueryParams={{addTeacherQueryParams}} @queryParamsKey="usernameSearch" />
 
               {{#each updateTeacherErrors as |error|}}
                 <p class="error-message">{{error}}</p>
@@ -128,10 +115,10 @@
                 {{#if currentUser.isStudent}}
                   {{student.username}}
                 {{else}}
-                  {{#link-to 'user' student}} {{student.username}} {{/link-to}}
+                  <LinkTo @route="user" @model={{student}}> {{student.username}} </LinkTo>
                 {{/if}}
                 {{#unless cantEdit}}
-                  {{#link-to 'user' student}} {{/link-to}}
+                  <LinkTo @route="user" @model={{student}}> </LinkTo>
                   {{#if isEditingStudents}}
                     <button class="trash-button" {{action 'removeStudent' student}}>
                       <i class="far fa-times-circle" aria-hidden="true"></i>
@@ -147,7 +134,7 @@
         </div>
         <div class="update-students">
           {{#if isEditingStudents}}
-            {{add-create-student store=store currentUser=currentUser section=currentSection students=studentList sectionPassword=section.sectionPassword}}
+            <AddCreateStudent @store={{store}} @currentUser={{currentUser}} @section={{currentSection}} @students={{studentList}} @sectionPassword={{section.sectionPassword}} />
           {{/if}}
           {{#each updateStudentErrors as |error|}}
             <p class="error-message">{{error}}</p>
@@ -175,5 +162,5 @@
   <p class="error-message">{{error}}</p>
 {{/each}}
 {{#if showAssignment}}
-  {{assignment-new cancel=(action (mut showAssignment) null) fromSectionInfo=true problems=problemList selectedSection=section sections=sectionList store=store toAssignmentInfo="toAssignmentInfo"}}
+  <AssignmentNew @cancel={{action (mut showAssignment) null}} @fromSectionInfo={{true}} @problems={{problemList}} @selectedSection={{section}} @sections={{sectionList}} @store={{store}} @toAssignmentInfo="toAssignmentInfo" />
 {{/if}}

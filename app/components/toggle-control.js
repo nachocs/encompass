@@ -1,24 +1,25 @@
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: [],
   currentValue: null,
 
-  iconClass: function () {
-    let isActive = this.get('isActive');
-    let options = this.get('options');
+  iconClass: computed('isActive', 'currentValue', 'currentState', function () {
+    let isActive = this.isActive;
+    let options = this.options;
     if (!isActive) {
       return options[0].icon;
     }
     return this.get('currentValue.icon');
 
-  }.property('isActive', 'currentValue', 'currentState'),
+  }),
 
   didReceiveAttrs() {
     if (this.classToAdd) {
@@ -28,8 +29,8 @@ export default Ember.Component.extend({
     let isActive = activeType === this.type;
     this.set('isActive', isActive);
 
-    if (!_.isUndefined(this.initialState) && _.isUndefined(this.get('currentToggleState'))) {
-      let options = this.get('options');
+    if (!_.isUndefined(this.initialState) && _.isUndefined(this.currentToggleState)) {
+      let options = this.options;
       this.set('currentToggleState', this.initialState);
       this.set('currentValue', options[this.initialState]);
     }
@@ -39,10 +40,10 @@ export default Ember.Component.extend({
 
   actions: {
     onToggle() {
-      let currentState = this.get('currentToggleState');
+      let currentState = this.currentToggleState;
       let newState;
       let newVal;
-      let options = this.get('options');
+      let options = this.options;
 
       if (currentState === 0) {
         newState = 1;
@@ -58,8 +59,8 @@ export default Ember.Component.extend({
       this.set('currentToggleState', newState);
 
 
-      if (this.get('onUpdate')) {
-        this.get('onUpdate')(newVal);
+      if (this.onUpdate) {
+        this.onUpdate(newVal);
       }
     }
   }

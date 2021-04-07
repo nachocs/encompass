@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { hash } from 'rsvp';
 import AuthenticatedRoute from '../routes/_authenticated_route';
 import ConfirmLeavingRoute from './_confirm_leaving_route';
 
@@ -7,11 +7,11 @@ export default AuthenticatedRoute.extend(ConfirmLeavingRoute, {
   controllerName: 'import',
 
   model: function () {
-    return Ember.RSVP.hash({
-      sections: this.get('store').findAll('section'),
-      folderSets: this.get('store').findAll('folderSet'),
-      users: this.get('store').findAll('user'),
-      problems: this.get('store').findAll('problem')
+    return hash({
+      sections: this.store.findAll('section'),
+      folderSets: this.store.findAll('folderSet'),
+      users: this.store.findAll('user'),
+      problems: this.store.findAll('problem')
     });
   },
 

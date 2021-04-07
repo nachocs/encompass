@@ -16,11 +16,13 @@
   * @since 1.0.2
   */
 /*global _:false */
-import Ember from 'ember';
+import { Promise } from 'rsvp';
+
+import Mixin from '@ember/object/mixin';
 import DS from 'ember-data';
 
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   since: function (model) {
     //var meta = model.get('meta');
     //var since = meta.sinceToken; //this.metadataFor(model).sinceToken;
@@ -58,7 +60,7 @@ export default Ember.Mixin.create({
     }
 
     return DS.PromiseArray.create({
-      promise: new Ember.RSVP.Promise(function (resolve, reject) {
+      promise: new Promise(function (resolve, reject) {
         resolve(cached);
       })
     });

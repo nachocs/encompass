@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 
 
 
 
 
 
-export default Ember.Helper.helper(function (optionalValue) {
+export default buildHelper(function (optionalValue) {
   console.log("Current Context");
   console.log("====================");
   console.log(this);

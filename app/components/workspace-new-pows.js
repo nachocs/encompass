@@ -1,23 +1,27 @@
-import Ember from 'ember';
+import { w } from '@ember/string';
+import { isNone } from '@ember/utils';
+import { run } from '@ember/runloop';
+import { not, oneWay, or, equal } from '@ember/object/computed';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
-  canEdit: Ember.computed.not('currentUser.isAdmin'),
-  teacher: Ember.computed.oneWay('currentUser.username'),
+export default Component.extend({
+  canEdit: not('currentUser.isAdmin'),
+  teacher: oneWay('currentUser.username'),
 
   selectedPdSetId: null,
   selectedFolderSetId: null,
 
-  hasId: Ember.computed.or('pubId', 'puzzId', 'subs'),
-  hasDate: Ember.computed.or('startDate', 'endDate'),
+  hasId: or('pubId', 'puzzId', 'subs'),
+  hasDate: or('startDate', 'endDate'),
 
   importMode: 0,
-  isPdImport: Ember.computed.equal('importMode', 0),
-  isPowImport: Ember.computed.equal('importMode', 1),
+  isPdImport: equal('importMode', 0),
+  isPowImport: equal('importMode', 1),
 
   actions: {
     radioSelect: function (value) {
@@ -26,9 +30,9 @@ export default Ember.Component.extend({
 
     createWorkspace: function () {
       var controller = this;
-      var doPoWImport = this.get('isPowImport');
+      var doPoWImport = this.isPowImport;
 
-      Ember.run(function () {
+      run(function () {
         if (doPoWImport) { controller.send('importWorkspace'); }
         else { controller.send('newWorkspace'); }
       });
@@ -36,8 +40,8 @@ export default Ember.Component.extend({
 
     newWorkspace: function () {
       var controller = this;
-      var pdSetName = this.get('selectedPdSetId');
-      var folderSetName = this.get('selectedFolderSetId');
+      var pdSetName = this.selectedPdSetId;
+      var folderSetName = this.selectedFolderSetId;
 
       if (!pdSetName) {
         pdSetName = 'default';
@@ -59,33 +63,33 @@ export default Ember.Component.extend({
 
     importWorkspace: function () {
       var importData = { /*jshint camelcase: false */
-        teacher: this.get('teacher'),
-        submitter: this.get('submitter'),
-        publication: this.get('pubId'),
-        puzzle: this.get('puzzId'),
-        class_id: this.get('course'),
-        collection: this.get('newPdSet'),
+        teacher: this.teacher,
+        submitter: this.submitter,
+        publication: this.pubId,
+        puzzle: this.puzzId,
+        class_id: this.course,
+        collection: this.newPdSet,
         folders: this.get('selectedFolderSet.id'),
-        since_date: Date.parse(this.get('startDate')),
-        max_date: Date.parse(this.get('endDate')),
+        since_date: Date.parse(this.startDate),
+        max_date: Date.parse(this.endDate),
       };
 
-      if (this.get('pd')) {
+      if (this.pd) {
         //PD set name cannot be blank
-        if (Ember.isNone(importData.collection)) {
+        if (isNone(importData.collection)) {
           window.alert('PD set name required');
           return;
         }
 
         //PD set name must be unique
-        if (this.get('pdSets').isAny('id', importData.collection)) {
+        if (this.pdSets.isAny('id', importData.collection)) {
           window.alert('There is already a PD set by that name');
           return;
         }
       }
 
-      if (this.get('subs')) {
-        importData.submissions = Ember.String.w(this.get('subs'));
+      if (this.subs) {
+        importData.submissions = w(this.subs);
       }
 
       var request = this.store.createRecord('importRequest', importData);

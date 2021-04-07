@@ -1,9 +1,10 @@
-import Ember from 'ember';
+import { resolve, hash } from 'rsvp';
+import { inject as service } from '@ember/service';
 import AuthenticatedRoute from '../routes/_authenticated_route';
 
 
 export default AuthenticatedRoute.extend({
-  utils: Ember.inject.service('utility-methods'),
+  utils: service('utility-methods'),
   queryParams: {
     responseId: {
       refreshModel: true
@@ -12,9 +13,9 @@ export default AuthenticatedRoute.extend({
 
   beforeModel(transition) {
     let responseId = transition.queryParams.responseId;
-    let allResponses = this.get('store').peekAll('response');
+    let allResponses = this.store.peekAll('response');
 
-    if (this.get('utils').isValidMongoId(responseId)) {
+    if (this.utils.isValidMongoId(responseId)) {
       let response = allResponses.findBy('id', responseId);
 
       this.set('response', response);
@@ -23,19 +24,19 @@ export default AuthenticatedRoute.extend({
     }
   },
   resolveSubmission(submissionId) {
-    let peeked = this.get('store').peekRecord('submission', submissionId);
+    let peeked = this.store.peekRecord('submission', submissionId);
     if (peeked) {
-      return Ember.RSVP.resolve(peeked);
+      return resolve(peeked);
     }
-    return this.get('store').findRecord('submission', submissionId);
+    return this.store.findRecord('submission', submissionId);
   },
 
   resolveWorkspace(workspaceId) {
-    let peeked = this.get('store').peekRecord('workspace', workspaceId);
+    let peeked = this.store.peekRecord('workspace', workspaceId);
     if (peeked) {
-      return Ember.RSVP.resolve(peeked);
+      return resolve(peeked);
     }
-    return this.get('store').findRecord('workspace', workspaceId);
+    return this.store.findRecord('workspace', workspaceId);
 
   },
 
@@ -44,19 +45,19 @@ export default AuthenticatedRoute.extend({
       return null;
     }
 
-    let allResponses = this.get('store').peekAll('response');
+    let allResponses = this.store.peekAll('response');
 
     return this.resolveSubmission(params.submission_id)
       .then((submission) => {
         let wsIds = submission.hasMany('workspaces').ids();
         let wsId = wsIds.get('firstObject');
-        return Ember.RSVP.hash({
+        return hash({
           submission,
           workspace: this.resolveWorkspace(wsId),
         });
       })
       .then((hash) => {
-        return Ember.RSVP.hash({
+        return hash({
           submission: hash.submission,
           workspace: hash.workspace,
           submissions: hash.workspace.get('submissions'),
@@ -70,8 +71,8 @@ export default AuthenticatedRoute.extend({
           return response.get('id') && !response.get('isTrashed') && subId === hash.submission.get('id');
         });
 
-        let response = this.get('response');
-        if (!this.get('response')) {
+        let response = this.response;
+        if (!this.response) {
           response = associatedResponses
             .filterBy('responseType', 'mentor')
             .sortBy('createDate').get('lastObject');

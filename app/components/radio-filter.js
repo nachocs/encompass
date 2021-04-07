@@ -1,12 +1,13 @@
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['radio-filter'],
 
   didReceiveAttrs() {
@@ -14,15 +15,15 @@ export default Ember.Component.extend({
     this._super(...arguments);
   },
 
-  isSelected: function () {
-    let groupValue = this.get('groupValue');
-    let ownValue = this.get('inputValue');
+  isSelected: computed('groupValue', function () {
+    let groupValue = this.groupValue;
+    let ownValue = this.inputValue;
     return _.isEqual(groupValue, ownValue);
-  }.property('groupValue'),
+  }),
 
   actions: {
     onClick(val) {
-      this.get('onClick')(val);
+      this.onClick(val);
     }
   }
 });

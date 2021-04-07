@@ -1,18 +1,16 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import { equal } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(CurrentUserMixin, {
+export default Component.extend(CurrentUserMixin, {
   elementId: ['workspace-info-collaborators'],
-  utils: Ember.inject.service('utility-methods'),
-  alert: Ember.inject.service('sweet-alert'),
+  utils: service('utility-methods'),
+  alert: service('sweet-alert'),
   globalPermissionValue: null,
-  showCustom: Ember.computed.equal('globalPermissionValue', 'custom'),
+  showCustom: equal('globalPermissionValue', 'custom'),
   mainPermissions: [
     {
       id: 1,
@@ -80,7 +78,7 @@ export default Ember.Component.extend(CurrentUserMixin, {
     },
   ],
 
-  modes: function () {
+  modes: computed('currentUser.isAdmin', 'currentUser.isStudent', function () {
     const basic = ['private', 'org', 'public'];
 
     if (this.get('currentUser.isStudent') || !this.get('currentUser.isAdmin')) {
@@ -88,27 +86,29 @@ export default Ember.Component.extend(CurrentUserMixin, {
     }
 
     return ['private', 'org', 'public', 'internet'];
+  }),
 
-  }.property('currentUser.isAdmin', 'currentUser.isStudent'),
+  workspacePermissions: computed(
+    'workspace.permissions.[]',
+    'originalCollaborators.[]',
+    function () {
+      let permissions = this.get('workspace.permissions');
+      let collabs = this.originalCollaborators;
 
-  workspacePermissions: function () {
-    let permissions = this.get('workspace.permissions');
-    let collabs = this.get('originalCollaborators');
-
-    if (!this.get('utils').isNonEmptyArray(permissions)) {
+      if (!this.utils.isNonEmptyArray(permissions)) {
+        return [];
+      }
+      //for each permissions object replace the userId with the user object
+      //start with array of object and return array of objects
+      if (this.utils.isNonEmptyArray(collabs)) {
+        return permissions.map((permission) => {
+          permission.userObj = this.store.peekRecord('user', permission.user);
+          return permission;
+        });
+      }
       return [];
     }
-    //for each permissions object replace the userId with the user object
-    //start with array of object and return array of objects
-    if (this.get('utils').isNonEmptyArray(collabs)) {
-      return permissions.map((permission) => {
-        permission.userObj = this.get('store').peekRecord('user', permission.user);
-        return permission;
-      });
-    }
-    return [];
-
-  }.property('workspace.permissions.[]', 'originalCollaborators.[]'),
+  ),
 
   createValueObject(val) {
     let obj = {
@@ -184,8 +184,8 @@ export default Ember.Component.extend(CurrentUserMixin, {
 
   buildCustomSubmissionIds(submissionsValue) {
     if (submissionsValue === 'custom') {
-      let ids = this.get('customSubmissionIds');
-      if (this.get('utils').isNonEmptyArray(ids)) {
+      let ids = this.customSubmissionIds;
+      if (this.utils.isNonEmptyArray(ids)) {
         return ids;
       }
       return [];
@@ -208,13 +208,15 @@ export default Ember.Component.extend(CurrentUserMixin, {
   actions: {
     editCollab: function (collaborator) {
       this.set('isEditing', true);
-      if (!this.get('utils').isNonEmptyObject(collaborator)) {
+      if (!this.utils.isNonEmptyObject(collaborator)) {
         return;
       }
       this.set('selectedCollaborator', collaborator.userObj);
       this.set('globalPermissionValue', collaborator.global);
 
-      let submissions = this.createSubmissionValueObject(collaborator.submissions);
+      let submissions = this.createSubmissionValueObject(
+        collaborator.submissions
+      );
       let selections = this.createValueObject(collaborator.selections);
       let comments = this.createValueObject(collaborator.comments);
       let folders = this.createValueObject(collaborator.folders);
@@ -229,8 +231,8 @@ export default Ember.Component.extend(CurrentUserMixin, {
     },
 
     savePermissions(permissionsObject) {
-      const ws = this.get('workspace');
-      if (!this.get('utils').isNonEmptyObject(permissionsObject)) {
+      const ws = this.workspace;
+      if (!this.utils.isNonEmptyObject(permissionsObject)) {
         return;
       }
       const permissions = this.get('workspace.permissions');
@@ -246,11 +248,11 @@ export default Ember.Component.extend(CurrentUserMixin, {
 
       let newObj = {
         user: existingObj.user,
-        global: this.get('globalPermissionValue'),
+        global: this.globalPermissionValue,
         submissions: { all: false, userOnly: false, submissionIds: [] },
       };
 
-      let globalSetting = this.get('globalPermissionValue');
+      let globalSetting = this.globalPermissionValue;
       if (globalSetting === 'viewOnly') {
         newObj.folders = 1;
         newObj.selections = 1;
@@ -265,7 +267,6 @@ export default Ember.Component.extend(CurrentUserMixin, {
         newObj.comments = 4;
         newObj.feedback = 'none';
         newObj.submissions.all = true;
-
       }
 
       if (globalSetting === 'indirectMentor') {
@@ -274,7 +275,6 @@ export default Ember.Component.extend(CurrentUserMixin, {
         newObj.comments = 2;
         newObj.feedback = 'authReq';
         newObj.submissions.all = true;
-
       }
 
       if (globalSetting === 'directMentor') {
@@ -283,7 +283,6 @@ export default Ember.Component.extend(CurrentUserMixin, {
         newObj.comments = 2;
         newObj.feedback = 'preAuth';
         newObj.submissions.all = true;
-
       }
 
       if (globalSetting === 'approver') {
@@ -292,7 +291,6 @@ export default Ember.Component.extend(CurrentUserMixin, {
         newObj.comments = 4;
         newObj.feedback = 'approver';
         newObj.submissions.all = true;
-
       }
       if (globalSetting === 'custom') {
         newObj.selections = this.get('selections.value');
@@ -305,22 +303,29 @@ export default Ember.Component.extend(CurrentUserMixin, {
         } else if (subValue === 'userOnly') {
           newObj.submissions.userOnly = true;
         } else if (subValue === 'custom') {
-          newObj.submissions.submissionIds = this.get('customSubmissionIds');
+          newObj.submissions.submissionIds = this.customSubmissionIds;
         }
       }
       permissions.addObject(newObj);
 
       ws.save().then(() => {
         this.set('globalPermissionValue', null);
-        this.get('alert').showToast('success', `Permissions set for ${permissionsObject.userObj.get('username')}`, 'bottom-end', 3000, null, false);
+        this.alert.showToast(
+          'success',
+          `Permissions set for ${permissionsObject.userObj.get('username')}`,
+          'bottom-end',
+          3000,
+          null,
+          false
+        );
         this.set('selectedCollaborator', null);
         this.set('selectedUser', null);
       });
     },
 
     removeCollab(user) {
-      let workspace = this.get('workspace');
-      const utils = this.get('utils');
+      let workspace = this.workspace;
+      const utils = this.utils;
 
       if (!utils.isNonEmptyObject(user)) {
         return;
@@ -330,7 +335,6 @@ export default Ember.Component.extend(CurrentUserMixin, {
       if (utils.isNonEmptyArray(permissions)) {
         const objToRemove = permissions.findBy('user', user.get('id'));
         if (objToRemove) {
-
           let userDisplay = user.get('username');
           let pronoun = 'their';
 
@@ -341,14 +345,29 @@ export default Ember.Component.extend(CurrentUserMixin, {
             pronoun = 'your';
           }
 
-          this.get('alert').showModal('warning', `Are you sure you want to remove ${userDisplay} as a collaborator?`, `This may affect ${pronoun} ability to access ${this.get('workspace.name')} `, 'Yes, remove')
+          this.alert
+            .showModal(
+              'warning',
+              `Are you sure you want to remove ${userDisplay} as a collaborator?`,
+              `This may affect ${pronoun} ability to access ${this.get(
+                'workspace.name'
+              )} `,
+              'Yes, remove'
+            )
             .then((result) => {
               if (result.value) {
                 permissions.removeObject(objToRemove);
-                const collaborators = this.get('originalCollaborators');
+                const collaborators = this.originalCollaborators;
                 collaborators.removeObject(user);
                 workspace.save().then(() => {
-                  this.get('alert').showToast('success', `${user.get('username')} removed`, 'bottom-end', 3000, null, false);
+                  this.alert.showToast(
+                    'success',
+                    `${user.get('username')} removed`,
+                    'bottom-end',
+                    3000,
+                    null,
+                    false
+                  );
                 });
               }
             });
@@ -360,16 +379,16 @@ export default Ember.Component.extend(CurrentUserMixin, {
       this.set('createNewCollaborator', true);
     },
     toggleSubmissionView: function () {
-      this.set('isShowingCustomViewer', !this.get('isShowingCustomViewer'));
+      this.set('isShowingCustomViewer', !this.isShowingCustomViewer);
     },
     cancelEditCollab: function () {
       this.set('selectedCollaborator', null);
-      if (this.get('isShowingCustomViewer')) {
+      if (this.isShowingCustomViewer) {
         this.set('isShowingCustomViewer', false);
       }
     },
     confirmRemoveSelf() {
-      this.send('removeCollab', this.get('currentUser'));
-    }
-  }
+      this.send('removeCollab', this.currentUser);
+    },
+  },
 });

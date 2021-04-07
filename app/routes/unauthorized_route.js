@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 
 
 
 
 
 
-export default Ember.Route.extend({
+export default Route.extend({
   beforeModel: function () {
     // redirect to login if no user logged in
     const user = this.modelFor('application');

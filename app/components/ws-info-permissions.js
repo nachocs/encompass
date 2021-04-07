@@ -1,15 +1,17 @@
 /*global _:false */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: 'ws-info-permissions',
 
-  utils: Ember.inject.service('utility-methods'),
+  utils: service('utility-methods'),
 
   actions: {
     setCollaborator(val, $item) {
@@ -23,11 +25,11 @@ export default Ember.Component.extend({
         this.set('selectedCollaborator', null);
         return;
       }
-      const user = this.get('store').peekRecord('user', val);
+      const user = this.store.peekRecord('user', val);
       this.set('selectedCollaborator', user);
     },
     savePermissions(permissionsObject) {
-      this.get('savePermissions')(permissionsObject);
+      this.savePermissions(permissionsObject);
     },
   }
 

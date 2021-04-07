@@ -1,31 +1,32 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: ['vmt-room-list'],
 
   classNameBindings: ['isSubList:sub-list'],
 
-  labelText: function () {
-    if (this.get('customLabel')) {
-      return this.get('customLabel');
+  labelText: computed('customLabel', 'isSubList', 'parentActivity', function () {
+    if (this.customLabel) {
+      return this.customLabel;
     }
-    if (this.get('isSubList')) {
+    if (this.isSubList) {
       let activityName = this.get('parentActivity.name') || '';
 
       return `Rooms Belonging to Activity ${activityName}`;
     }
     return 'VMT Rooms';
-  }.property('customLabel', 'isSubList', 'parentActivity'),
+  }),
 
   actions: {
     onItemSelect(room) {
-      if (this.get('onItemSelect')) {
-        this.get('onItemSelect')(room);
+      if (this.onItemSelect) {
+        this.onItemSelect(room);
       }
     }
   }

@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 import { App as Encompass } from '../app';
 import './DragNDrop';
 
@@ -7,7 +7,7 @@ import './DragNDrop';
 
 
 
-Encompass.DragNDrop.Droppable = Ember.Mixin.create({
+Encompass.DragNDrop.Droppable = Mixin.create({
   dragEnter: Encompass.DragNDrop.cancel,
   dragOver: Encompass.DragNDrop.cancel,
   drop: function (event) {

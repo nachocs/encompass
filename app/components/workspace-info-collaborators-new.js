@@ -1,5 +1,9 @@
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import { equal } from '@ember/object/computed';
+
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
@@ -7,12 +11,12 @@ import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, {
+export default Component.extend(CurrentUserMixin, {
   elementId: ['workspace-info-collaborators-new'],
-  utils: Ember.inject.service('utility-methods'),
-  alert: Ember.inject.service('sweet-alert'),
+  utils: service('utility-methods'),
+  alert: service('sweet-alert'),
   globalPermissionValue: 'viewOnly',
-  showCustom: Ember.computed.equal('globalPermissionValue', 'custom'),
+  showCustom: equal('globalPermissionValue', 'custom'),
   mainPermissions: [{
     id: 1,
     display: 'Hidden',
@@ -77,7 +81,7 @@ export default Ember.Component.extend(CurrentUserMixin, {
   },
   ],
 
-  modes: function () {
+  modes: computed('currentUser.isAdmin', 'currentUser.isStudent', function () {
     const basic = ['private', 'org', 'public'];
 
     if (this.get('currentUser.isStudent') || !this.get('currentUser.isAdmin')) {
@@ -86,7 +90,7 @@ export default Ember.Component.extend(CurrentUserMixin, {
 
     return ['private', 'org', 'public', 'internet'];
 
-  }.property('currentUser.isAdmin', 'currentUser.isStudent'),
+  }),
 
   createValueObject(val) {
     let obj = {
@@ -162,8 +166,8 @@ export default Ember.Component.extend(CurrentUserMixin, {
 
   buildCustomSubmissionIds(submissionsValue) {
     if (submissionsValue === 'custom') {
-      let ids = this.get('customSubmissionIds');
-      if (this.get('utils').isNonEmptyArray(ids)) {
+      let ids = this.customSubmissionIds;
+      if (this.utils.isNonEmptyArray(ids)) {
         return ids;
       }
       return [];
@@ -177,35 +181,35 @@ export default Ember.Component.extend(CurrentUserMixin, {
         return;
       }
       let existingCollab = this.get('workspace.collaborators');
-      const user = this.get('store').peekRecord('user', val);
+      const user = this.store.peekRecord('user', val);
       let alreadyCollab = _.contains(existingCollab, user.get('id'));
 
       if (alreadyCollab) {
         this.set('existingUserError', true);
         return;
       }
-      if (this.get('utils').isNonEmptyObject(user)) {
+      if (this.utils.isNonEmptyObject(user)) {
         this.set('collabUser', user);
       }
     },
 
     saveCollab() {
-      if (!this.get('collabUser')) {
+      if (!this.collabUser) {
         this.set('missingUserError', true);
         return;
       }
-      let ws = this.get('workspace');
+      let ws = this.workspace;
       let permissions = ws.get('permissions');
 
       let subValue = this.get('submissions.value');
 
       let newObj = {
         user: this.get('collabUser.id'),
-        global: this.get('globalPermissionValue'),
+        global: this.globalPermissionValue,
         submissions: { all: false, userOnly: false, submissionIds: [] },
       };
 
-      let globalSetting = this.get('globalPermissionValue');
+      let globalSetting = this.globalPermissionValue;
 
       if (globalSetting === 'viewOnly') {
         newObj.folders = 1;
@@ -258,25 +262,25 @@ export default Ember.Component.extend(CurrentUserMixin, {
         } else if (subValue === 'userOnly') {
           newObj.submissions.userOnly = true;
         } else if (subValue === 'custom') {
-          newObj.submissions.submissionIds = this.get('customSubmissionIds');
+          newObj.submissions.submissionIds = this.customSubmissionIds;
         }
       }
-      this.get('originalCollaborators').addObject(this.get('collabUser'));
+      this.originalCollaborators.addObject(this.collabUser);
 
       permissions.addObject(newObj);
 
       ws.save().then(() => {
-        this.get('alert').showToast('success', `${this.get('collabUser').get('username')} added as collaborator`, 'bottom-end', 3000, null, false);
+        this.alert.showToast('success', `${this.collabUser.get('username')} added as collaborator`, 'bottom-end', 3000, null, false);
         this.set('createNewCollaborator', false);
         this.set('isShowingCustomViewer', false);
       });
     },
     toggleSubmissionView: function () {
-      this.set('isShowingCustomViewer', !this.get('isShowingCustomViewer'));
+      this.set('isShowingCustomViewer', !this.isShowingCustomViewer);
     },
     cancelCreateCollab: function () {
       this.set('createNewCollaborator', null);
-      if (this.get('isShowingCustomViewer')) {
+      if (this.isShowingCustomViewer) {
         this.set('isShowingCustomViewer', false);
       }
     },

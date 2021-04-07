@@ -1,24 +1,25 @@
-import Ember from 'ember';
+import { isEmpty } from '@ember/utils';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   matchingStudentsError: null,
   isReadyToReviewAnswers: null,
 
   actions: {
     reviewAnswers: function () {
-      this.get('reviewSubmissions')();
+      this.reviewSubmissions();
     },
     checkStatus: function () {
-      let answers = this.get('answers');
+      let answers = this.answers;
 
       answers.forEach((ans) => {
         let students = ans.students;
-        if (!students || Ember.isEmpty(students)) {
+        if (!students || isEmpty(students)) {
           this.set('isReadyToReviewAnswers', false);
           return;
         }

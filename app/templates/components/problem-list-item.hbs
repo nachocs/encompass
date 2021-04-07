@@ -5,17 +5,17 @@
     </div>
 
     <div class="item-section name">
-      {{#link-to 'problem' problem class="problem-title"}}
+      <LinkTo @route="problem" @model={{problem}} class="problem-title">
         <span class={{if problem.isTrashed 'strikethrough'}}>{{{problem.title}}}</span>
         {{#if isRecommended}}
           <span><i class="fas fa-star star-icon"></i></span>
         {{/if}}
-      {{/link-to}}
+      </LinkTo>
     </div>
     <div class="item-section description">
-      {{#link-to 'problem' problem class="problem-title"}}
+      <LinkTo @route="problem" @model={{problem}} class="problem-title">
         {{{problem.text}}}
-      {{/link-to}}
+      </LinkTo>
     </div>
     <div class="item-section date">
       {{format-date problem.createDate 'MM/DD/YY'}}
@@ -88,19 +88,19 @@
     </div>
     <div class="item-card row-2">
       <div class="item-card name">
-        {{#link-to 'problem' problem class="problem-title"}}
+        <LinkTo @route="problem" @model={{problem}} class="problem-title">
           <span class={{if problem.isTrashed 'strikethrough'}}>{{{problem.title}}}</span>
           {{#if isRecommended}}
             <span><i class="fas fa-star star-icon"></i></span>
           {{/if}}
-        {{/link-to}}
+        </LinkTo>
       </div>
     </div>
     <div class="item-card row-3">
       <div class="item-card description">
-        {{#link-to 'problem' problem class="problem-title"}}
+        <LinkTo @route="problem" @model={{problem}} class="problem-title">
           {{{problem.text}}}
-        {{/link-to}}
+        </LinkTo>
       </div>
     </div>
     <div class="item-card row-4">

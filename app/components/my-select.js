@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   content: null,
   selectedValue: null,
   optionLabelPath: '',
@@ -15,7 +15,7 @@ export default Ember.Component.extend({
   // didInitAttrs is deprecated according to Ember docs
   didInitAttrs: function (attrs) {
     this._super.apply(null, arguments);
-    var content = this.get('content');
+    var content = this.content;
 
     if (!content) {
       this.set('content', []);
@@ -24,7 +24,7 @@ export default Ember.Component.extend({
 
   actions: {
     selectChange: function () {
-      var changeAction = this.get('action');
+      var changeAction = this.action;
       var selectedEl = this.$('select')[0];
       var prompt = this.$('#select-prompt');
       var selectedIndex;
@@ -35,7 +35,7 @@ export default Ember.Component.extend({
         selectedIndex = selectedEl.selectedIndex;
       }
 
-      var content = this.get('content');
+      var content = this.content;
       var selectedValue = content.objectAt(selectedIndex);
       this.set('selectedValue', selectedValue);
       changeAction(selectedValue);

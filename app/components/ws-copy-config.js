@@ -1,31 +1,35 @@
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import { equal } from '@ember/object/computed';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: 'ws-copy-config',
-  showCustomConfig: Ember.computed.equal('selectedConfig', 'D'),
-  utils: Ember.inject.service('utility-methods'),
+  showCustomConfig: equal('selectedConfig', 'D'),
+  utils: service('utility-methods'),
 
-  validConfigValues: function () {
+  validConfigValues: computed('copyConfig', function () {
     const configInputs = this.get('copyConfig.inputs');
 
-    if (this.get('utils').isNonEmptyArray(configInputs)) {
+    if (this.utils.isNonEmptyArray(configInputs)) {
       return configInputs.map(input => input.value);
     }
     return [];
 
-  }.property('copyConfig'),
+  }),
 
   didReceiveAttrs() {
-    const newWsConfig = this.get('newWsConfig');
-    const selectedConfig = this.get('selectedConfig');
+    const newWsConfig = this.newWsConfig;
+    const selectedConfig = this.selectedConfig;
 
-    const validValues = this.get('validConfigValues');
+    const validValues = this.validConfigValues;
     // if reaching via back button, set selectedConfig to previously selected value
     // else set as A
     if (validValues.includes(newWsConfig)) {
@@ -39,11 +43,11 @@ export default Ember.Component.extend({
 
   actions: {
     next() {
-      const selectedConfig = this.get('selectedConfig');
-      const validConfigValues = this.get('validConfigValues');
+      const selectedConfig = this.selectedConfig;
+      const validConfigValues = this.validConfigValues;
 
       if (validConfigValues.includes(selectedConfig)) {
-        this.get('onProceed')(this.get('selectedConfig'));
+        this.onProceed(this.selectedConfig);
         return;
       }
       this.set('invalidOrMissingConfig', true);
@@ -51,7 +55,7 @@ export default Ember.Component.extend({
 
     nextCustom(customConfig) {
       // make sure user has chosen a configuration that has at least 1 submission
-      if (!this.get('utils').isNonEmptyObject(customConfig)) {
+      if (!this.utils.isNonEmptyObject(customConfig)) {
         return;
       }
 
@@ -68,14 +72,14 @@ export default Ember.Component.extend({
         }
       }
       if (isAllSubmissions || customSubmissionsCount > 0) {
-        this.get('onProceed')(this.get('selectedConfig'), customConfig);
+        this.onProceed(this.selectedConfig, customConfig);
       } else {
         // insufficient submissions
         this.set('insufficientSubmissions', true);
       }
     },
     back() {
-      this.get('onBack')(-1);
+      this.onBack(-1);
     }
   }
 });

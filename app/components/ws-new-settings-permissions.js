@@ -1,14 +1,16 @@
 /*global _:false */
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: 'ws-new-settings-permissions',
-  utils: Ember.inject.service('utility-methods'),
+  utils: service('utility-methods'),
   globalPermissionValue: 'viewOnly',
   globalItems: {
     groupName: 'globalPermissionValue',
@@ -39,8 +41,8 @@ export default Ember.Component.extend({
       },]
   },
   buildPermissionsObject() {
-    const user = this.get('selectedCollaborator');
-    const globalSetting = this.get('globalPermissionValue');
+    const user = this.selectedCollaborator;
+    const globalSetting = this.globalPermissionValue;
 
     let submissionOptions = {
       all: true
@@ -108,17 +110,17 @@ export default Ember.Component.extend({
         this.set('selectedCollaborator', null);
         return;
       }
-      const user = this.get('store').peekRecord('user', val);
+      const user = this.store.peekRecord('user', val);
       this.set('selectedCollaborator', user);
       this.set('isEditing', true);
     },
     removeCollab(permissionObj) {
-      if (this.get('utils').isNonEmptyObject(permissionObj)) {
-        this.get('permissions').removeObject(permissionObj);
+      if (this.utils.isNonEmptyObject(permissionObj)) {
+        this.permissions.removeObject(permissionObj);
       }
     },
     editCollab(permissionObj) {
-      const utils = this.get('utils');
+      const utils = this.utils;
       if (utils.isNonEmptyObject(permissionObj)) {
         const user = permissionObj.user;
         if (utils.isNonEmptyObject(user)) {
@@ -131,10 +133,10 @@ export default Ember.Component.extend({
     savePermissions() {
       const permissionsObject = this.buildPermissionsObject();
 
-      if (!this.get('utils').isNonEmptyObject(permissionsObject)) {
+      if (!this.utils.isNonEmptyObject(permissionsObject)) {
         return;
       }
-      const permissions = this.get('permissions');
+      const permissions = this.permissions;
       // check if user already is in array
       let existingObj = permissions.findBy('user', permissionsObject.user);
 
@@ -143,7 +145,7 @@ export default Ember.Component.extend({
         permissions.removeObject(existingObj);
       }
 
-      this.get('permissions').addObject(permissionsObject);
+      this.permissions.addObject(permissionsObject);
 
       // clear selectedCollaborator
       // clear selectize input

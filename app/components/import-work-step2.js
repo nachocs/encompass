@@ -1,5 +1,9 @@
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import { equal } from '@ember/object/computed';
+
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
@@ -7,10 +11,10 @@ import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, {
+export default Component.extend(CurrentUserMixin, {
   elementId: 'import-work-step2',
-  utils: Ember.inject.service('utility-methods'),
-  selectingClass: Ember.computed.equal('selectedValue', true),
+  utils: service('utility-methods'),
+  selectingClass: equal('selectedValue', true),
 
   useClass: {
     groupName: 'useClass',
@@ -28,16 +32,16 @@ export default Ember.Component.extend(CurrentUserMixin, {
 
 
   willDestroyElement: function () {
-    this.set('selectedValue', this.get('selectedValue'));
+    this.set('selectedValue', this.selectedValue);
   },
 
-  initialSectionItem: function () {
-    const selectedSection = this.get('selectedSection');
-    if (this.get('utils').isNonEmptyObject(selectedSection)) {
+  initialSectionItem: computed('selectedSection', function () {
+    const selectedSection = this.selectedSection;
+    if (this.utils.isNonEmptyObject(selectedSection)) {
       return [selectedSection.id];
     }
     return [];
-  }.property('selectedSection'),
+  }),
 
   actions: {
     setSelectedSection(val, $item) {
@@ -51,31 +55,31 @@ export default Ember.Component.extend(CurrentUserMixin, {
         return;
       }
 
-      const section = this.get('store').peekRecord('section', val);
-      if (this.get('utils').isNullOrUndefined(section)) {
+      const section = this.store.peekRecord('section', val);
+      if (this.utils.isNullOrUndefined(section)) {
         return;
       }
 
       this.set('selectedSection', section);
-      if (this.get('missingSection')) {
+      if (this.missingSection) {
         this.set('missingSection', null);
       }
     },
     next() {
-      const selectedValue = this.get('selectedValue');
+      const selectedValue = this.selectedValue;
       if (!selectedValue) {
         this.set('selectedSection', null);
       }
-      const section = this.get('selectedSection');
-      if (this.get('utils').isNonEmptyObject(section) || !selectedValue) {
-        this.get('onProceed')();
+      const section = this.selectedSection;
+      if (this.utils.isNonEmptyObject(section) || !selectedValue) {
+        this.onProceed();
         return;
       }
       this.set('missingSection', true);
 
     },
     back() {
-      this.get('onBack')(-1);
+      this.onBack(-1);
     }
   }
 });

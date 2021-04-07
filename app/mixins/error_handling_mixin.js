@@ -1,13 +1,14 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 
 
 
 
 
 
-export default Ember.Mixin.create({
+export default Mixin.create({
 
-  alert: Ember.inject.service('sweet-alert'),
+  alert: service('sweet-alert'),
 
   isAdapterError: function (err) {
     if (!err) {
@@ -108,7 +109,7 @@ export default Ember.Mixin.create({
       }
     });
 
-    this.get('alert').showToast('error', msg, 'bottom-end', 5000, false, null);
+    this.alert.showToast('error', msg, 'bottom-end', 5000, false, null);
 
   },
 

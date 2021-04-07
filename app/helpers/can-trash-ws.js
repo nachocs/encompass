@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 
 
 
 
 
 
-export default Ember.Helper.helper(function (args) {
+export default buildHelper(function (args) {
   let [user, ws] = args;
 
   if (!user || !ws) {

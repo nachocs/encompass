@@ -1,18 +1,17 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import { later } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import $ from 'jquery';
+import { all, reject, resolve } from 'rsvp';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'answer-new',
-  alert: Ember.inject.service('sweet-alert'),
-  utils: Ember.inject.service('utility-methods'),
+  alert: service('sweet-alert'),
+  utils: service('utility-methods'),
 
   filesToBeUploaded: null,
   createAnswerError: null,
@@ -35,8 +34,8 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     briefSummary: {
       presence: { allowEmpty: false },
       length: {
-        maximum: 10000
-      }
+        maximum: 10000,
+      },
     },
     explanation: {
       presence: true,
@@ -53,12 +52,12 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     }
   },
 
-  totalSizeLimitDisplay: function () {
-    return this.returnSizeDisplay(this.get('explanationLengthLimit'));
-  }.property('explanationLengthLimit'),
+  totalSizeLimitDisplay: computed('explanationLengthLimit', function () {
+    return this.returnSizeDisplay(this.explanationLengthLimit);
+  }),
 
   getOverSizedFileMsg(fileSize, fileName) {
-    let limit = this.get('singleFileSizeLimit');
+    let limit = this.singleFileSizeLimit;
 
     let actualDisplay = this.returnSizeDisplay(fileSize);
     let limitDisplay = this.returnSizeDisplay(limit);
@@ -66,26 +65,25 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     return `The file ${fileName} (${actualDisplay}) was not accepted due to exceeding the size limit of ${limitDisplay}`;
   },
 
-  tooLargeExplanationMsg: function () {
-    return `The total size of your submission (text and/or images) exceeds the size limit of ${this.get('totalSizeLimitDisplay')}. Please remove or resize any large images and try again.`;
-  }.property('totalSizeLimitDisplay'),
+  tooLargeExplanationMsg: computed('totalSizeLimitDisplay', function () {
+    return `The total size of your submission (text and/or images) exceeds the size limit of ${this.totalSizeLimitDisplay}. Please remove or resize any large images and try again.`;
+  }),
 
-  createButtonDisplayText: function () {
-    if (this.get('createButtonText')) {
-      return this.get('createButtonText');
+  createButtonDisplayText: computed('createButtonText', function () {
+    if (this.createButtonText) {
+      return this.createButtonText;
     }
     return 'Create Answer';
-  }.property('createButtonText'),
+  }),
 
-  mainHeaderDisplayText: function () {
-    if (this.get('mainHeaderText')) {
-      return this.get('mainHeaderText');
+  mainHeaderDisplayText: computed('mainHeaderText', function () {
+    if (this.mainHeaderText) {
+      return this.mainHeaderText;
     }
     return 'Create New Answer';
-  }.property('mainHeaderText'),
+  }),
 
   didInsertElement: function () {
-
     if (this.priorAnswer) {
       //prefill form if revising
       const ans = this.priorAnswer;
@@ -94,10 +92,12 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
       this.set('explanationText', explanation);
       let students = ans.get('students');
-      this.set('contributors', students.map(s => s));
-
+      this.set(
+        'contributors',
+        students.map((s) => s)
+      );
     } else {
-      this.get('contributors').addObject(this.get('currentUser'));
+      this.contributors.addObject(this.currentUser);
     }
   },
 
@@ -112,22 +112,25 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   handleImages() {
-    if (this.get('existingImageId')) {
-      return Ember.RSVP.resolve(this.get('existingImageId'));
+    if (this.existingImageId) {
+      return resolve(this.existingImageId);
     }
 
-    let filesToUpload = this.get('filesToBeUploaded');
+    let filesToUpload = this.filesToBeUploaded;
 
     if (!filesToUpload) {
-      return Ember.RSVP.resolve(null);
+      return resolve(null);
     }
 
     const formData = new FormData();
 
     for (let f of filesToUpload) {
-      if (f.size > this.get('singleFileSizeLimit')) {
-        this.set('overSizedFileError', this.getOverSizedFileMsg(f.size, f.name));
-        return Ember.RSVP.reject('oversizedFile');
+      if (f.size > this.singleFileSizeLimit) {
+        this.set(
+          'overSizedFileError',
+          this.getOverSizedFileMsg(f.size, f.name)
+        );
+        return reject('oversizedFile');
       } else {
         formData.append('photo', f);
       }
@@ -138,58 +141,66 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     let postUrl = isPDF ? '/pdf' : '/image';
     let resultingImages;
 
-    resultingImages = Ember.$.post({
+    resultingImages = $.post({
       url: postUrl,
       processData: false,
       contentType: false,
-      data: formData
+      data: formData,
     });
 
-    return Ember.RSVP.resolve(resultingImages)
+    return resolve(resultingImages)
       .then((results) => {
         let images = results.images;
-        this.get('store').pushPayload({ images });
-        return Ember.RSVP.resolve(images);
+        this.store.pushPayload({ images });
+        return resolve(images);
       })
       .catch((err) => {
-        return Ember.RSVP.reject(err);
+        return reject(err);
       });
   },
 
-  handleLoadingMessage: function () {
+  handleLoadingMessage: observer('isCreatingAnswer', function () {
     const that = this;
-    if (this.get('isDestroyed') || this.get('isDestroying')) {
+    if (this.isDestroyed || this.isDestroying) {
       return;
     }
 
-    if (!this.get('isCreatingAnswer')) {
+    if (!this.isCreatingAnswer) {
       this.set('showLoadingMessage', false);
       return;
     }
-    Ember.run.later(function () {
+    later(function () {
       if (that.isDestroyed || that.isDestroying) {
         return;
       }
       that.set('showLoadingMessage', that.get('isCreatingAnswer'));
     }, 500);
-
-  }.observes('isCreatingAnswer'),
+  }),
 
   createAnswer: function () {
     this.set('isCreatingAnswer', true);
 
-    const answer = this.get('answer'); // brief summary
+    const answer = this.answer; // brief summary
     const quillContent = this.$('.ql-editor').html();
     let explanation = quillContent.replace(/["]/g, "'");
     const priorAnswer = this.priorAnswer ? this.priorAnswer : null;
-    const students = this.get('contributors');
+    const students = this.contributors;
 
     if (priorAnswer) {
       // if revising, check to see that there were changes made from original
       // to avoid lots of duplicate answers
-      if (!this.isRevisionDifferent(priorAnswer, answer, explanation, students)) {
+      if (
+        !this.isRevisionDifferent(priorAnswer, answer, explanation, students)
+      ) {
         this.set('isCreatingAnswer', false);
-        return this.get('alert').showToast('info', 'Revison cannot be exact duplicate of original', 'bottom-end', 3000, false, null);
+        return this.alert.showToast(
+          'info',
+          'Revison cannot be exact duplicate of original',
+          'bottom-end',
+          3000,
+          false,
+          null
+        );
       }
     }
 
@@ -207,7 +218,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
           });
         }
 
-        if (explanation.length > this.get('explanationLengthLimit')) {
+        if (explanation.length > this.explanationLengthLimit) {
           this.set('isExplanationTooLarge', true);
           this.set('isCreatingAnswer', false);
 
@@ -226,14 +237,16 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
             priorAnswer: priorAnswer,
             section: this.section,
             students: students,
-            workspacesToUpdate: this.get('workspacesToUpdateIds'),
+            workspacesToUpdate: this.workspacesToUpdateIds,
           });
         });
         // additional uploaded image base 64 data was concatenated to explanation
 
-        return Ember.RSVP.all(records.map((rec) => {
-          return rec.save();
-        }))
+        return all(
+          records.map((rec) => {
+            return rec.save();
+          })
+        )
           .then((answers) => {
             const userId = this.get('currentUser.id');
 
@@ -241,20 +254,27 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
               return answer.get('createdBy.id') === userId;
             });
 
-            this.get('alert').showToast('success', 'Answer Created', 'bottom-end', 3000, false, null);
+            this.alert.showToast(
+              'success',
+              'Answer Created',
+              'bottom-end',
+              3000,
+              false,
+              null
+            );
 
-            this.get('handleCreatedAnswer')(yourAnswer);
+            this.handleCreatedAnswer(yourAnswer);
           })
           .catch((err) => {
             // do we need to roll back all recs this were created?
-            if (!this.get('isDestroying') && !this.get('isDestroyed')) {
+            if (!this.isDestroying && !this.isDestroyed) {
               this.set('isCreatingAnswer', false);
             }
             this.handleErrors(err, 'createRecordErrors');
           });
       })
       .catch((err) => {
-        if (!this.get('isDestroying') && !this.get('isDestroyed')) {
+        if (!this.isDestroying && !this.isDestroyed) {
           this.set('isCreatingAnswer', false);
         }
         if (err === 'oversizedFile') {
@@ -264,7 +284,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   isRevisionDifferent(original, newSummary, newExplanation, newContributors) {
-    let filesToBeUploaded = this.get('filesToBeUploaded');
+    let filesToBeUploaded = this.filesToBeUploaded;
 
     if (filesToBeUploaded) {
       // when revising is initiated, there will be no files to upload
@@ -293,9 +313,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     let didContribsChange = !_.isEqual(originalContribIds, newContribIds);
 
     return didContribsChange;
-
   },
-
 
   actions: {
     validate: function () {
@@ -307,15 +325,15 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         }
       }
 
-      let isQuillValid = !this.get('isQuillEmpty');
-      let briefSummary = this.get('answer');
+      let isQuillValid = !this.isQuillEmpty;
+      let briefSummary = this.answer;
       let explanation = isQuillValid ? true : null;
 
       let values = {
         briefSummary,
-        explanation
+        explanation,
       };
-      let constraints = this.get('constraints');
+      let constraints = this.constraints;
 
       let errors = window.validate(values, constraints);
       if (errors) {
@@ -330,17 +348,17 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     cancelResponse: function () {
-      this.get('cancelResponse')();
+      this.cancelResponse();
     },
     deleteImage: function () {
       this.set('existingImageId', null);
       this.set('imageData', null);
     },
     toggleAddStudentMessages() {
-      if (this.get('addStudentError')) {
+      if (this.addStudentError) {
         this.set('addStudentError', false);
       }
-      if (this.get('addedStudent')) {
+      if (this.addedStudent) {
         this.set('addedStudent', false);
       }
     },
@@ -349,7 +367,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let students = this.get('contributors');
+      let students = this.contributors;
 
       if (students.includes(student)) {
         this.set('userAlreadyInSection', true);
@@ -357,21 +375,34 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
 
       students.pushObject(student);
-      this.get('alert').showToast('success', 'Student Added', 'bottom-end', 3000, false, null);
+      this.alert.showToast(
+        'success',
+        'Student Added',
+        'bottom-end',
+        3000,
+        false,
+        null
+      );
     },
     removeStudent: function (student) {
       if (!student) {
         return;
       }
-      let students = this.get('contributors');
+      let students = this.contributors;
       students.removeObject(student);
-      this.get('alert').showToast('success', 'Student Removed', 'bottom-end', 3000, false, null);
+      this.alert.showToast(
+        'success',
+        'Student Removed',
+        'bottom-end',
+        3000,
+        false,
+        null
+      );
     },
     updateQuillText(content, isEmpty, isOverLengthLimit) {
       this.set('quillText', content);
       this.set('isQuillEmpty', isEmpty);
       this.set('isQuillTooLong', isOverLengthLimit);
-    }
-  }
+    },
+  },
 });
-

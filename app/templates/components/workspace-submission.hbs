@@ -7,7 +7,7 @@
     {{#if this.canSelect}}
       <div class="submission-row-item  toggle-selecting">
         <label class="makingSelection">
-          {{input name="is-selecting" type="checkbox" checked=shouldCheck click=(action "toggleSelecting")}}
+          <Input @name="is-selecting" @type="checkbox" @checked={{shouldCheck}} @click={{action "toggleSelecting"}} />
           Selecting
         </label>
       </div>
@@ -53,17 +53,7 @@
 <div id="al_submission">
   {{#if showSelectableView}}
     <h3 id="sel-view-header" class="selectable-view-header">Selectable View!</h3>
-    {{#selectable-area
-      model=currentSubmission
-      makingSelection=makingSelection
-      showingSelections=showingSelections
-      addSelection="addSelection"
-      hideSelections="hideSelections"
-      handleTransition="handleTransition"
-      sels=workspaceSelections
-      trashed=trashedSelections
-      setupResizeHandler=(action "setupResizeHandler")
-    }}
+    <SelectableArea @model={{currentSubmission}} @makingSelection={{makingSelection}} @showingSelections={{showingSelections}} @addSelection="addSelection" @hideSelections="hideSelections" @handleTransition="handleTransition" @sels={{workspaceSelections}} @trashed={{trashedSelections}} @setupResizeHandler={{action "setupResizeHandler"}}>
       <div id="submission_container">
         <div class="submission-short {{if isVmt "vmt-summary"}}">
          {{#if isVmt}}
@@ -109,7 +99,7 @@
       {{/if}}
         </div>
       </div>
-    {{/selectable-area}}
+    </SelectableArea>
     {{else}}
         <div class="non-selectable-sub">
       <h5 class="submission-header summary">Brief Summary</h5>
@@ -150,7 +140,7 @@
       <h5 class="submission-header explanation">Explanation</h5>
       <div class="submission long">
         {{#if isVmt}}
-          {{vmt-replayer}}
+          <VmtReplayer />
         {{else if currentSubmission.answer.explanation}}
           {{{currentSubmission.answer.explanation}}}
         {{else if currentSubmission.longAnswer}}
@@ -186,14 +176,9 @@
     <li {{action "onSelectionSelect"}} class="selection">
       {{#unless selection.isTrashed}}
         {{#if canSelect}}
-          {{draggable-selection
-            selection=selection
-            canDeleteSelections=canDeleteSelection
-            deleteSelection=(action "deleteSelection")
-            currentSelection=currentSelection
-          }}
+          <DraggableSelection @selection={{selection}} @canDeleteSelections={{canDeleteSelection}} @deleteSelection={{action "deleteSelection"}} @currentSelection={{currentSelection}} />
         {{else}}
-          {{undraggable-selection selection=selection currentSelection=currentSelection }}
+          <UndraggableSelection @selection={{selection}} @currentSelection={{currentSelection}} />
         {{/if}}
       {{/unless}}
     </li>

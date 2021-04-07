@@ -1,7 +1,7 @@
-import Ember from "ember";
+import Controller from '@ember/controller';
 import CurrentUserMixin from "../mixins/current_user_mixin";
 
-export default Ember.Controller.extend(CurrentUserMixin, {
+export default Controller.extend(CurrentUserMixin, {
   isCompDirty: false,
   confirmLeaving: false,
 

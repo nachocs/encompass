@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 import moment from 'moment';
 
 
@@ -6,6 +6,6 @@ import moment from 'moment';
 
 
 
-export default Ember.Helper.helper(function (date, format) {
+export default buildHelper(function (date, format) {
   return moment(date).format(format);
 });

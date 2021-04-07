@@ -3,28 +3,15 @@
   <h2>Folders</h2>
   <span {{action "hideFolders"}}><i title="Hide Folders"class="far fa-eye-slash"></i></span>
 </header>
-{{#workspace-folder-drop folders=folders}}
+<WorkspaceFolderDrop @folders={{folders}}>
   <div class="dropZone" style="height:10px;"></div>
   <ul id="al_folders">
     {{#each this.sortedFolders as |folder|}}
-      {{folder-elem
-        store=store
-        model=folder
-        currentWorkspace=workspace
-        folderList=this
-        editFolderMode=editFolderMode
-        dropped=(action "fileSelectionInFolder")
-        confirm="askToDelete"
-        currentSubmission=currentSubmission
-        currentSelection=currentSelection
-        canEditFolders=canEdit
-        canDeleteFolders=canDelete
-        wsTaggings=taggings
-      }}
+      <FolderElem @store={{store}} @model={{folder}} @currentWorkspace={{workspace}} @folderList={{this}} @editFolderMode={{editFolderMode}} @dropped={{action "fileSelectionInFolder"}} @confirm="askToDelete" @currentSubmission={{currentSubmission}} @currentSelection={{currentSelection}} @canEditFolders={{canEdit}} @canDeleteFolders={{canDelete}} @wsTaggings={{taggings}} />
     {{/each}}
   </ul>
   <div class="dropZone" style="height:10px;"></div>
-{{/workspace-folder-drop}}
+</WorkspaceFolderDrop>
 {{#if canManageFolders}}
 <div class="folders-modify">
   <div class= "folders-modify-item add">

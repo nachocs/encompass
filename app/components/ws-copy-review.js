@@ -1,20 +1,20 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   elementId: 'ws-copy-review',
   createDate: Date.now(),
 
   actions: {
     next() {
-      this.get('onProceed')();
+      this.onProceed();
     },
     back() {
-      this.get('onBack')(-1);
+      this.onBack(-1);
     }
   }
 

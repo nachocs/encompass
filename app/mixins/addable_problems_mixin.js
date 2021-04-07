@@ -1,9 +1,9 @@
-import Ember from "ember";
+import Mixin from '@ember/object/mixin';
 
-export default Ember.Mixin.create({
+export default Mixin.create({
   getAddableProblems: function () {
-    const store = this.get("store");
-    const syncProblems = this.get("syncProblems");
+    const store = this.store;
+    const syncProblems = this.syncProblems;
     let ret = function (query, syncCb, asyncCb) {
       if (query.length === 0 && syncProblems) {
         return asyncCb(syncProblems.toArray());

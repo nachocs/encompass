@@ -1,45 +1,44 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
-  utils: Ember.inject.service('utility-methods'),
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+  utils: service('utility-methods'),
 
   currentAssignment: null,
 
-  currentProblem: function () {
-    let assignment = this.get('currentAssignment');
+  currentProblem: computed('currentAssignment.problem.content', function () {
+    let assignment = this.currentAssignment;
     if (!assignment) {
       return null;
     }
     return assignment.get('problem.content');
-  }.property('currentAssignment.problem.content'),
+  }),
 
-  currentSection: function () {
-    let assignment = this.get('currentAssignment');
+  currentSection: computed('currentAssignment.section.content', function () {
+    let assignment = this.currentAssignment;
     if (!assignment) {
       return null;
     }
     return assignment.get('section.content');
-  }.property('currentAssignment.section.content'),
+  }),
 
-  assignmentStudents: function () {
-    let assignment = this.get('currentAssignment');
-    if (!assignment) {
-      return [];
+  assignmentStudents: computed(
+    'currentAssignment.students.content',
+    function () {
+      let assignment = this.currentAssignment;
+      if (!assignment) {
+        return [];
+      }
+      return assignment.get('students.content');
     }
-    return assignment.get('students.content');
-
-  }.property('currentAssignment.students.content'),
+  ),
 
   didReceiveAttrs: function () {
     if (this.get('assignment.id') !== this.get('currentAssignment.id')) {
-      this.set('currentAssignment', this.get('assignment'));
+      this.set('currentAssignment', this.assignment);
     }
   },
 
@@ -51,5 +50,5 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     toAnswerInfo: function (answer) {
       this.sendAction('toAnswerInfo', answer);
     },
-  }
+  },
 });

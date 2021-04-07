@@ -1,15 +1,15 @@
 <div class="info-flex-item assignment-name">
   {{#if isEditing}}
-    {{input type="text" value=assignmentName}}
+    <Input @type="text" @value={{assignmentName}} />
   {{else}}
     {{assignment.name}}
   {{/if}}
 </div>
 <div class="info-flex-item creation-details">
   by
-  {{#link-to "user" assignment.createdBy.username}}
+  <LinkTo @route="user" @model={{assignment.createdBy.username}}>
     {{assignment.createdBy.username}}
-  {{/link-to}}
+  </LinkTo>
   on
   {{format-date assignment.createDate "Do MMM YYYY"}}
 </div>
@@ -18,12 +18,7 @@
     Assigned
   </p>
   {{#if showAssignedDateInput}}
-    {{input
-      name="daterange"
-      id="assignedDate"
-      type="text"
-      value=assignedDateEditVal
-    }}
+    <Input @name="daterange" @id="assignedDate" @type="text" @value={{assignedDateEditVal}} />
   {{else}}
     <p class="value">
       {{format-date assignment.assignedDate "Do MMM YYYY"}}
@@ -35,7 +30,7 @@
     Due
   </p>
   {{#if showDueDateInput}}
-    {{input id="dueDate" name="daterange" type="text" value=dueDateEditVal}}
+    <Input @id="dueDate" @name="daterange" @type="text" @value={{dueDateEditVal}} />
   {{else}}
     <p class="value">
       {{format-date assignment.dueDate "Do MMM YYYY"}}
@@ -47,25 +42,11 @@
     Class
   </p>
   {{#if showSectionInput}}
-    {{selectize-input
-      inputId="assn-new-section-select"
-      initialOptions=sectionOptions
-      initialItems=initialSectionItem
-      onItemAdd=(action "updateSelectizeSingle")
-      onItemRemove=(action "updateSelectizeSingle")
-      maxItems=1
-      labelField="name"
-      valueField="id"
-      searchField="name"
-      propToUpdate="selectedSection"
-      placeholder="Search for a section by name"
-      model="section"
-      store=store
-    }}
+    <SelectizeInput @inputId="assn-new-section-select" @initialOptions={{sectionOptions}} @initialItems={{initialSectionItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="name" @valueField="id" @searchField="name" @propToUpdate="selectedSection" @placeholder="Search for a section by name" @model="section" @store={{store}} />
   {{else}}
-    {{#link-to "section" section}}
+    <LinkTo @route="section" @model={{section}}>
       {{section.name}}
-    {{/link-to}}
+    </LinkTo>
   {{/if}}
 </div>
 <div class="info-flex-item problem">
@@ -73,30 +54,11 @@
     Problem
   </p>
   {{#if showProblemInput}}
-    {{selectize-input
-      store=store
-      inputId="assn-new-problem-select"
-      initialOptions=problemOptions
-      initialItems=initialProblemItem
-      onItemAdd=(action "updateSelectizeSingle")
-      onItemRemove=(action "updateSelectizeSingle")
-      maxItems=1
-      labelField="title"
-      valueField="id"
-      searchField="title"
-      propToUpdate="selectedProblem"
-      placeholder="Search for a problem by title"
-      isAsync=true
-      model="problem"
-      queryParamsKey="query"
-      searchCriterion="title"
-      topLevelQueryParams="searchBy"
-      preload=problemsPreloadValue
-    }}
+    <SelectizeInput @store={{store}} @inputId="assn-new-problem-select" @initialOptions={{problemOptions}} @initialItems={{initialProblemItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="title" @valueField="id" @searchField="title" @propToUpdate="selectedProblem" @placeholder="Search for a problem by title" @isAsync={{true}} @model="problem" @queryParamsKey="query" @searchCriterion="title" @topLevelQueryParams="searchBy" @preload={{problemsPreloadValue}} />
   {{else}}
-    {{#link-to "problem" problem}}
+    <LinkTo @route="problem" @model={{problem}}>
       {{problem.title}}
-    {{/link-to}}
+    </LinkTo>
   {{/if}}
 </div>
 <div class="info-flex-item linked-ws">
@@ -111,9 +73,9 @@
     <ul class={{if areLinkedWsHidden "hidden"}}>
       {{#each linkedWorkspaces as |ws|}}
         <li>
-          {{#link-to "workspace.work" ws.id}}
+          <LinkTo @route="workspace.work" @model={{ws.id}}>
             {{ws.name}}
-          {{/link-to}}
+          </LinkTo>
         </li>
       {{else}}
 
@@ -125,15 +87,7 @@
     </p>
   {{/if}}
     {{#if showLinkedWsForm}}
-      {{linked-workspaces-new
-        students=studentsWithoutWorkspaces
-        assignment=assignment
-        section=section
-        problem=problem
-        onCancel=(action (mut showLinkedWsForm) false)
-        store=store
-        handleResults=(action "handleCreatedLinkedWs")
-      }}
+      <LinkedWorkspacesNew @students={{studentsWithoutWorkspaces}} @assignment={{assignment}} @section={{section}} @problem={{problem}} @onCancel={{action (mut showLinkedWsForm) false}} @store={{store}} @handleResults={{action "handleCreatedLinkedWs"}} />
     {{/if}}
     {{#if showAddLinkedWsBtn}}
       <button
@@ -154,20 +108,16 @@
     Parent Workspace
   </p>
   {{#if parentWorkspace}}
-    {{#link-to "workspace.work" parentWorkspace.id}}
+    <LinkTo @route="workspace.work" @model={{parentWorkspace.id}}>
       {{parentWorkspace.name}}
-    {{/link-to}}
+    </LinkTo>
   {{else}}
     <p class="value no-parent-ws">
       N/A
     </p>
   {{/if}}
   {{#if showParentWsForm}}
-    {{parent-workspace-new childWorkspaces=assignment.linkedWorkspaces assignment=assignment section=section problem=problem
-    onCancel=(action (mut showParentWsForm) false)
-    store=store
-    handleResults=(action "handleCreatedParentWs")
-    }}
+    <ParentWorkspaceNew @childWorkspaces={{assignment.linkedWorkspaces}} @assignment={{assignment}} @section={{section}} @problem={{problem}} @onCancel={{action (mut showParentWsForm) false}} @store={{store}} @handleResults={{action "handleCreatedParentWs"}} />
   {{/if}}
   {{#if showAddParentWsBtn}}
     <button data-test="add-parent-ws" class="primary-button" {{action (mut showParentWsForm) true}}>Add Parent
@@ -186,12 +136,7 @@
       {{action "toggleProperty" "areSubmissionsExpanded"}}
     ></i>
   </p>
-  {{assignment-report
-    details=assignment.reportDetails
-    assignment=assignment
-    students=studentList
-    hidden=areSubmissionsHidden
-  }}
+  <AssignmentReport @details={{assignment.reportDetails}} @assignment={{assignment}} @students={{studentList}} @hidden={{areSubmissionsHidden}} />
 </div>
 <div class="info-flex-item actions">
   {{#if showEditButton}}

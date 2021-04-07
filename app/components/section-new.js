@@ -1,4 +1,8 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import { later } from '@ember/runloop';
+import { isEqual } from '@ember/utils';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import $ from 'jquery';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
@@ -8,10 +12,10 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'section-new',
   className: ['sections'],
-  alert: Ember.inject.service('sweet-alert'),
+  alert: service('sweet-alert'),
   createdSection: null,
   createRecordErrors: [],
   teacher: null,
@@ -46,9 +50,9 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   didReceiveAttrs: function () {
     let users = this.users;
-    let userList = this.get('userList');
+    let userList = this.userList;
 
-    if (!Ember.isEqual(users, userList)) {
+    if (!isEqual(users, userList)) {
       this.set('userList', users);
       //filter out students for adding teachers;
       let addableTeachers = users.rejectBy('accountType', 'S');
@@ -59,23 +63,23 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   //Non admin User creating section
   //set user as teacher
   didInsertElement: function () {
-    var user = this.get('user');
+    var user = this.user;
     if (!user.get('isAdmin')) {
       this.set('teacher', user);
     }
   },
 
-  setTeacher: function () {
-    let teacher = this.get('teacher');
+  setTeacher: observer('teacher', function () {
+    let teacher = this.teacher;
     if (!teacher) {
-      if (this.get('organization')) {
+      if (this.organization) {
         this.set('organization', null);
       }
       return;
     }
 
     if (typeof teacher === 'string') {
-      let users = this.get('users');
+      let users = this.users;
       let user = users.findBy('username', teacher);
       if (!user) {
         this.set('invalidTeacherUsername', true);
@@ -92,27 +96,27 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     } else {
       this.set('organization', this.get('currentUser.organization'));
     }
-    if (this.get('invalidTeacherUsername')) {
+    if (this.invalidTeacherUsername) {
       this.set('invalidTeacherUsername', null);
     }
-  }.observes('teacher'),
+  }),
 
-  validTeacher: function () {
-    return this.get('teacher') && !this.get('invalidTeacherUsername');
-  }.property('teacher', 'invalidTeacherUsername'),
+  validTeacher: computed('teacher', 'invalidTeacherUsername', function () {
+    return this.teacher && !this.invalidTeacherUsername;
+  }),
 
   actions: {
     createSection: function () {
       var that = this;
 
-      if (this.get('invalidTeacherUsername')) {
+      if (this.invalidTeacherUsername) {
         return;
       }
-      var newSectionName = this.get('newSectionName');
-      var organization = this.get('organization');
-      var teacher = this.get('teacher');
+      var newSectionName = this.newSectionName;
+      var organization = this.organization;
+      var teacher = this.teacher;
 
-      let constraints = this.get('constraints');
+      let constraints = this.constraints;
       let values = {
         name: newSectionName,
         teacher: teacher,
@@ -128,10 +132,10 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      var currentUser = this.get('currentUser');
+      var currentUser = this.currentUser;
 
       if (typeof teacher === 'string') {
-        let users = this.get('users');
+        let users = this.users;
         let user = users.findBy('username', teacher);
         if (!user) {
           this.set('invalidTeacherUsername', true);
@@ -142,7 +146,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
       var sectionData = this.store.createRecord('section', {
         name: newSectionName,
-        organization: this.get('organization'),
+        organization: this.organization,
         createdBy: currentUser,
       });
 
@@ -152,7 +156,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       sectionData.save()
         .then((section) => {
           let name = section.get('name');
-          this.get('alert').showToast('success', `${name} created`, 'bottom-end', 3000, false, null);
+          this.alert.showToast('success', `${name} created`, 'bottom-end', 3000, false, null);
           that.set('createdSection', section);
           that.sendAction('toSectionInfo', section);
         })
@@ -163,7 +167,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     closeError: function (error) {
       $('.error-box').addClass('fadeOutRight');
-      Ember.run.later(() => {
+      later(() => {
         $('.error-box').remove();
       }, 500);
     },

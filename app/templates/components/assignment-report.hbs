@@ -2,36 +2,12 @@
     <p class="info-summary">{{summaryMessage}}</p>
     <table class="report rows values">
     <tr class="headers">
-      <th>{{toggle-control
-            classToAdd="sort-bar-item name"
-            onUpdate=(action "updateSortCriterion")
-            initialState=1
-            options=sortOptions.student
-            label="Student"
-            parentProp=sortCriterion
-            type="username"
-            activeType=sortCriterion.type}}
+      <th><ToggleControl @classToAdd="sort-bar-item name" @onUpdate={{action "updateSortCriterion"}} @initialState={{1}} @options={{sortOptions.student}} @label="Student" @parentProp={{sortCriterion}} @type="username" @activeType={{sortCriterion.type}} />
       </th>
       <th>
-        {{toggle-control
-            classToAdd="sort-bar-item revisions"
-            onUpdate=(action "updateSortCriterion")
-            initialState=0
-            options=sortOptions.revisionCount
-            label="Submissions"
-            type="count"
-            activeType=sortCriterion.type
-            }}
+        <ToggleControl @classToAdd="sort-bar-item revisions" @onUpdate={{action "updateSortCriterion"}} @initialState={{0}} @options={{sortOptions.revisionCount}} @label="Submissions" @type="count" @activeType={{sortCriterion.type}} />
       </th>
-      <th>{{toggle-control
-            classToAdd="sort-bar-item date"
-            onUpdate=(action "updateSortCriterion")
-            initialState=0
-            options=sortOptions.latestRevisionDate
-            label="Latest Revision"
-            type="latestRevision"
-            activeType=sortCriterion.type
-            }}
+      <th><ToggleControl @classToAdd="sort-bar-item date" @onUpdate={{action "updateSortCriterion"}} @initialState={{0}} @options={{sortOptions.latestRevisionDate}} @label="Latest Revision" @type="latestRevision" @activeType={{sortCriterion.type}} />
         </th>
     </tr>
     {{#each sortedReportItems as |item| }}

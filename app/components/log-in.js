@@ -1,4 +1,6 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import $ from 'jquery';
+import Component from '@ember/component';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
@@ -6,18 +8,18 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
 
-export default Ember.Component.extend(ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   classNames: ['login-page'],
   incorrectPassword: false,
   incorrectUsername: false,
   missingCredentials: false,
   postErrors: [],
 
-  oauthErrorMsg: function () {
-    if (this.get('oauthError') === 'emailUnavailable') {
+  oauthErrorMsg: computed('oauthError', function () {
+    if (this.oauthError === 'emailUnavailable') {
       return 'The provided email address is already associated with an existing account';
     }
-  }.property('oauthError'),
+  }),
 
   actions: {
     login: function () {
@@ -40,7 +42,7 @@ export default Ember.Component.extend(ErrorHandlingMixin, {
         username: usernameTrim,
         password: password,
       };
-      Ember.$.post({
+      $.post({
         url: '/auth/login',
         data: createUserData
       }).

@@ -1,14 +1,14 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   actions: {
     formatAnswers: function () {
-      this.get('uploadAnswers')();
+      this.uploadAnswers();
     },
 
     radioSelect: function (value) {

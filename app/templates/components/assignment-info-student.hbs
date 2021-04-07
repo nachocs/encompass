@@ -11,7 +11,7 @@
   </div>
   <div class="info-detail">
     <label>Class:</label>
-    <p>{{#link-to 'section' assignment.section.id}} {{assignment.section.name}}{{/link-to}}</p>
+    <p><LinkTo @route="section" @model={{assignment.section.id}}> {{assignment.section.name}}</LinkTo></p>
   </div>
 
   <div class="info-detail">
@@ -43,21 +43,14 @@
   {{/if}}
 </section>
 {{#each loadAnswerErrors as |error|}}
-  {{error-box error=error showDismiss=true resetError=(action "removeErrorFromArray" "loadAnswerErrors" error)}}
+  <ErrorBox @error={{error}} @showDismiss={{true}} @resetError={{action "removeErrorFromArray" "loadAnswerErrors" error}} />
 {{/each}}
 {{#if isResponding}}
-  {{answer-new store=store assignment=assignment toAnswerInfo="toAnswerInfo" cancelResponse=(action "cancelResponse") displayAnswer="displayAnswer"
-  section=section problem=problem
-  handleCreatedAnswer=(action "handleCreatedAnswer")
-  workspacesToUpdateIds=workspacesToUpdateIds
-  }}
+  <AnswerNew @store={{store}} @assignment={{assignment}} @toAnswerInfo="toAnswerInfo" @cancelResponse={{action "cancelResponse"}} @displayAnswer="displayAnswer" @section={{section}} @problem={{problem}} @handleCreatedAnswer={{action "handleCreatedAnswer"}} @workspacesToUpdateIds={{workspacesToUpdateIds}} />
   {{/if}}
 
 {{#if isRevising}}
-  {{answer-new store=store assignment=assignment isRevision=true priorAnswer=priorAnswer
-  section=section problem=problem toAnswerInfo="toAnswerInfo" cancelResponse=(action "cancelResponse") displayAnswer="displayAnswer"
-  handleCreatedAnswer=(action "handleCreatedAnswer") workspacesToUpdateIds=workspacesToUpdateIds
-  }}
+  <AnswerNew @store={{store}} @assignment={{assignment}} @isRevision={{true}} @priorAnswer={{priorAnswer}} @section={{section}} @problem={{problem}} @toAnswerInfo="toAnswerInfo" @cancelResponse={{action "cancelResponse"}} @displayAnswer="displayAnswer" @handleCreatedAnswer={{action "handleCreatedAnswer"}} @workspacesToUpdateIds={{workspacesToUpdateIds}} />
 {{/if}}
 {{#if showReviseButton}}
   <button class="primary-button revise" {{action 'reviseAssignmentResponse'}}>Revise</button>
@@ -88,7 +81,7 @@
       </section>
       <section class="past-answer-view">
         {{#if displayedAnswer}}
-          {{answer-info answer=displayedAnswer assignment=assignment problem=problem showHideButton=true}}
+          <AnswerInfo @answer={{displayedAnswer}} @assignment={{assignment}} @problem={{problem}} @showHideButton={{true}} />
         {{/if}}
       </section>
     </div>

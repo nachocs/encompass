@@ -1,14 +1,15 @@
-import Ember from 'ember';
+import $ from 'jquery';
+import Route from '@ember/routing/route';
 
 
 
 
 
 
-export default Ember.Route.extend({
+export default Route.extend({
 
   beforeModel: function () {
-    return Ember.$.get('/auth/logout'
+    return $.get('/auth/logout'
     )
       .then(() => {
         window.location.href = '/';

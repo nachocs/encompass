@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import { helper as buildHelper } from '@ember/component/helper';
 
 
 
 
 
 
-export default Ember.Helper.helper(function (setting) {
+export default buildHelper(function (setting) {
   if (setting[0] === "M") {
     return 'Just Me';
   } else if (setting[0] === "O") {

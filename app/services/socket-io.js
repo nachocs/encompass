@@ -1,6 +1,6 @@
 /*global io:false */
 /*global _:false */
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
@@ -8,18 +8,18 @@ import CurrentUserMixin from '../mixins/current_user_mixin';
 
 
 
-export default Ember.Service.extend(CurrentUserMixin, {
-  store: Ember.inject.service(),
-  alert: Ember.inject.service('sweet-alert'),
-  utils: Ember.inject.service('utility-methods'),
+export default Service.extend(CurrentUserMixin, {
+  store: service(),
+  alert: service('sweet-alert'),
+  utils: service('utility-methods'),
 
   init() {
     this._super(...arguments);
   },
 
   setupListeners() {
-    const socket = this.get('socket');
-    const utils = this.get('utils');
+    const socket = this.socket;
+    const utils = this.utils;
 
     if (!socket) {
       return;
@@ -28,7 +28,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
     socket.on('NEW_NOTIFICATION', (data) => {
       _.each(data, (val, key) => {
         if (val) {
-          this.get('store').pushPayload(
+          this.store.pushPayload(
             {
               [key]: val
             }
@@ -51,7 +51,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
             let subId = data.submissions[0]._id;
 
             if (subId) {
-              let newRevision = this.get('store').peekRecord('submission', subId);
+              let newRevision = this.store.peekRecord('submission', subId);
 
               if (newRevision) {
 
@@ -83,8 +83,8 @@ export default Ember.Service.extend(CurrentUserMixin, {
         doSetAsSeen
       }
       */
-      if (this.get('utils').isValidMongoId(data.notificationId)) {
-        let peeked = this.get('store').peekRecord('notification', data.notificationId);
+      if (this.utils.isValidMongoId(data.notificationId)) {
+        let peeked = this.store.peekRecord('notification', data.notificationId);
         if (!peeked) {
           return;
         }
@@ -92,7 +92,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
         let doSave = data.doTrash || data.doSetAsSeen;
 
         if (!doSave) {
-          this.get('store').unloadRecord(peeked);
+          this.store.unloadRecord(peeked);
           return;
         }
         if (data.doTrash) {
@@ -115,14 +115,14 @@ export default Ember.Service.extend(CurrentUserMixin, {
         return;
       }
 
-      let peeked = this.get('store').peekRecord(data.recordType, data.recordIdToClear);
+      let peeked = this.store.peekRecord(data.recordType, data.recordIdToClear);
 
       if (!peeked) {
         return;
       }
 
       if (recordType === 'response') {
-        this.get('store').peekAll('response-thread').forEach((thread) => {
+        this.store.peekAll('response-thread').forEach((thread) => {
           let responseIds = utils.getHasManyIds(thread, 'responses');
           let doesContainResponse = responseIds.includes(peeked.get('id'));
 
@@ -133,7 +133,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
         });
       }
 
-      this.get('store').unloadRecord(peeked);
+      this.store.unloadRecord(peeked);
 
 
     });
@@ -141,7 +141,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
       if (data) {
         let recordType = data.recordType;
 
-        this.get('store').pushPayload({
+        this.store.pushPayload({
           [recordType]: data.updatedRecord
         });
       }
@@ -175,7 +175,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
       let notificationType = ntf.notificationType;
       toastText = `You have received a ${notificationType} notification.`;
     }
-    this.get('alert').showToast('info', toastText, 'top-end', 3000, false, null);
+    this.alert.showToast('info', toastText, 'top-end', 3000, false, null);
     return;
   },
 
@@ -183,10 +183,10 @@ export default Ember.Service.extend(CurrentUserMixin, {
 
     let { notificationType } = ntf;
     let workspaceId = newResponseObj.workspace;
-    let newResponse = this.get('store').peekRecord('response', newResponseObj._id);
-    let submission = this.get('store').peekRecord('submission', newResponseObj.submission);
+    let newResponse = this.store.peekRecord('response', newResponseObj._id);
+    let submission = this.store.peekRecord('submission', newResponseObj.submission);
 
-    let responseCreatorId = this.get('utils').getBelongsToId(newResponse, 'createdBy');
+    let responseCreatorId = this.utils.getBelongsToId(newResponse, 'createdBy');
     let problemTitle;
     let studentIdentifier; // encUserId or pows username
     let studentDisplay;
@@ -210,7 +210,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
       } else {
 
         // create new thread
-        let newThread = this.get('store').createRecord('response-thread', {
+        let newThread = this.store.createRecord('response-thread', {
           threadType: 'submitter',
           uniqueIdentifier: workspaceId,
           workspaceName,
@@ -245,7 +245,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
         existingThread.get('responses').addObject(newResponse);
       } else {
         // create new approver thread
-        let newThread = this.get('store').createRecord('response-thread', {
+        let newThread = this.store.createRecord('response-thread', {
           threadType: 'approver',
           id: uniqueId,
           workspaceName,
@@ -262,7 +262,7 @@ export default Ember.Service.extend(CurrentUserMixin, {
   },
 
   findExistingResponseThread(threadType, uniqueIdentifier) {
-    let peekedResponseThreads = this.get('store').peekAll('response-thread').toArray();
+    let peekedResponseThreads = this.store.peekAll('response-thread').toArray();
     if (!peekedResponseThreads) {
       return;
     }

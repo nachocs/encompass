@@ -1,17 +1,18 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Component from '@ember/component';
 
 
 
 
 
 
-export default Ember.Component.extend({
+export default Component.extend({
   classNames: 'loading-elem',
 
   defaultMessage: 'Request in progress. Thank you for your patience!',
 
-  loadingText: function () {
-    return this.get('loadingMessage') || this.get('defaultMessage');
-  }.property('loadingMessage', 'defaultMessage'),
+  loadingText: computed('loadingMessage', 'defaultMessage', function () {
+    return this.loadingMessage || this.defaultMessage;
+  }),
 
 });

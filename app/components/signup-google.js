@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
@@ -7,7 +7,7 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 
 
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'signup-google',
   missingCredentials: false,
   noTermsAndConditions: false,
@@ -22,26 +22,26 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   actions: {
     submit: function () {
-      let organization = this.get('org');
-      const location = this.get('location');
-      const requestReason = this.get('requestReason');
+      let organization = this.org;
+      const location = this.location;
+      const requestReason = this.requestReason;
 
       if (!organization || !location || !requestReason) {
         this.set('missingCredentials', true);
         return;
       }
 
-      if (!this.get('agreedToTerms')) {
+      if (!this.agreedToTerms) {
         this.set('noTermsAndConditions', true);
         return;
       }
 
-      let user = this.get('currentUser');
+      let user = this.currentUser;
       let orgRequest;
 
       // make sure user did not type in existing org
       if (typeof organization === 'string') {
-        let orgs = this.get('organizations');
+        let orgs = this.organizations;
         let matchingOrg = orgs.findBy('name', organization);
         if (matchingOrg) {
           organization = matchingOrg;

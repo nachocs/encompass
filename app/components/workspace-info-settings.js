@@ -1,57 +1,59 @@
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 /*global _:false */
-import Ember from 'ember';
+import { alias, equal, gt } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: ['workspace-info-settings'],
-  alert: Ember.inject.service('sweet-alert'),
-  permissions: Ember.inject.service('workspace-permissions'),
-  utils: Ember.inject.service('utility-methods'),
+  alert: service('sweet-alert'),
+  permissions: service('workspace-permissions'),
+  utils: service('utility-methods'),
   selectedMode: null,
-  workspacePermissions: Ember.computed.alias('workspace.permissions'),
+  workspacePermissions: alias('workspace.permissions'),
   selectedLinkedAssignment: null,
   selectedAutoUpdateSetting: null,
   didLinkedAssignmentChange: false,
 
-  isParentWs: Ember.computed.equal('workspace.workspaceType', 'parent'),
-  hasChildWorkspaces: Ember.computed.gt('childWorkspaces.length', 0),
+  isParentWs: equal('workspace.workspaceType', 'parent'),
+  hasChildWorkspaces: gt('childWorkspaces.length', 0),
 
   didReceiveAttrs() {
     this._super(...arguments);
   },
 
-  doShowLinkedAssignment: function () {
-    return this.get('permissions').hasOwnerPrivileges(this.get('workspace')) && !this.get('isParentWs');
-  }.property('currentUser', 'isParentWs'),
+  doShowLinkedAssignment: computed('currentUser', 'isParentWs', function () {
+    return (
+      this.permissions.hasOwnerPrivileges(this.workspace) && !this.isParentWs
+    );
+  }),
 
-  initialOwnerItem: function () {
+  initialOwnerItem: computed('workspace.owner', function () {
     const owner = this.get('workspace.owner');
-    if (this.get('utils').isNonEmptyObject(owner)) {
+    if (this.utils.isNonEmptyObject(owner)) {
       return [owner.get('id')];
     }
     return [];
-  }.property('workspace.owner'),
+  }),
 
-  initialLinkedAssignmentItem: function () {
+  initialLinkedAssignmentItem: computed('linkedAssignment', function () {
     let linkedAssignmentId = this.get('linkedAssignment.id');
 
     if (linkedAssignmentId) {
       return [linkedAssignmentId];
     }
     return [];
-  }.property('linkedAssignment'),
+  }),
 
-  doShowChildWorkspaces: function () {
-    return this.get('permissions').hasOwnerPrivileges(this.get('workspace')) && this.get('isParentWs');
-  }.property('currentUser', 'isParentWs'),
+  doShowChildWorkspaces: computed('currentUser', 'isParentWs', function () {
+    return (
+      this.permissions.hasOwnerPrivileges(this.workspace) && this.isParentWs
+    );
+  }),
 
-  modes: function () {
+  modes: computed('currentUser.isAdmin', 'currentUser.isStudent', function () {
     const basic = ['private', 'org', 'public'];
 
     if (this.get('currentUser.isStudent') || !this.get('currentUser.isAdmin')) {
@@ -59,8 +61,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     }
 
     return ['private', 'org', 'public', 'internet'];
-
-  }.property('currentUser.isAdmin', 'currentUser.isStudent'),
+  }),
 
   yesNoMySelect: ['Yes', 'No'],
 
@@ -71,22 +72,27 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   actions: {
     editWorkspaceInfo() {
       this.set('isEditing', true);
-      let workspace = this.get('workspace');
+      let workspace = this.workspace;
       this.set('selectedMode', workspace.get('mode'));
 
-      let selectedAutoUpdateSetting = this.get('isParentWs') ? workspace.get('doAutoUpdateFromChildren') : workspace.get('doAllowSubmissionUpdates');
-      this.set('selectedAutoUpdateSetting', this.boolToYesNo(selectedAutoUpdateSetting));
+      let selectedAutoUpdateSetting = this.isParentWs
+        ? workspace.get('doAutoUpdateFromChildren')
+        : workspace.get('doAllowSubmissionUpdates');
+      this.set(
+        'selectedAutoUpdateSetting',
+        this.boolToYesNo(selectedAutoUpdateSetting)
+      );
     },
 
     setOwner(val, $item) {
-      const workspace = this.get('workspace');
+      const workspace = this.workspace;
 
       if (!val) {
         return;
       }
 
-      const user = this.get('store').peekRecord('user', val);
-      if (this.get('utils').isNonEmptyObject(user)) {
+      const user = this.store.peekRecord('user', val);
+      if (this.utils.isNonEmptyObject(user)) {
         workspace.set('owner', user);
         let ownerOrg = user.get('organization');
         let ownerOrgName = ownerOrg.get('name');
@@ -97,15 +103,23 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
         if (workspaceOrgId) {
           if (workspaceOrgId !== ownerOrgId) {
-            this.get('alert').showModal('question', `Do you want to change this workspace's organization`, `This owner belongs to ${ownerOrgName} but this workspace belongs to ${workspaceOrgName}`, 'Yes, change it', 'No, keep it').then((results) => {
-              if (results.value) {
-                workspace.set('organization', ownerOrg);
-                this.set('saveOwner', user);
-              } else {
-                workspace.set('organization', workspaceOrg);
-                this.set('saveOwner', user);
-              }
-            });
+            this.alert
+              .showModal(
+                'question',
+                `Do you want to change this workspace's organization`,
+                `This owner belongs to ${ownerOrgName} but this workspace belongs to ${workspaceOrgName}`,
+                'Yes, change it',
+                'No, keep it'
+              )
+              .then((results) => {
+                if (results.value) {
+                  workspace.set('organization', ownerOrg);
+                  this.set('saveOwner', user);
+                } else {
+                  workspace.set('organization', workspaceOrg);
+                  this.set('saveOwner', user);
+                }
+              });
           } else {
             workspace.set('organization', ownerOrg);
             this.set('saveOwner', user);
@@ -132,7 +146,7 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let assignment = this.get('store').peekRecord('assignment', val);
+      let assignment = this.store.peekRecord('assignment', val);
 
       if (assignment) {
         if (assignment.get('id') !== linkedAssignmentId) {
@@ -143,20 +157,28 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     checkWorkspace: function () {
-      let workspace = this.get('workspace');
+      let workspace = this.workspace;
       let workspaceOrg = workspace.get('organization.content');
       let workspaceOwner = workspace.get('owner');
       let ownerOrg = workspaceOwner.get('organization');
       let ownerOrgName = ownerOrg.get('name');
-      let mode = this.get('selectedMode');
+      let mode = this.selectedMode;
       workspace.set('mode', mode);
       if (mode === 'org' && workspaceOrg === null) {
-        this.get('alert').showModal('info', `Do you want to make this workspace visibile to ${ownerOrgName}`, `Everyone in this organization will be able to see this workspace`, 'Yes', 'No').then((results) => {
-          if (results.value) {
-            workspace.set('organization', ownerOrg);
-            this.send('saveWorkspace');
-          }
-        });
+        this.alert
+          .showModal(
+            'info',
+            `Do you want to make this workspace visibile to ${ownerOrgName}`,
+            `Everyone in this organization will be able to see this workspace`,
+            'Yes',
+            'No'
+          )
+          .then((results) => {
+            if (results.value) {
+              workspace.set('organization', ownerOrg);
+              this.send('saveWorkspace');
+            }
+          });
       } else {
         this.send('saveWorkspace');
       }
@@ -164,9 +186,9 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     saveWorkspace: function () {
       //only make put request if there were changes - works but not for owner
-      let workspace = this.get('workspace');
+      let workspace = this.workspace;
 
-      let updateSetting = this.get('selectedAutoUpdateSetting');
+      let updateSetting = this.selectedAutoUpdateSetting;
 
       let updateSettingBool;
 
@@ -177,29 +199,52 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
 
       if (typeof updateSettingBool === 'boolean') {
-        let updateProp = this.get('isParentWs') ? 'doAutoUpdateFromChildren' : 'doAllowSubmissionUpdates';
+        let updateProp = this.isParentWs
+          ? 'doAutoUpdateFromChildren'
+          : 'doAllowSubmissionUpdates';
 
         if (updateSettingBool !== workspace.get(updateProp)) {
           workspace.set(updateProp, updateSettingBool);
         }
       }
 
-      if (this.get('didLinkedAssignmentChange')) {
-        workspace.set('linkedAssignment', this.get('selectedLinkedAssignment'));
+      if (this.didLinkedAssignmentChange) {
+        workspace.set('linkedAssignment', this.selectedLinkedAssignment);
       }
 
-      if (workspace.get('hasDirtyAttributes') || this.get('saveOwner') || this.get('didLinkedAssignmentChange')) {
-        let workspace = this.get('workspace');
-        workspace.save().then((res) => {
-          this.get('alert').showToast('success', 'Workspace Updated', 'bottom-end', 3000, null, false);
-          this.set('isEditing', false);
-          this.set('saveOwner', null);
-          this.set('didLinkedAssignmentChange', false);
-        }).catch((err) => {
-          this.handleErrors(err, 'updateRecordErrors', workspace);
-        });
+      if (
+        workspace.get('hasDirtyAttributes') ||
+        this.saveOwner ||
+        this.didLinkedAssignmentChange
+      ) {
+        let workspace = this.workspace;
+        workspace
+          .save()
+          .then((res) => {
+            this.alert.showToast(
+              'success',
+              'Workspace Updated',
+              'bottom-end',
+              3000,
+              null,
+              false
+            );
+            this.set('isEditing', false);
+            this.set('saveOwner', null);
+            this.set('didLinkedAssignmentChange', false);
+          })
+          .catch((err) => {
+            this.handleErrors(err, 'updateRecordErrors', workspace);
+          });
       } else {
-        this.get('alert').showToast('info', 'No Changes to Save', 'bottom-start', 3000, false, null);
+        this.alert.showToast(
+          'info',
+          'No Changes to Save',
+          'bottom-start',
+          3000,
+          false,
+          null
+        );
         this.set('isEditing', false);
       }
     },
@@ -210,42 +255,60 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     updateWithExistingWork() {
-      _.each(['wereNoAnswersToUpdate', 'updateErrors', 'addedSubmissions', 'missingLinkedAssignment', 'serverErrors', 'missingChildWorkspaces'], (prop) => {
-        if (this.get(prop)) {
-          this.set(prop, null);
+      _.each(
+        [
+          'wereNoAnswersToUpdate',
+          'updateErrors',
+          'addedSubmissions',
+          'missingLinkedAssignment',
+          'serverErrors',
+          'missingChildWorkspaces',
+        ],
+        (prop) => {
+          if (this.get(prop)) {
+            this.set(prop, null);
+          }
         }
-      });
+      );
 
-      let isParentUpdate = this.get('isParentWs');
+      let isParentUpdate = this.isParentWs;
 
-      if (!this.get('workspace')) {
+      if (!this.workspace) {
         return;
       }
 
-      if (!this.get('linkedAssignment') && !isParentUpdate) {
+      if (!this.linkedAssignment && !isParentUpdate) {
         this.set('missingLinkedAssignment', true);
         return;
       }
 
-      if (isParentUpdate && !this.get('hasChildWorkspaces')) {
+      if (isParentUpdate && !this.hasChildWorkspaces) {
         return this.set('missingChildWorkspaces', true);
       }
 
       this.set('isUpdateRequestInProgress', true);
 
-      let newUpdateRequest = this.get('store').createRecord('updateWorkspaceRequest', {
-        workspace: this.get('workspace'),
-        linkedAssignment: this.get('linkedAssignment'),
-        createdBy: this.get('currentUser'),
-        isParentUpdate: this.get('isParentWs'),
+      let newUpdateRequest = this.store.createRecord('updateWorkspaceRequest', {
+        workspace: this.workspace,
+        linkedAssignment: this.linkedAssignment,
+        createdBy: this.currentUser,
+        isParentUpdate: this.isParentWs,
       });
-      newUpdateRequest.save()
+      newUpdateRequest
+        .save()
         .then((results) => {
           this.set('isUpdateRequestInProgress', false);
 
           if (isParentUpdate) {
             if (results.get('wasNoDataToUpdate') === true) {
-              this.get('alert').showToast('info', 'Workspace Up to Date', 'bottom-start', 3000, false, null);
+              this.alert.showToast(
+                'info',
+                'Workspace Up to Date',
+                'bottom-start',
+                3000,
+                false,
+                null
+              );
               return;
             } else {
               let createdParentData = results.get('createdParentData');
@@ -256,16 +319,29 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
               this.set('updatedParentData', updatedParentData);
 
               let msg = 'Successfully updated parent workspace';
-              return this.get('alert').showToast('success', msg, 'bottom-start', 3000, false, null);
-
+              return this.alert.showToast(
+                'success',
+                msg,
+                'bottom-start',
+                3000,
+                false,
+                null
+              );
             }
           }
 
           if (results.get('wereNoAnswersToUpdate') === true) {
-            this.get('alert').showToast('info', 'Workspace Up to Date', 'bottom-start', 3000, false, null);
+            this.alert.showToast(
+              'info',
+              'Workspace Up to Date',
+              'bottom-start',
+              3000,
+              false,
+              null
+            );
             return;
           }
-          if (this.get('utils').isNonEmptyArray(results.get('updateErrors'))) {
+          if (this.utils.isNonEmptyArray(results.get('updateErrors'))) {
             this.set('updateErrors', results.get('updateErrors'));
             return;
           }
@@ -276,13 +352,19 @@ export default Ember.Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
             if (count === 1) {
               msg = 'Added 1 new submission';
             }
-            return this.get('alert').showToast('success', msg, 'bottom-start', 3000, false, null);
+            return this.alert.showToast(
+              'success',
+              msg,
+              'bottom-start',
+              3000,
+              false,
+              null
+            );
           }
-
         })
         .catch((err) => {
           this.handleErrors(err, 'serverErrors');
         });
     },
-  }
+  },
 });

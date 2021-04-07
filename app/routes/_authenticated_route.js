@@ -1,7 +1,7 @@
-import Ember from "ember";
+import Route from '@ember/routing/route';
 import MtAuthMixin from "../mixins/mt_auth_mixin";
 
-export default Ember.Route.extend(MtAuthMixin, {
+export default Route.extend(MtAuthMixin, {
   beforeModel: function () {
     this._super.apply(this, arguments);
     this.authenticate();
@@ -10,7 +10,7 @@ export default Ember.Route.extend(MtAuthMixin, {
     //not crazy that this is duplicated here and in ApplicationRoute
     var user = this.modelFor("application");
     if (!user.get("isAuthenticated")) {
-      this.get("store").unloadAll();
+      this.store.unloadAll();
       this.transitionTo("auth.login");
     } else if (
       user.get("email") &&

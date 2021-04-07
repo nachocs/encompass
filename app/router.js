@@ -1,15 +1,10 @@
-import Ember from 'ember';
-import config from './config/environment';
+import EmberRouter from '@ember/routing/router';
+import config from 'encompass/config/environment';
 
-
-
-
-
-
-const Router = Ember.Router.extend({
-  location: config.locationType,
-  rootURL: config.rootURL
-});
+export default class Router extends EmberRouter {
+  location = config.locationType;
+  rootURL = config.rootURL;
+}
 
 Router.map(function () {
   // INDEX HOME-PAGE
@@ -113,5 +108,3 @@ Router.map(function () {
   this.route("unconfirmed");
   this.route("unauthorized");
 });
-
-export default Router;

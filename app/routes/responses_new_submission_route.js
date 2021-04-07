@@ -1,9 +1,11 @@
-import Ember from 'ember';
+import { resolve, hash } from 'rsvp';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import ConfirmLeavingRoute from './_confirm_leaving_route';
 
 
-export default Ember.Route.extend(ConfirmLeavingRoute, {
-  utils: Ember.inject.service('utility-methods'),
+export default Route.extend(ConfirmLeavingRoute, {
+  utils: service('utility-methods'),
 
   renderTemplate: function (controller, model) {
     this.render('responses/response');
@@ -13,18 +15,18 @@ export default Ember.Route.extend(ConfirmLeavingRoute, {
   beforeModel(transition) {
     let workspaceId = transition.queryParams.workspaceId;
 
-    if (this.get('utils').isValidMongoId(workspaceId)) {
-      this.set('workspace', this.get('store').peekRecord('workspace', workspaceId));
+    if (this.utils.isValidMongoId(workspaceId)) {
+      this.set('workspace', this.store.peekRecord('workspace', workspaceId));
     }
 
   },
   resolveWorkspace(workspace, submission) {
     if (workspace) {
-      return Ember.RSVP.resolve(workspace);
+      return resolve(workspace);
     }
     let wsIds = submission.hasMany('workspaces').ids();
     let wsId = wsIds.get('firstObject');
-    return this.get('store').findRecord('workspace', wsId);
+    return this.store.findRecord('workspace', wsId);
 
     // in current structure do submissions ever have multiple workspaces?
   },
@@ -32,15 +34,15 @@ export default Ember.Route.extend(ConfirmLeavingRoute, {
     // if creator of submission is enc user, they should always be in store
     // since to get here you have to click respond from that user's submission
     let encUserId = submission.get('creator.studentId');
-    if (this.get('utils').isValidMongoId(encUserId)) {
-      return this.get('store').findRecord('user', encUserId);
+    if (this.utils.isValidMongoId(encUserId)) {
+      return this.store.findRecord('user', encUserId);
     }
     // if creator of submission is not enc user (i.e. old PoWs user)
     // set recipient as either the first feedbackAuthorizer or the owner of workspace
     let firstApproverId = workspace.get('feedbackAuthorizers.firstObject');
 
-    if (this.get('utils').isValidMongoId(firstApproverId)) {
-      return this.get('store').findRecord('user', firstApproverId);
+    if (this.utils.isValidMongoId(firstApproverId)) {
+      return this.store.findRecord('user', firstApproverId);
     }
     return workspace.get('owner');
 
@@ -52,13 +54,13 @@ export default Ember.Route.extend(ConfirmLeavingRoute, {
     let isDraft = false;
     let draftId = null;
 
-    let allResponses = this.get('store').peekAll('response');
+    let allResponses = this.store.peekAll('response');
     let user = this.modelFor('application');
 
-    return this.get('store').findRecord('submission', params.submission_id)
+    return this.store.findRecord('submission', params.submission_id)
       .then((sub) => {
         submission = sub;
-        return this.resolveWorkspace(this.get('workspace'), submission);
+        return this.resolveWorkspace(this.workspace, submission);
       })
       .then((workspace) => {
         let associatedResponses = allResponses.filter((response) => {
@@ -74,14 +76,14 @@ export default Ember.Route.extend(ConfirmLeavingRoute, {
         });
 
         if (isDraft) {
-          return Ember.RSVP.hash({
+          return hash({
             isDraft: true,
             submissionId: submission.get('id'),
             responseId: draftId,
           });
         }
 
-        return Ember.RSVP.hash({
+        return hash({
           submission,
           workspace,
           submissions: workspace.get('submissions'),
@@ -97,7 +99,7 @@ export default Ember.Route.extend(ConfirmLeavingRoute, {
         }
         let studentSubmissions = hash.submissions.filterBy('student', hash.submission.get('student'));
 
-        let response = this.get('store').createRecord('response', {
+        let response = this.store.createRecord('response', {
           submission: hash.submission,
           workspace: hash.workspace,
           recipient: hash.recipient,

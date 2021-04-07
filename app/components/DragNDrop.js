@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import Namespace from '@ember/application/namespace';
 import { App as Encompass } from '../app';
 
 
@@ -6,7 +6,7 @@ import { App as Encompass } from '../app';
 
 
 
-export default Ember.Namespace.create();
+export default Namespace.create();
 
 
 Encompass.DragNDrop.cancel = function (event) {
