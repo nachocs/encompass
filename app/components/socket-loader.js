@@ -1,11 +1,7 @@
+import Component from '@ember/component';
+import { observer } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import Component from '@ember/component';
-
-
-
-
-
 
 export default Component.extend({
   socketIo: service('socket-io'),
@@ -27,7 +23,6 @@ export default Component.extend({
       user.set('socketId', socketId);
       user.save();
     }
-
   }),
 
   socketId: alias('socketIo.socket.id'),

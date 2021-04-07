@@ -1,11 +1,6 @@
-import { computed } from '@ember/object';
 /*global _:false */
 import Component from '@ember/component';
-
-
-
-
-
+import { computed } from '@ember/object';
 
 export default Component.extend({
   classNames: ['radio-group-item'],
@@ -20,6 +15,6 @@ export default Component.extend({
   actions: {
     onClick(val) {
       this.onClick(val);
-    }
-  }
+    },
+  },
 });

@@ -1,12 +1,7 @@
-import { computed } from '@ember/object';
 /*global _:false */
 import Component from '@ember/component';
+import { computed } from '@ember/object';
 import $ from 'jquery';
-
-
-
-
-
 
 export default Component.extend({
   elementId: 'submission-viewer-list',
@@ -16,15 +11,19 @@ export default Component.extend({
     this._super(...arguments);
   },
 
-  answersSelectedHash: computed('answers.[]', 'selectedAnswers.[]', function () {
-    let hash = {};
+  answersSelectedHash: computed(
+    'answers.[]',
+    'selectedAnswers.[]',
+    function () {
+      let hash = {};
 
-    this.answers.forEach((answer) => {
-      let isSelected = this.selectedAnswers.includes(answer);
-      hash[answer.get('id')] = isSelected;
-    });
-    return hash;
-  }),
+      this.answers.forEach((answer) => {
+        let isSelected = this.selectedAnswers.includes(answer);
+        hash[answer.get('id')] = isSelected;
+      });
+      return hash;
+    }
+  ),
 
   actions: {
     onSelect: function (answer, isChecked) {
@@ -33,15 +32,15 @@ export default Component.extend({
     superScroll: function () {
       //should only show scroll option after the user scrolls a little
       if (!this.scrollBottom) {
-        $("html, body").animate({
-          scrollTop: 0
+        $('html, body').animate({
+          scrollTop: 0,
         });
       } else {
-        $("html, body").animate({
-          scrollTop: $(document).height() - $(window).height()
+        $('html, body').animate({
+          scrollTop: $(document).height() - $(window).height(),
         });
       }
       this.set('scrollBottom', !this.scrollBottom);
     },
-  }
+  },
 });

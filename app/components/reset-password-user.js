@@ -16,7 +16,7 @@ export default Component.extend(ErrorHandlingMixin, {
     return this.password === this.confirmPassword;
   }),
 
-  isShowingPassword: computed(function () {
+  isShowingPassword: computed('showingPassword', function () {
     var showing = this.showingPassword;
     return showing;
   }),
