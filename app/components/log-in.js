@@ -1,14 +1,10 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
 import $ from 'jquery';
-import Component from '@ember/component';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
 export default Component.extend(ErrorHandlingMixin, {
+  tagName: '',
   classNames: ['login-page'],
   incorrectPassword: false,
   incorrectUsername: false,
@@ -44,9 +40,9 @@ export default Component.extend(ErrorHandlingMixin, {
       };
       $.post({
         url: '/auth/login',
-        data: createUserData
-      }).
-        then((res) => {
+        data: createUserData,
+      })
+        .then((res) => {
           if (res.message === 'Incorrect password') {
             that.set('incorrectPassword', true);
           } else if (res.message === 'Incorrect username') {
@@ -61,13 +57,17 @@ export default Component.extend(ErrorHandlingMixin, {
     },
 
     resetErrors() {
-      const errors = ['incorrectUsername', 'incorrectPassword', 'missingCredentials'];
+      const errors = [
+        'incorrectUsername',
+        'incorrectPassword',
+        'missingCredentials',
+      ];
 
       for (let error of errors) {
         if (this.get(error)) {
           this.set(error, false);
         }
       }
-    }
-  }
+    },
+  },
 });

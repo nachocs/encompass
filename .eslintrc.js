@@ -22,6 +22,11 @@ module.exports = {
   rules: {
     'no-unused-vars': 'warn',
     'no-console': 'warn',
+    'ember/no-classic-classes': 'warn',
+    'ember/no-classic-components': 'warn',
+    'ember/no-mixins': 'warn',
+    'ember/no-jquery': 'warn',
+    'ember/no-actions-hash': 'warn',
   },
   globals: {
     Promise: false,
