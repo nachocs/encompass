@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
+import { computed, action } from '@ember/object';
 import $ from 'jquery';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
@@ -17,57 +17,52 @@ export default Component.extend(ErrorHandlingMixin, {
     }
   }),
 
-  actions: {
-    login: function () {
-      var that = this;
-      var username = that.get('username');
-      var usernameTrim;
-      if (username) {
-        usernameTrim = username.trim();
-      } else {
-        usernameTrim = '';
-      }
-      var password = that.get('password');
+  @action
+  login() {
+    const username = this.get('username').trim();
+    const password = this.get('password');
 
-      if (!usernameTrim || !password) {
-        that.set('missingCredentials', true);
-        return;
-      }
+    if (!username || !password) {
+      this.set('missingCredentials', true);
+      return;
+    }
 
-      var createUserData = {
-        username: usernameTrim,
-        password: password,
-      };
-      $.post({
-        url: '/auth/login',
-        data: createUserData,
-      })
-        .then((res) => {
-          if (res.message === 'Incorrect password') {
-            that.set('incorrectPassword', true);
-          } else if (res.message === 'Incorrect username') {
-            that.set('incorrectUsername', true);
-          } else {
-            that.sendAction('toHome');
-          }
-        })
-        .catch((err) => {
-          this.handleErrors(err, 'postErrors');
-        });
-    },
-
-    resetErrors() {
-      const errors = [
-        'incorrectUsername',
-        'incorrectPassword',
-        'missingCredentials',
-      ];
-
-      for (let error of errors) {
-        if (this.get(error)) {
-          this.set(error, false);
+    const createUserData = {
+      username,
+      password,
+    };
+    $.post({
+      url: 'http://localhost:8080/auth/login',
+      data: createUserData,
+    })
+      .then((res) => {
+        if (res.message === 'Incorrect password') {
+          this.set('incorrectPassword', true);
+        } else if (res.message === 'Incorrect username') {
+          this.set('incorrectUsername', true);
+        } else {
+          console.log(res);
+          this.sendAction('toHome');
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        this.handleErrors(err, 'postErrors');
+      });
+  },
+
+  @action
+  resetErrors() {
+    const errors = [
+      'incorrectUsername',
+      'incorrectPassword',
+      'missingCredentials',
+    ];
+
+    for (let error of errors) {
+      if (this.get(error)) {
+        this.set(error, false);
       }
-    },
+    }
   },
 });

@@ -4,7 +4,7 @@
 
   <form class="form-signin">
     <div class="auth-form-input">
-      {{#if missingCredentials}}
+      {{#if this.missingCredentials}}
       <ErrorBox @error="Incorrect username or password" @showDismiss={{true}} />
       {{/if}}
 
@@ -22,12 +22,12 @@
       <Input class="form-control" @name="password" @id="password" required={{true}} @type="password" @value={{password}}
         {{on "key-down" this.resetErrors}} />
 
-      {{#if incorrectPassword}}
+      {{#if this.incorrectPassword}}
       <ErrorBox @error="Incorrect Password" @showDismiss={{true}} />
       {{/if}}
 
       {{#if oauthErrorMsg}}
-      <ErrorBox @error={{oauthErrorMsg}} @showDismiss={{true}} />
+      <ErrorBox @error={{this.oauthErrorMsg}} @showDismiss={{true}} />
       {{/if}}
 
     </div>
