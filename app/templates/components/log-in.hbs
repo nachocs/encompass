@@ -1,6 +1,6 @@
 <div class="login-box">
 
-  <img src="images/logo-encompass.png" class="encompass-logo" alt="encompass logo">
+  <img src="../assets/images/logo-encompass.gif" class="encompass-logo" alt="encompass logo">
 
   <form class="form-signin">
     <div class="auth-form-input">
@@ -9,31 +9,31 @@
       {{/if}}
 
       <label for="username">Username:</label>
-      <Input class="form-control" @name="username" @id="username" required={{true}} @type="text" @value={{username}}
+      <Input class="form-control" @name="username" @id="username" required={{true}} @type="text" @value={{this.username}}
         {{on "key-down" this.resetErrors}} />
 
-      {{#if incorrectUsername}}
+      {{#if this.incorrectUsername}}
       <ErrorBox @error="Incorrect Username" @showDismiss={{true}} />
       {{/if}}
     </div>
 
     <div class="auth-form-input">
       <label for="password">Password:</label>
-      <Input class="form-control" @name="password" @id="password" required={{true}} @type="password" @value={{password}}
+      <Input class="form-control" @name="password" @id="password" required={{true}} @type="password" @value={{this.password}}
         {{on "key-down" this.resetErrors}} />
 
       {{#if this.incorrectPassword}}
       <ErrorBox @error="Incorrect Password" @showDismiss={{true}} />
       {{/if}}
 
-      {{#if oauthErrorMsg}}
+      {{#if this.oauthErrorMsg}}
       <ErrorBox @error={{this.oauthErrorMsg}} @showDismiss={{true}} />
       {{/if}}
 
     </div>
 
     <button class="auth-button" type="submit" {{action 'login' }}>Log In</button>
-    {{#each postErrors as |error|}}
+    {{#each this.postErrors as |error|}}
     <ErrorBox @error={{error}} @showDismiss={{true}} />
     {{/each}}
   </form>
