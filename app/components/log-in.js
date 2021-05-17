@@ -16,6 +16,19 @@ export default Component.extend(ErrorHandlingMixin, {
       return 'The provided email address is already associated with an existing account';
     }
   }),
+  resetErrors() {
+    const errors = [
+      'incorrectUsername',
+      'incorrectPassword',
+      'missingCredentials',
+    ];
+
+    for (let error of errors) {
+      if (this.get(error)) {
+        this.set(error, false);
+      }
+    }
+  },
 
   actions: {
     login: function () {
@@ -39,7 +52,7 @@ export default Component.extend(ErrorHandlingMixin, {
         password: password,
       };
       $.post({
-        url: '/auth/login',
+        url: 'http://localhost:8080/auth/login',
         data: createUserData,
       })
         .then((res) => {
@@ -54,20 +67,6 @@ export default Component.extend(ErrorHandlingMixin, {
         .catch((err) => {
           this.handleErrors(err, 'postErrors');
         });
-    },
-
-    resetErrors() {
-      const errors = [
-        'incorrectUsername',
-        'incorrectPassword',
-        'missingCredentials',
-      ];
-
-      for (let error of errors) {
-        if (this.get(error)) {
-          this.set(error, false);
-        }
-      }
     },
   },
 });

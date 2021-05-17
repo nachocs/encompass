@@ -7,25 +7,24 @@
   * @since 1.0.0
   * @todo Manage the current user without setting on the Encompass object itself.
   */
-import { inject as service } from '@ember/service';
-
 import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 import MtAuthMixin from '../mixins/mt_auth_mixin';
 
-
-
-
-
-
-export default Route.extend(MtAuthMixin, { //the application route can't require authentication since it's getting the user
+export default Route.extend(MtAuthMixin, {
+  //the application route can't require authentication since it's getting the user
   userNtfs: service('user-ntfs'),
 
   beforeModel: function () {
     let that = this;
-    window.addEventListener('touchstart', function onFirstTouch() {
-      that.controller.set('isTouchScreen', true);
-      window.removeEventListener('touchstart', onFirstTouch, false);
-    }, false);
+    window.addEventListener(
+      'touchstart',
+      function onFirstTouch() {
+        that.controller.set('isTouchScreen', true);
+        window.removeEventListener('touchstart', onFirstTouch, false);
+      },
+      false
+    );
   },
 
   model: function () {
@@ -41,7 +40,13 @@ export default Route.extend(MtAuthMixin, { //the application route can't require
     if (user.get('isAuthenticated')) {
       this.userNtfs.setupProperties(user);
     }
-    const allowedPaths = ['auth.reset', 'auth.confirm', 'auth.forgot', 'auth.login', 'auth.signup'];
+    const allowedPaths = [
+      'auth.reset',
+      'auth.confirm',
+      'auth.forgot',
+      'auth.login',
+      'auth.signup',
+    ];
     const targetPath = transition.targetName;
 
     if (allowedPaths.includes(targetPath)) {
@@ -67,14 +72,14 @@ export default Route.extend(MtAuthMixin, { //the application route can't require
       }
       return this.render(modalName, {
         into: 'application',
-        outlet: 'modal'
+        outlet: 'modal',
       });
     },
 
     closeModal: function () {
       return this.disconnectOutlet({
         outlet: 'modal',
-        parentView: 'application'
+        parentView: 'application',
       });
     },
 
@@ -84,14 +89,14 @@ export default Route.extend(MtAuthMixin, { //the application route can't require
       }
       return this.render(panelName, {
         into: 'application',
-        outlet: 'modal'
+        outlet: 'modal',
       });
     },
 
     closePanel: function () {
       return this.disconnectOutlet({
         outlet: 'modal',
-        parentView: 'application'
+        parentView: 'application',
       });
     },
 
@@ -104,7 +109,6 @@ export default Route.extend(MtAuthMixin, { //the application route can't require
 
     reloadPage: function () {
       window.location.reload();
-    }
-
-  }
+    },
+  },
 });

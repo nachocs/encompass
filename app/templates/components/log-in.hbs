@@ -9,7 +9,7 @@
       {{/if}}
 
       <label for="username">Username:</label>
-      <Input class="form-control" @name="username" @id="username" required={{true}} @type="text" @value={{username}}
+      <Input class="form-control" @name="username" @id="username" required={{true}} type="text" value={{username}}
         {{on "key-down" this.resetErrors}} />
 
       {{#if incorrectUsername}}
@@ -19,7 +19,7 @@
 
     <div class="auth-form-input">
       <label for="password">Password:</label>
-      <Input class="form-control" @name="password" @id="password" required={{true}} @type="password" @value={{password}}
+      <Input class="form-control" @name="password" @id="password" required={{true}} type="password" value={{password}}
         {{on "key-down" this.resetErrors}} />
 
       {{#if incorrectPassword}}
