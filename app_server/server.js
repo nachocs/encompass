@@ -13,7 +13,6 @@ const socketListeners = require('./sockets');
 
 require('dotenv').config();
 
-
 //REQUIRE API
 const api = require('./datasource/api');
 const auth = require('./datasource/api/auth');
@@ -36,32 +35,32 @@ const server = express();
 let port = nconf.get('port');
 let dbConf = nconf.get('database');
 
-console.log('process.env.PORT: ',process.env.PORT);
-console.log('process.env.MONGO_URL: ',process.env.MONGO_URL);
+console.log('process.env.PORT: ', process.env.PORT);
+console.log('process.env.MONGO_URL: ', process.env.MONGO_URL);
 
-switch(process.env.NODE_ENV) {
+switch (process.env.NODE_ENV) {
   case 'test':
-    console.log("NODE_ENV == test");
+    console.log('NODE_ENV == test');
     port = nconf.get('testPort');
     dbConf.name = nconf.get('testDBName');
     break;
   case 'seed':
-    console.log("NODE_ENV == seed");
+    console.log('NODE_ENV == seed');
     port = nconf.get('testPort');
     dbConf.name = nconf.get('seedDBName');
     break;
   case 'staging':
-    console.log("NODE_ENV == staging");
+    console.log('NODE_ENV == staging');
     port = process.env.PORT;
     dbConf.name = process.env.DB_NAME;
     break;
   case 'production':
-    console.log("NODE_ENV == production");
+    console.log('NODE_ENV == production');
     port = process.env.PORT;
     dbConf.name = process.env.DB_NAME;
     break;
   case 'development':
-    console.log("NODE_ENV == development");
+    console.log('NODE_ENV == development');
     port = nconf.get('devPort');
     dbConf.name = nconf.get('devDBName');
     break;
@@ -74,7 +73,7 @@ switch(process.env.NODE_ENV) {
 console.log(`database name: '${dbConf.name}'`);
 
 mongoose.connect(`mongodb://${dbConf.host}:27017/${dbConf.name}`, {
-  useMongoClient: true
+  useMongoClient: true,
 });
 
 console.info(`process.env.NODE_ENV: ${process.env.NODE_ENV}`);
@@ -99,13 +98,24 @@ db.on('error', function (err) {
   throw new Error(err);
 });
 
-
 //MIDDLEWARE
 server.use(logger('dev'));
-server.use(express.json({limit: '100000kb'}));
-server.use(express.urlencoded({
-  extended: false
-}));
+server.use(express.json({ limit: '100000kb' }));
+server.use(
+  express.urlencoded({
+    extended: false,
+  })
+);
+server.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, OPTIONS');
+  next();
+});
 server.use(cookieParser());
 server.use(express.static(expressPath.join(__dirname, 'public')));
 server.use(path.prep());
@@ -123,9 +133,9 @@ const upload = multer({
 const PDFUpload = multer({
   storage: multer.diskStorage({
     destination: multerMw.buildDestination,
-    filename: multerMw.filename
+    filename: multerMw.filename,
   }),
-    fileFilter: multerMw.fileFilter
+  fileFilter: multerMw.fileFilter,
 });
 
 // // IMAGE UPLOAD
@@ -153,8 +163,12 @@ server.get('/api/vmt/rooms/:id', path.validateId(), api.get.vmtRoom);
 //ALL GET REQUESTS
 server.get('/api/users', api.get.users);
 server.get('/api/users/:id', path.validateId(), api.get.user);
-server.get('/api/workspaces', paginate.middleware(20,100), api.get.workspaces);
-server.get({ path: '/api/workspaces/:id', version: '0.0.1' }, path.validateId(), fixed.workspace);
+server.get('/api/workspaces', paginate.middleware(20, 100), api.get.workspaces);
+server.get(
+  { path: '/api/workspaces/:id', version: '0.0.1' },
+  path.validateId(),
+  fixed.workspace
+);
 server.get('/api/workspaces/:id', path.validateId(), api.get.workspace);
 server.get('/api/folders', api.get.folders);
 server.get('/api/folders/:id', path.validateId(), api.get.folder);
@@ -165,13 +179,13 @@ server.get('/api/submissions', api.get.submissions);
 server.get('/api/submissions/:id', path.validateId(), api.get.submission);
 server.get('/api/selections', api.get.selections);
 server.get('/api/selections/:id', path.validateId(), api.get.selection);
-server.get('/api/comments', paginate.middleware(100,100), api.get.comments);
+server.get('/api/comments', paginate.middleware(100, 100), api.get.comments);
 server.get('/api/comments/:id', path.validateId(), api.get.comment);
 server.get('/api/responses', api.get.responses);
 server.get('/api/responses/:id', path.validateId(), api.get.response);
 server.get('/api/taggings', api.get.taggings);
 server.get('/api/taggings/:id', path.validateId(), api.get.tagging);
-server.get('/api/problems', paginate.middleware(20,100), api.get.problems);
+server.get('/api/problems', paginate.middleware(20, 100), api.get.problems);
 server.get('/api/problems/:id', path.validateId(), api.get.problem);
 server.get('/api/answers', api.get.answers);
 server.get('/api/answers/:id', path.validateId(), api.get.answer);
@@ -190,7 +204,11 @@ server.get('/api/stats', api.get.stats);
 server.get('/api/about', api.get.about);
 server.get('/api/notifications', api.get.notifications);
 server.get('/api/notifications/:id', path.validateId(), api.get.notification);
-server.get('/api/responseThreads/', paginate.middleware(25,100), api.get.responseThreads);
+server.get(
+  '/api/responseThreads/',
+  paginate.middleware(25, 100),
+  api.get.responseThreads
+);
 //ALL POST REQUESTS
 server.post('/api/users', api.post.user);
 server.post('/api/workspaces', api.post.workspace);
@@ -213,7 +231,6 @@ server.post('/api/updateWorkspaceRequests', api.post.updateWorkspaceRequest);
 server.post('/api/notifications', api.post.notification);
 server.post('/api/parentWorkspaceRequests', api.post.parentWorkspace);
 
-
 //ALL PUT REQUESTS
 server.put('/api/folders/:id', path.validateId(), api.put.folder);
 server.put('/api/submissions/:id', path.validateId(), api.put.submission);
@@ -222,29 +239,76 @@ server.put('/api/comments/:id', path.validateId(), api.put.comment);
 server.put('/api/responses/:id', path.validateId(), api.put.response);
 server.put('/api/taggings/:id', path.validateId(), api.put.tagging);
 server.put('/api/users/:id', path.validateId(), api.put.user);
-server.put('/api/users/addSection/:id', path.validateId(), api.put.user.addSection);
-server.put('/api/users/removeSection/:id', path.validateId(), api.put.user.removeSection);
-server.put('/api/users/addAssignment/:id', path.validateId(), api.put.user.addAssignment);
-server.put('/api/users/removeAssignment/:id', path.validateId(), api.put.user.removeAssignment);
+server.put(
+  '/api/users/addSection/:id',
+  path.validateId(),
+  api.put.user.addSection
+);
+server.put(
+  '/api/users/removeSection/:id',
+  path.validateId(),
+  api.put.user.removeSection
+);
+server.put(
+  '/api/users/addAssignment/:id',
+  path.validateId(),
+  api.put.user.addAssignment
+);
+server.put(
+  '/api/users/removeAssignment/:id',
+  path.validateId(),
+  api.put.user.removeAssignment
+);
 server.put('/api/workspaces/:id', path.validateId(), api.put.workspace);
 server.put('/api/problems/:id', path.validateId(), api.put.problem);
-server.put('/api/problems/addCategory/:id', path.validateId(), api.put.problem.addCategory);
-server.put('/api/problems/removeCategory/:id', path.validateId(), api.put.problem.removeCategory);
+server.put(
+  '/api/problems/addCategory/:id',
+  path.validateId(),
+  api.put.problem.addCategory
+);
+server.put(
+  '/api/problems/removeCategory/:id',
+  path.validateId(),
+  api.put.problem.removeCategory
+);
 server.put('/api/answers/:id', path.validateId(), api.put.answer);
 server.put('/api/sections/:id', path.validateId(), api.put.section);
-server.put('/api/sections/addTeacher/:id', path.validateId(), api.put.section.addTeacher);
-server.put('/api/sections/removeTeacher/:id', path.validateId(), api.put.section.removeTeacher);
-server.put('/api/sections/addStudent/:id', path.validateId(), api.put.section.addStudent);
-server.put('/api/sections/removeStudent/:id', path.validateId(), api.put.section.removeStudent);
-server.put('/api/sections/addProblem/:id', path.validateId(), api.put.section.addProblem);
-server.put('/api/sections/removeProblem/:id', path.validateId(), api.put.section.removeProblem);
+server.put(
+  '/api/sections/addTeacher/:id',
+  path.validateId(),
+  api.put.section.addTeacher
+);
+server.put(
+  '/api/sections/removeTeacher/:id',
+  path.validateId(),
+  api.put.section.removeTeacher
+);
+server.put(
+  '/api/sections/addStudent/:id',
+  path.validateId(),
+  api.put.section.addStudent
+);
+server.put(
+  '/api/sections/removeStudent/:id',
+  path.validateId(),
+  api.put.section.removeStudent
+);
+server.put(
+  '/api/sections/addProblem/:id',
+  path.validateId(),
+  api.put.section.addProblem
+);
+server.put(
+  '/api/sections/removeProblem/:id',
+  path.validateId(),
+  api.put.section.removeProblem
+);
 server.put('/api/organizations/:id', path.validateId(), api.put.organization);
 server.put('/api/assignments/:id', path.validateId(), api.put.assignment);
 server.put('/api/notifications/:id', path.validateId(), api.put.notification);
 
 //ALL DELETE REQUESTS
 server.delete('/api/images/:id', path.validateId(), api.delete.image);
-
 
 let buildDir = 'build';
 if (process.env.BUILD_DIR) {
@@ -253,10 +317,13 @@ if (process.env.BUILD_DIR) {
 console.log(`buildDir: ${buildDir}`);
 server.get(/.*/, express.static(buildDir));
 
-server.post({
-  name: 'newWorkspaces',
-  path: '/api/newWorkspaceRequests',
-}, api.post.newWorkspaceRequest);
+server.post(
+  {
+    name: 'newWorkspaces',
+    path: '/api/newWorkspaceRequests',
+  },
+  api.post.newWorkspaceRequest
+);
 
 server.post('/api/import', api.post.import);
 server.post('/api/importRequests', api.post.importSubmissionsRequest);
@@ -269,4 +336,3 @@ server.use(function (err, req, res, next) {
 });
 
 module.exports = mainServer;
-

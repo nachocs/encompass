@@ -10,6 +10,13 @@ import config from './config/environment';
 window.$ = $;
 window._ = _;
 
+$.ajaxSetup({
+  xhrFields: {
+    withCredentials: false,
+  },
+  crossDomain: true,
+});
+
 window.ENV = window.ENV || {}; // Enable {{control}} helper in Ember templates
 window.ENV.EXPERIMENTAL_CONTROL_HELPER = true;
 var QUNIT = window.TESTING;

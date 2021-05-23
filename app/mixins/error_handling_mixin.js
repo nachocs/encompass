@@ -1,13 +1,7 @@
-import { inject as service } from '@ember/service';
 import Mixin from '@ember/object/mixin';
-
-
-
-
-
+import { inject as service } from '@ember/service';
 
 export default Mixin.create({
-
   alert: service('sweet-alert'),
 
   isAdapterError: function (err) {
@@ -31,10 +25,10 @@ export default Mixin.create({
 
     let errors = err.errors;
     if (!errors || !Array.isArray(errors)) {
-      this.set(propName, ["Unknown Error"]);
+      this.set(propName, ['Unknown Error']);
       return;
     }
-    let details = errors.map(e => e.detail);
+    let details = errors.map((e) => e.detail);
     this.set(propName, details);
   },
 
@@ -56,7 +50,6 @@ export default Mixin.create({
   },
 
   removeMessages: function (...errors) {
-
     for (let e of errors) {
       this._removeMessages(e);
     }
@@ -101,7 +94,9 @@ export default Mixin.create({
       }
     }
 
-    let records = Array.isArray(recordsToRollback) ? recordsToRollback : [recordsToRollback];
+    let records = Array.isArray(recordsToRollback)
+      ? recordsToRollback
+      : [recordsToRollback];
 
     records.forEach((rec) => {
       if (this.isRecordInvalid(rec)) {
@@ -110,7 +105,6 @@ export default Mixin.create({
     });
 
     this.alert.showToast('error', msg, 'bottom-end', 5000, false, null);
-
   },
 
   actions: {
@@ -119,7 +113,6 @@ export default Mixin.create({
         return;
       }
       this.get(prop).removeObject(err);
-    }
+    },
   },
-
 });
