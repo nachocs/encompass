@@ -18,10 +18,12 @@ module.exports = {
   ],
   env: {
     browser: true,
+    node: true,
+    es6: true,
   },
   rules: {
     'no-unused-vars': 'warn',
-    'no-console': 'warn',
+    'no-console': 'off',
     'ember/no-classic-classes': 'warn',
     'ember/no-classic-components': 'warn',
     'ember/no-mixins': 'warn',

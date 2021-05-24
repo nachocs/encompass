@@ -27,8 +27,8 @@ export default Route.extend(MtAuthMixin, {
     );
   },
 
-  model: function () {
-    return this.store.queryRecord('user', { alias: 'current' });
+  model() {
+    return this.store.query('user', { alias: 'current' });
   },
 
   afterModel: function (user, transition) {

@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
+import { computed, action } from '@ember/object';
 import $ from 'jquery';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
@@ -30,22 +30,15 @@ export default Component.extend(ErrorHandlingMixin, {
     }
   },
 
-  actions: {
-    login: function () {
-      var that = this;
-      var username = that.get('username');
-      var usernameTrim;
-      if (username) {
-        usernameTrim = username.trim();
-      } else {
-        usernameTrim = '';
-      }
-      var password = that.get('password');
+  @action
+  login() {
+    const username = this.get('username').trim();
+    const password = this.get('password');
 
-      if (!usernameTrim || !password) {
-        that.set('missingCredentials', true);
-        return;
-      }
+    if (!username || !password) {
+      this.set('missingCredentials', true);
+      return;
+    }
 
       var createUserData = {
         username: usernameTrim,
@@ -68,5 +61,4 @@ export default Component.extend(ErrorHandlingMixin, {
           this.handleErrors(err, 'postErrors');
         });
     },
-  },
-});
+  });

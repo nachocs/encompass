@@ -1,22 +1,18 @@
 <div class="ember-view">
   {{!--outlet header--}}
 
-  <TopBar @store={{store}} @user={{currentUser}} @isHidden={{isHidden}} @toHome="toHome" />
-  <SocketLoader @store={{store}} @currentUser={{currentUser}} />
+  <TopBar @store={{this.store}} @user={{this.currentUser}} @isHidden={{this.isHidden}} @toHome="toHome" />
+  <SocketLoader @store={{this.store}} @currentUser={{this.currentUser}} />
   <section id="al_body">
-    <!-- a dynamic section of the view hierarchy that will be filled in
-       response to routing changes -->
 
     {{outlet}}
 
-    {{!-- {{outlet 'modal'}} --}}
-
-    {{#if showCategoryList}}
+    {{#if this.showCategoryList}}
     <div id="category-list-modal">
       <div class="modal-content">
         <h4>Select a Category</h4>
         <button class="close" {{action 'closeModal' }}><i class="fas fa-times"></i></button>
-        <CategoriesMenu @categories={{categories}} @store={{store}} @addCategories="searchCategory" />
+        <CategoriesMenu @categories={{this.categories}} @store={{this.store}} @addCategories="searchCategory" />
       </div>
     </div>
     {{/if}}

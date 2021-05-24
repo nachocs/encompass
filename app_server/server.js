@@ -10,6 +10,7 @@ const expressPath = require('path');
 const paginate = require('express-paginate');
 const sockets = require('./socketInit');
 const socketListeners = require('./sockets');
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -99,6 +100,7 @@ db.on('error', function (err) {
 });
 
 //MIDDLEWARE
+server.use(cors());
 server.use(logger('dev'));
 server.use(express.json({ limit: '100000kb' }));
 server.use(
