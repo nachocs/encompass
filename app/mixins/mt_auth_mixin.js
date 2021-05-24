@@ -7,19 +7,19 @@ export default Mixin.create({
 
   getMtSsoUrl() {
     let { host } = window.location;
-    if (host === "encompass.mathematicalthinking.org") {
+    if (host === 'encompass.mathematicalthinking.org') {
       return `https://sso.mathematicalthinking.org`;
     }
 
-    if (host === "enc-test.mathematicalthinking.org") {
-      return "https://sso-test.mathematicalthinking.org";
+    if (host === 'enc-test.mathematicalthinking.org') {
+      return 'https://sso-test.mathematicalthinking.org';
     }
 
-    if (host === "localhost:8082") {
-      return "http://localhost:3003";
+    if (host === 'localhost:8082') {
+      return 'http://localhost:3003';
     }
 
-    return "http://localhost:3002";
+    return 'http://localhost:3002';
   },
 
   getMtLoginUrlWithRedirect() {
@@ -36,9 +36,9 @@ export default Mixin.create({
 
   getContactEmail() {
     let { host } = window.location;
-    if (host === "encompass.mathematicalthinking.org") {
-      return "encompassmath@gmail.com";
+    if (host === 'encompass.mathematicalthinking.org') {
+      return 'encompassmath@gmail.com';
     }
-    return "encompassmathtesting@gmail.com";
+    return 'encompassmathtesting@gmail.com';
   },
 });

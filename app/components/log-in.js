@@ -16,42 +16,6 @@ export default Component.extend(ErrorHandlingMixin, {
       return 'The provided email address is already associated with an existing account';
     }
   }),
-
-  @action
-  login() {
-    const username = this.get('username').trim();
-    const password = this.get('password');
-
-    if (!username || !password) {
-      this.set('missingCredentials', true);
-      return;
-    }
-
-    const createUserData = {
-      username,
-      password,
-    };
-    $.post({
-      url: 'http://localhost:8080/auth/login',
-      data: createUserData,
-    })
-      .then((res) => {
-        if (res.message === 'Incorrect password') {
-          this.set('incorrectPassword', true);
-        } else if (res.message === 'Incorrect username') {
-          this.set('incorrectUsername', true);
-        } else {
-          console.log(res);
-          this.sendAction('toHome');
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        this.handleErrors(err, 'postErrors');
-      });
-  },
-
-  @action
   resetErrors() {
     const errors = [
       'incorrectUsername',
@@ -64,5 +28,38 @@ export default Component.extend(ErrorHandlingMixin, {
         this.set(error, false);
       }
     }
+  },
+
+  @action
+  login() {
+    const username = this.get('username').trim();
+    const password = this.get('password');
+
+    if (!username || !password) {
+      this.set('missingCredentials', true);
+      return;
+    }
+
+      var createUserData = {
+        username: usernameTrim,
+        password: password,
+      };
+      $.post({
+        url: 'http://localhost:8080/auth/login',
+        data: createUserData,
+      })
+        .then((res) => {
+          if (res.message === 'Incorrect password') {
+            that.set('incorrectPassword', true);
+          } else if (res.message === 'Incorrect username') {
+            that.set('incorrectUsername', true);
+          } else {
+            that.sendAction('toHome');
+          }
+        })
+        .catch((err) => {
+          this.handleErrors(err, 'postErrors');
+        });
+    },
   },
 });

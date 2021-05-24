@@ -1,5 +1,5 @@
 import Route from '@ember/routing/route';
-import MtAuthMixin from "../mixins/mt_auth_mixin";
+import MtAuthMixin from '../mixins/mt_auth_mixin';
 
 export default Route.extend(MtAuthMixin, {
   beforeModel: function () {
@@ -8,18 +8,18 @@ export default Route.extend(MtAuthMixin, {
   },
   authenticate: function () {
     //not crazy that this is duplicated here and in ApplicationRoute
-    var user = this.modelFor("application");
-    if (!user.get("isAuthenticated")) {
+    var user = this.modelFor('application');
+    if (!user.get('isAuthenticated')) {
       this.store.unloadAll();
-      this.transitionTo("auth.login");
+      this.transitionTo('auth.login');
     } else if (
-      user.get("email") &&
-      !user.get("isEmailConfirmed") &&
-      !user.get("isStudent")
+      user.get('email') &&
+      !user.get('isEmailConfirmed') &&
+      !user.get('isStudent')
     ) {
-      this.transitionTo("unconfirmed");
-    } else if (!user.get("isAuthz")) {
-      this.transitionTo("unauthorized");
+      this.transitionTo('unconfirmed');
+    } else if (!user.get('isAuthz')) {
+      this.transitionTo('unauthorized');
     }
   },
   actions: {
@@ -34,8 +34,8 @@ export default Route.extend(MtAuthMixin, {
         }
       }
 
-      if (errorStatus === "401") {
-        this.replaceWith("auth.login");
+      if (errorStatus === '401') {
+        this.replaceWith('auth.login');
       } else {
         return true;
       }

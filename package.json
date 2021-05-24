@@ -30,8 +30,8 @@
     "lint:hbs:fix": "ember-template-lint . --fix",
     "lint:js": "eslint . --cache",
     "lint:js:fix": "eslint . --fix",
-    "start": "concurrently \"npm:start-front\" \"npm:start-back\"",
-    "start-front": "ember server",
+    "start": "ember serve",
+    "start-front": "ember server --proxy=http://localhost:8080",
     "start-back": "node app_server/server.js",
     "start-all": "concurrently \"npm:start-front\" \"npm:start-back\"",
     "test": "npm-run-all lint test:*",
@@ -44,7 +44,7 @@
     "restore-vmt": "cd ../vmt/server && npm run seed",
     "dev-vmt": "cd ../vmt/server && npm run dev",
     "dev-mt": "cd ../mt-sso && npm run dev",
-    "dev-all": "concurrently \"npm:start\" \"npm:dev-mt\" \"npm:dev-vmt\"",
+    "dev-all": "concurrently \"npm:start-front\" \"npm:start-back\" \"npm:dev-mt\" \"npm:dev-vmt\"",
     "test-travis": "NODE_ENV=seed node server/server.js"
   },
   "dependencies": {
@@ -81,7 +81,7 @@
     "randomcolor": "^0.6.2",
     "request": "^2.88.2",
     "sharp": "^0.28.1",
-    "socket.io": "^4.0.1",
+    "socket.io": "^2.4.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
@@ -107,6 +107,7 @@
     "ember-cli-sass": "^10.0.1",
     "ember-cli-sri": "^2.1.1",
     "ember-cli-terser": "^4.0.1",
+    "ember-cookies": "^0.5.2",
     "ember-data": "~3.26.0",
     "ember-export-application-global": "^2.0.1",
     "ember-fetch": "^8.0.4",

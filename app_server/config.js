@@ -24,7 +24,7 @@ nconf.defaults({
   devPort: '8080',
   testPort: '8082',
   web: {
-    base: '/'
+    base: '/',
   },
   devDBName: 'encompass',
   testDBName: 'encompass_test',
@@ -38,12 +38,13 @@ nconf.defaults({
     user: 'encompass',
     pass: '',
     port: 27017,
-    collections: ["workspaces",
-      "folders",
-      "submissions",
-      "selections",
-      "comments"
-    ]
+    collections: [
+      'workspaces',
+      'folders',
+      'submissions',
+      'selections',
+      'comments',
+    ],
   },
   // cache: {
   //   key: process.env.CACHE_KEY,
@@ -56,8 +57,8 @@ nconf.defaults({
     server: 'ERROR',
     auth: 'INFO',
     console: 'ERROR',
-    misc: 'ERROR'
-  }
+    misc: 'ERROR',
+  },
 });
 
 exports.nconf = nconf;
@@ -68,10 +69,10 @@ logs.configure({
   appenders: {
     srv: { type: 'file', filename: 'server.out', category: ['console'] },
     err: { type: 'file', filename: 'error.out', category: ['server'] },
-    con: { type: 'console' }
+    con: { type: 'console' },
   },
   categories: {
-    default: { appenders: ['srv', 'err', 'con'], level: 'debug' }
+    default: { appenders: ['srv', 'err', 'con'], level: 'debug' },
   },
-  replaceConsole: true
+  replaceConsole: true,
 });
