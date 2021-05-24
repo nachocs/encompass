@@ -61,5 +61,4 @@ export default Component.extend(ErrorHandlingMixin, {
           this.handleErrors(err, 'postErrors');
         });
     },
-  },
-});
+  });
