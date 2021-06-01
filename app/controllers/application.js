@@ -5,34 +5,36 @@
  * @since 1.0.0
  */
 import Controller from '@ember/controller';
-import { computed } from '@ember/object';
+import { computed, action } from '@ember/object';
 
-export default Controller.extend({
-  showCategoryList: false,
-  isHidden: false,
-  selectedCategories: [],
-  isTouchScreen: false,
+export default class ApplicationController extends Controller {
+  showCategoryList = false;
+  isHidden = false;
+  selectedCategories = [];
+  isTouchScreen = false;
 
-  currentUser: computed('model', function () {
+  currentUser = computed('model', function () {
+    console.log('application.js');
     return this.model;
-  }),
+  });
 
   // resizeDisplay: function() {
   //   Ember.run.next(this, Ember.verticalSizing);
   // }.observes('isSmallHeader'),
-
-  actions: {
-    toHome: function () {
-      window.location.href = '/';
-    },
-    closeModal: function () {
-      this.set('showCategoryList', false);
-    },
-    searchCategory: function (category) {
-      this.selectedCategories.pushObject(category);
-    },
-    handleFirstTouch() {
-      this.set('isTouchScreen', true);
-    },
-  },
-});
+  @action
+  toHome() {
+    window.location.href = '/';
+  }
+  @action
+  closeModal() {
+    this.showCategoryList = false;
+  }
+  @action
+  searchCategory(cat) {
+    this.selectedCategories.pushObject(cat);
+  }
+  @action
+  handleFirstTouch() {
+    this.isTouchScreen = true;
+  }
+}
