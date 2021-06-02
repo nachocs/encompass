@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 import Controller from '@ember/controller';
-import { computed, action } from '@ember/object';
+import { action } from '@ember/object';
 
 export default class ApplicationController extends Controller {
   showCategoryList = false;
@@ -13,10 +13,10 @@ export default class ApplicationController extends Controller {
   selectedCategories = [];
   isTouchScreen = false;
 
-  currentUser = computed('model', function () {
+  currentUser() {
     console.log('application.js');
     return this.model;
-  });
+  }
 
   // resizeDisplay: function() {
   //   Ember.run.next(this, Ember.verticalSizing);

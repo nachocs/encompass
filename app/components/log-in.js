@@ -54,7 +54,7 @@ export default Component.extend(ErrorHandlingMixin, {
           } else if (res.message === 'Incorrect username') {
             that.set('incorrectUsername', true);
           } else {
-            that.sendAction('toHome');
+            window.location.href = '/';
           }
         })
         .catch((err) => {
