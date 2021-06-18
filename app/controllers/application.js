@@ -14,7 +14,6 @@ export default class ApplicationController extends Controller {
   isTouchScreen = false;
 
   get currentUser() {
-    console.log('application controller');
     return this.model;
   }
 
