@@ -29,7 +29,7 @@ export default class Application extends Route.extend(MtAuthMixin) {
   }
 
   model() {
-    return this.store.query('user', { alias: 'current' });
+    return this.store.queryRecord('user', { alias: 'current' });
   }
 
   afterModel(user, transition) {
