@@ -4,7 +4,7 @@ import AuthenticatedRoute from './_authenticated_route';
 
 export default AuthenticatedRoute.extend({
   hideOutlet: true,
-  application: controller(),
+  // application: controller(),
 
   beforeModel: function (transition) {
     this._super.apply(this, arguments);
