@@ -13,8 +13,8 @@ export default class ApplicationController extends Controller {
   selectedCategories = [];
   isTouchScreen = false;
 
-  currentUser() {
-    console.log('application.js');
+  get currentUser() {
+    console.log('application controller');
     return this.model;
   }
 
