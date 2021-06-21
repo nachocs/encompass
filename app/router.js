@@ -105,15 +105,8 @@ Router.map(function () {
   });
   // USERS PARENT ROUTE
   this.route('users', function () {
-    this.route(
-      'user',
-      { resetNamespace: true, path: '/:username' },
-      function () {
-        //this.route("edit");
-      }
-    );
+    this.route('user', { resetNamespace: true, path: '/:username' });
     this.route('new');
-    this.route('home');
   });
   // IMPORT ROUTE
   this.route('import', function () {});

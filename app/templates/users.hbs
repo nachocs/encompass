@@ -1,2 +1,21 @@
-<UserList @store={{store}} @users={{model.users}} @organization={{model.organiztions}} />
+{{#if this.currentUser.isAdmin}}
+  <UserListAdmin @store={{this.store}} @currentUser={{this.currentUser}} @users={{this.users}} @organization={{this.organiztions}} @toUserInfo="toUserInfo" />
+{{/if}}
+
+{{#if this.currentUser.isTeacher}}
+  <UserListTeacher @store={{this.store}} @currentUser={{this.currentUser}} @users={{this.users}} @organization={{this.organiztions}} @toUserInfo="toUserInfo" />
+{{/if}}
+
+{{#if this.currentUser.isPdAdmin}}
+    <UserListPd @store={{this.store}} @currentUser={{this.currentUser}} @users={{this.users}} @organization={{this.organiztions}} @toUserInfo="toUserInfo" />
+{{/if}}
+
+{{#if this.currentUser.isStudent}}
+    <div class="centered">FORBIDDEN</div>
+{{/if}}
+
+
+<div class="list-outlet users">
+  {{outlet}}
+</div>
 

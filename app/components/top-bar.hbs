@@ -119,7 +119,7 @@
           {{/if}}
         </li>
         {{#unless this.currentUser.isStudent}}
-          <li><LinkTo @route="users.home">users</LinkTo></li>
+          <li><LinkTo @route="users">users</LinkTo></li>
         {{/unless}}
         <li id="logout-btn-side"><LinkTo @route="logout">logout</LinkTo></li>
       </ul>

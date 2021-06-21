@@ -12,7 +12,7 @@ export default AuthenticatedRoute.extend({
       this.transitionTo('user', user);
     },
     toUserHome: function () {
-      this.transitionTo('users.home');
+      this.transitionTo('users');
     },
   },
 });
