@@ -18,7 +18,9 @@ export default class UsersRoute extends Route {
     }
   }
   model() {
+    const currentUser = this.modelFor('application');
     return hash({
+      currentUser,
       users: this.store.findAll('user'),
       organizations: this.store.findAll('organization'),
     });
