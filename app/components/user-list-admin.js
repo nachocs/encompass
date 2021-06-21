@@ -1,8 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Component.extend(CurrentUserMixin, {
+export default Component.extend({
   elementId: 'user-list-admin',
   showDeletedUsers: false,
 
@@ -26,7 +25,7 @@ export default Component.extend(CurrentUserMixin, {
       let adminUsers = authUsers.filterBy('accountType', 'A');
       let adminUsersNotYou = adminUsers.rejectBy(
         'username',
-        this.get('currentUser.username')
+        this.currentUser.username
       );
       return adminUsersNotYou.sortBy('createDate').reverse();
     }
