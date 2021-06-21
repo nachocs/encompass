@@ -105,7 +105,7 @@ Router.map(function () {
   });
   // USERS PARENT ROUTE
   this.route('users', function () {
-    this.route('user', { path: '/:username' });
+    this.route('user', { path: '/:user_id' });
     this.route('new');
   });
   // IMPORT ROUTE
