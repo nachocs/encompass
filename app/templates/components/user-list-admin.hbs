@@ -9,7 +9,7 @@
       <h2>Your account</h2>
       <ul class="listing your-account">
         <li class="{{if this.currentUser.isAuthorized 'is-authorized'}} {{if this.currentUser.isAdmin 'is-admin'}}">
-          <LinkTo @route="users.user" @model={{this.currentUser}} @classNames="user">{{this.currentUser.username}}</LinkTo>
+          <LinkTo @route="users.user" @model={{this.currentUser.id}} @classNames="user">{{this.currentUser.username}}</LinkTo>
         </li>
       </ul>
 
@@ -18,7 +18,7 @@
         {{#if this.unauthUsers}}
           {{#each this.unauthUsers as |user|}}
           <li class="{{if user.name 'simptip-position-right simptip-smooth'}} {{if user.isAuthorized 'is-authorized'}} {{if user.isAdmin 'is-admin'}}{{unless user.isEmailConfirmed 'is-unconfirmed'}}" data-tooltip={{user.name}}>
-            <LinkTo @route="users.user" @model={{user}} @classNames="user">{{user.username}}</LinkTo>
+            <LinkTo @route="users.user" @model={{user.id}} @classNames="user">{{user.username}}</LinkTo>
           </li>
           {{/each}}
         {{else}}
@@ -30,7 +30,7 @@
       <ul class="listing admin-users">
         {{#each this.adminUsers as |user|}}
         <li class="{{if user.name 'simptip-position-right simptip-smooth'}} {{if user.isAuthorized 'is-authorized'}} {{if user.isAdmin 'is-admin'}} {{unless user.isEmailConfirmed 'is-unconfirmed'}}" data-tooltip={{user.name}}>
-          <LinkTo @route="users.user" @model={{user}} @classNames="user">{{user.username}}</LinkTo>
+          <LinkTo @route="users.user" @model={{user.id}} @classNames="user">{{user.username}}</LinkTo>
           </li>
         {{/each}}
       </ul>
@@ -40,7 +40,7 @@
         {{#if this.pdUsers}}
           {{#each this.pdUsers as |user|}}
           <li class="{{if user.name 'simptip-position-right simptip-smooth'}} {{if user.isAuthorized 'is-authorized'}} {{if user.isAdmin 'is-admin'}}{{unless user.isEmailConfirmed 'is-unconfirmed'}}" data-tooltip={{user.name}}>
-            <LinkTo @route="users.user" @model={{user}} @classNames="user">{{user.username}}</LinkTo>
+            <LinkTo @route="users.user" @model={{user.id}} @classNames="user">{{user.username}}</LinkTo>
           </li>
           {{/each}}
         {{else}}
@@ -53,7 +53,7 @@
         {{#if this.teacherUsers}}
           {{#each this.teacherUsers as |user|}}
           <li class="{{if user.name 'simptip-position-right simptip-smooth'}} {{if user.isAuthorized 'is-authorized'}} {{if user.isAdmin 'is-admin'}} {{unless user.isEmailConfirmed 'is-unconfirmed'}}" data-tooltip={{user.name}}>
-            <LinkTo @route="users.user" @model={{user}} @classNames="user">{{user.username}}</LinkTo>
+            <LinkTo @route="users.user" @model={{user.id}} @classNames="user">{{user.username}}</LinkTo>
           </li>
           {{/each}}
         {{else}}
@@ -66,7 +66,7 @@
         {{#if this.studentUsers}}
           {{#each this.studentUsers as |user|}}
           <li class="{{if user.name 'simptip-position-right simptip-smooth'}} {{if user.isAuthorized 'is-authorized'}} {{if user.isAdmin 'is-admin'}}" data-tooltip={{user.name}}>
-            <LinkTo @route="users.user" @model={{user}} @classNames="user">{{user.username}}</LinkTo>
+            <LinkTo @route="users.user" @model={{user.id}} @classNames="user">{{user.username}}</LinkTo>
           </li>
           {{/each}}
         {{else}}
@@ -89,7 +89,7 @@
           {{#if trashedUsers}}
             {{#each trashedUsers as |user|}}
             <li class="{{if user.name 'simptip-position-right simptip-smooth'}} {{if user.isAuthorized 'is-authorized'}} {{if user.isAdmin 'is-admin'}}">
-              <LinkTo @route="users.user" @model={{user}} @classNames="user">{{user.username}}</LinkTo>
+              <LinkTo @route="users.user" @model={{user.id}} @classNames="user">{{user.username}}</LinkTo>
             </li>
             {{/each}}
           {{else}}
