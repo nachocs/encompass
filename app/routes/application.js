@@ -15,7 +15,7 @@ import MtAuthMixin from '../mixins/mt_auth_mixin';
 export default class Application extends Route.extend(MtAuthMixin) {
   //the application route can't require authentication since it's getting the user
   @service('user-ntfs') userNtfs;
-
+  @service store;
   beforeModel() {
     let that = this;
     window.addEventListener(
