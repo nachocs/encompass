@@ -30,7 +30,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   didReceiveAttrs: function () {
     this.set('isEditing', false);
     let user = this.user;
-    if (user.get('sections')) {
+    if (user.sections) {
       this.getUserSections();
     }
     this.set('org', null);
@@ -177,7 +177,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   actions: {
     editUser: function () {
       let user = this.user;
-      this.set('userEmail', user.get('email'));
+      this.set('userEmail', user.email);
       let accountType = user.get('accountType');
       if (accountType === 'S') {
         this.set('selectedType', 'Student');
