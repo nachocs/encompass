@@ -23,8 +23,4 @@ export default class UsersRoute extends Route {
       organizations: this.store.findAll('organization'),
     });
   }
-
-  renderTemplate() {
-    this.render('users/users');
-  }
 }
