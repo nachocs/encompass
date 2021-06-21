@@ -5,17 +5,20 @@
  * @since 2.3.0
  */
 import Route from '@ember/routing/route';
+import RSVP from 'rsvp';
+import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  beforeModel: function () {
-    this._super.apply(this, arguments);
+export default class IndexRoute extends Route {
+  @service store;
+  beforeModel() {
+    // super.apply(this, arguments);
     this.authenticate();
-  },
-  authenticate: function () {
+  }
+  authenticate() {
     //this is duplicated here,AuthentecatedRoute, and in ApplicationRoute
     var user = this.modelFor('application');
     if (!user.get('isAuthenticated')) {
-      this.get('store').unloadAll();
+      this.store.unloadAll();
       this.transitionTo('auth.login');
     } else if (
       user.get('email') &&
@@ -26,11 +29,11 @@ export default Route.extend({
     } else if (!user.get('isAuthz')) {
       this.transitionTo('unauthorized');
     }
-  },
-  model: function () {
+  }
+  model() {
     const user = this.modelFor('application');
-    const assignments = this.get('store').findAll('assignment');
-    const sections = this.get('store').findAll('section');
+    const assignments = this.store.findAll('assignment');
+    const sections = this.store.findAll('section');
 
     //import workspaces created by current user
     const workspaceCriteria = {
@@ -39,11 +42,11 @@ export default Route.extend({
       },
     };
 
-    const workspaces = this.get('store').query('workspace', workspaceCriteria);
+    const workspaces = this.store.query('workspace', workspaceCriteria);
 
-    return Ember.RSVP.hash({ assignments, sections, user, workspaces });
-  },
-  renderTemplate: function () {
+    return RSVP.hash({ assignments, sections, user, workspaces });
+  }
+  renderTemplate() {
     this.render('index');
-  },
-});
+  }
+}
