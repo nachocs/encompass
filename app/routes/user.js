@@ -1,7 +1,7 @@
 import AuthenticatedRoute from './_authenticated_route';
 
-export default AuthenticatedRoute.extend({
-  model: function (params) {
+export default class UserRoute extends AuthenticatedRoute {
+  model(params) {
     let usernameLower =
       typeof params.username === 'string' ? params.username.toLowerCase() : '';
     let user = this.store.queryRecord('user', {
@@ -9,9 +9,5 @@ export default AuthenticatedRoute.extend({
     });
     //filter by params id
     return user;
-  },
-
-  renderTemplate: function () {
-    this.render('users/user');
-  },
-});
+  }
+}
