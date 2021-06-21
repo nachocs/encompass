@@ -86,7 +86,7 @@
           </li>
           {{/unless}}
           <li id="current-username">
-            <LinkTo @route="user" @model={{this.currentUser.username}}><img src={{this.currentUser.avatar}} alt={{this.currentUser.username}}></LinkTo>
+            <LinkTo @route="users.user" @model={{this.currentUser.username}}><img src={{this.currentUser.avatar}} alt={{this.currentUser.username}}></LinkTo>
           </li>
           <li id="user-image">
             <Input @type="checkbox" @id="menu-button" @name="menu-toggle" @checked={{this.openMenu}} @click={{action "toggleMenu"}} />

@@ -107,7 +107,7 @@
                 <span class="show-reason" {{action 'toggleShowFlagReason'}}>Hide</span>
                 <div class="flag-reason">
                   <p class="reason"><strong>Reason:</strong> {{problem.flagReason.reason}}</p>
-                  <p class="details">By <LinkTo @route="user" @model={{flaggedBy.username}}>{{flaggedBy.username}}</LinkTo> on {{format-date
+                  <p class="details">By <LinkTo @route="users.user" @model={{flaggedBy.username}}>{{flaggedBy.username}}</LinkTo> on {{format-date
                     problem.flagReason.flaggedDate 'MMM Do YYYY'}}</p>
                 </div>
               {{else}}
@@ -242,7 +242,7 @@
         {{#if currentUser.isAdmin}}
         <p class="info-content-label">Created By</p>
         <div class="info-content-block creator">
-          <p><LinkTo @route="user" @model={{problem.createdBy.username}}>{{problem.createdBy.username}}</LinkTo></p>
+          <p><LinkTo @route="users.user" @model={{problem.createdBy.username}}>{{problem.createdBy.username}}</LinkTo></p>
         </div>
         {{/if}}
       {{/if}}

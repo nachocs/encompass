@@ -69,7 +69,7 @@
                 {{#if currentUser.isStudent}}
                   {{teacher.username}}
                 {{else}}
-                  <LinkTo @route="user" @model={{teacher}}> {{teacher.username}} </LinkTo>
+                  <LinkTo @route="users.user" @model={{teacher}}> {{teacher.username}} </LinkTo>
                 {{/if}}
 
                 {{#unless cantEdit}}
@@ -115,10 +115,10 @@
                 {{#if currentUser.isStudent}}
                   {{student.username}}
                 {{else}}
-                  <LinkTo @route="user" @model={{student}}> {{student.username}} </LinkTo>
+                  <LinkTo @route="users.user" @model={{student}}> {{student.username}} </LinkTo>
                 {{/if}}
                 {{#unless cantEdit}}
-                  <LinkTo @route="user" @model={{student}}> </LinkTo>
+                  <LinkTo @route="users.user" @model={{student}}> </LinkTo>
                   {{#if isEditingStudents}}
                     <button class="trash-button" {{action 'removeStudent' student}}>
                       <i class="far fa-times-circle" aria-hidden="true"></i>
