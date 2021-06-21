@@ -1,9 +1,8 @@
 import Component from '@ember/component';
 import { computed, observer } from '@ember/object';
 import { inject as service } from '@ember/service';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Component.extend(CurrentUserMixin, {
+export default Component.extend({
   utils: service('utility-methods'),
 
   didReceiveAttrs: function () {
@@ -14,16 +13,16 @@ export default Component.extend(CurrentUserMixin, {
     'assignments.@each.isTrashed',
     'currentUser.isStudent',
     function () {
-      let currentUser = this.currentUser;
+      let currentUser = this.user;
       let filtered = this.assignments.filter((assignment) => {
         return assignment.id && !assignment.get('isTrashed');
       });
       filtered = filtered.sortBy('createDate').reverse();
-      if (currentUser.get('accountType') === 'S') {
+      if (currentUser.accountType === 'S') {
         // what is this if block for?
         // console.log('current user is a student');
       }
-      // let currentDate = new Date();
+      let currentDate = new Date();
       this.set('assignmentList', filtered);
     }
   ),
@@ -32,9 +31,9 @@ export default Component.extend(CurrentUserMixin, {
     'assignments.@each.isTrashed',
     'currentUser.isStudent',
     function () {
-      let currentUser = this.currentUser;
+      let currentUser = this.user;
       let yourList = this.assignments.filter((assignment) => {
-        let userId = currentUser.get('id');
+        let userId = currentUser.id;
         let assigmentCreatorId = this.utils.getBelongsToId(
           assignment,
           'createdBy'
