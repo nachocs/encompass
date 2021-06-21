@@ -1,5 +1,5 @@
 {{#if this.model.currentUser.isAdmin}}
-  <UserListAdmin @store={{this.store}} @currentUser={{this.currentUser}} @users={{this.users}} @organization={{this.organiztions}} @toUserInfo="toUserInfo" />
+  <UserListAdmin @store={{this.store}} @currentUser={{this.model.currentUser}} @users={{this.model.users}} @organization={{this.model.organiztions}} @toUserInfo="toUserInfo" />
 {{/if}}
 
 {{#if this.model.currentUser.isTeacher}}
