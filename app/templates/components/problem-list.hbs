@@ -1,12 +1,12 @@
 
   <div class="main-list">
-    {{#if isSearching}}
+    {{#if this.isSearching}}
       <p class="loading-message">Searching problems...</p>
     {{else}}
     <ul id="problem-list-ul">
-      {{#each problems as |problem|}}
+      {{#each this.problems as |problem|}}
       <li>
-        <ProblemListItem @problem={{problem}} @isList={{isList}} @isGrid={{isGrid}} @store={{store}} @flagProblem={{action "flagProblem"}} @moreMenuOptions={{moreMenuOptions}} @toProblemInfo={{action "toProblemInfo"}} @refreshList={{action "refreshList"}} />
+        <ProblemListItem @problem={{problem}} @isList={{this.isList}} @isGrid={{this.isGrid}} @store={{this.store}} @flagProblem={{action "flagProblem"}} @moreMenuOptions={{this.moreMenuOptions}} @toProblemInfo={{action "toProblemInfo"}} @refreshList={{action "refreshList"}} />
 
       </li>
       {{/each}}

@@ -41,7 +41,7 @@
               <ul>
                 {{#each this.privacySettingOptions as |option|}}
                 <li>
-                  <RadioFilter @labelName={{option.label}} @labelIcon={{option.icon}} @inputValue={{option.value}} @isChecked={{option.isChecked}} @groupName="privacy" @onClick={{action "updatePrivacySetting"}} @groupValue={{selectedPrivacySetting}} />
+                  <RadioFilter @labelName={{option.label}} @labelIcon={{option.icon}} @inputValue={{option.value}} @isChecked={{option.isChecked}} @groupName="privacy" @onClick={{action "updatePrivacySetting"}} @groupValue={{this.selectedPrivacySetting}} />
                 </li>
                 {{/each}}
               </ul>
