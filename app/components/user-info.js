@@ -53,13 +53,12 @@ export default Component.extend(ErrorHandlingMixin, {
   canEdit: computed('user.id', function () {
     let user = this.user;
     let currentUser = this.currentUser;
-
     if (!user || !currentUser) {
       return;
     }
 
     // is Admin
-    if (this.get('basePermissions.isActingAdmin')) {
+    if (this.currentUser.accountType === 'A') {
       return true;
     }
 
@@ -83,7 +82,7 @@ export default Component.extend(ErrorHandlingMixin, {
   }),
 
   canConfirm: computed('user.id', function () {
-    if (this.get('basePermissions.isActingAdmin')) {
+    if (this.basePermissions.isActingAdmin) {
       return true;
     }
     if (this.basePermissions.isRecordInPdDomain(this.user)) {
