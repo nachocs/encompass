@@ -3,15 +3,15 @@
   <div class="clear"></div>
 </header>
 
-{{#each dataLoadErrors as |error|}}
+{{#each this.dataLoadErrors as |error|}}
   <p class="error-message">{{error}}</p>
 {{/each}}
 <form data-test="section-info-form" id="sectioninfo">
   <fieldset>
     <div class="section-info-detail name">
       <label for="name">Class Name
-        {{#unless cantEdit}}
-          {{#if isEditingName}}
+        {{#unless this.cantEdit}}
+          {{#if this.isEditingName}}
           <i title="Done" {{action "updateSectionName"}} class="fa fa-check"></i>
         {{else}}
           <i title="Edit" {{action (mut isEditingName) true}} class="far fa-edit"></i>
@@ -19,16 +19,16 @@
         {{/unless}}
       </label>
 
-      {{#if isEditingName}}
-        <Input @name="name" @id="name" @type="text" @value={{currentSection.name}} />
+      {{#if this.isEditingName}}
+        <Input @name="name" @id="name" @type="text" @value={{this.currentSection.name}} />
       {{else}}
-        <p data-test="section-name-display" class="section-info">{{section.name}}</p>
+        <p data-test="section-name-display" class="section-info">{{this.section.name}}</p>
       {{/if}}
     </div>
       <div class="section-info-detail assignments">
         <label for="assignments">Assignments
-        {{#unless cantEdit}}
-          {{#if isEditingAssignments}}
+        {{#unless this.cantEdit}}
+          {{#if this.isEditingAssignments}}
           <i title="Done" {{action (mut isEditingAssignments) false}} class="fa fa-check"></i>
         {{else}}
           <i title="Edit" {{action (mut isEditingAssignments) true}} class="far fa-edit"></i>
@@ -36,27 +36,27 @@
         {{/unless}}
         </label>
         <ul class="listing">
-          {{#if section.assignments}}
-            {{#each section.assignments as |assignment|}}
+          {{#if this.section.assignments}}
+            {{#each this.section.assignments as |assignment|}}
             <li><LinkTo @route="assignment" @model={{assignment.id}}>{{assignment.name}}</LinkTo></li>
             {{/each}}
           {{else}}
             <li>No Assignments yet</li>
           {{/if}}
         </ul>
-        {{#unless cantEdit}}
+        {{#unless this.cantEdit}}
 
         {{/unless}}
       </div>
-      {{#if isEditingAssignments}}
+      {{#if this.isEditingAssignments}}
         <div class="btn-container">
           <button class="action_button" {{action 'showAssignment'}}>New Assignment</button>
         </div>
       {{/if}}
         <div class="section-info-detail teachers">
           <label for="teachers">Teachers
-            {{#unless cantEdit}}
-              {{#if isEditingTeachers}}
+            {{#unless this.cantEdit}}
+              {{#if this.isEditingTeachers}}
                 <i title="Done" {{action (mut isEditingTeachers) false}} class="fa fa-check"></i>
               {{else}}
                 <i title="Edit" {{action (mut isEditingTeachers) true}} class="far fa-edit"></i>
@@ -64,16 +64,16 @@
             {{/unless}}
           </label>
           <ul class="listing">
-            {{#each section.teachers as |teacher| }}
+            {{#each this.section.teachers as |teacher| }}
               <li>
-                {{#if currentUser.isStudent}}
+                {{#if this.currentUser.isStudent}}
                   {{teacher.username}}
                 {{else}}
-                  <LinkTo @route="user" @model={{teacher}}> {{teacher.username}} </LinkTo>
+                  <LinkTo @route="users.user" @model={{teacher}}> {{teacher.username}} </LinkTo>
                 {{/if}}
 
-                {{#unless cantEdit}}
-                  {{#if isEditingTeachers}}
+                {{#unless this.cantEdit}}
+                  {{#if this.isEditingTeachers}}
                     <button class="trash-button" {{action 'removeTeacher' teacher}}>
                       <i title="remove" class="far fa-times-circle" aria-hidden="true"></i>
                     </button>
@@ -82,18 +82,18 @@
               </li>
             {{/each}}
           </ul>
-          {{#if removeTeacherError}}
+          {{#if this.removeTeacherError}}
             <p class="error-message">You must have at least one teacher</p>
           {{/if}}
 
         </div>
-        {{#unless cantEdit}}
-          {{#if isEditingTeachers}}
+        {{#unless this.cantEdit}}
+          {{#if this.isEditingTeachers}}
             <div class="update-teachers">
               <label>Add Teacher<i title="Start typing a teacher's username to see suggestions" class="fas fa-info-circle fa-sm"></i></label>
-                <SelectizeInput @store={{store}} @inputId="select-add-teacher" @maxItems={{1}} @initialOptions={{initialTeacherOptions}} @onItemAdd={{action "addTeacher"}} @model="user" @isAsync={{true}} @labelField="username" @searchField="username" @valueField="id" @customQueryParams={{addTeacherQueryParams}} @queryParamsKey="usernameSearch" />
+                <SelectizeInput @store={{this.store}} @inputId="select-add-teacher" @maxItems={{1}} @initialOptions={{this.initialTeacherOptions}} @onItemAdd={{action "addTeacher"}} @model="user" @isAsync={{true}} @labelField="username" @searchField="username" @valueField="id" @customQueryParams={{this.addTeacherQueryParams}} @queryParamsKey="usernameSearch" />
 
-              {{#each updateTeacherErrors as |error|}}
+              {{#each this.updateTeacherErrors as |error|}}
                 <p class="error-message">{{error}}</p>
               {{/each}}
             </div>
@@ -101,8 +101,8 @@
         {{/unless}}
         <div class="section-info-detail students">
         <label for="students">Students
-          {{#unless cantEdit}}
-            {{#if isEditingStudents}}
+          {{#unless this.cantEdit}}
+            {{#if this.isEditingStudents}}
               <i title="Done" {{action (mut isEditingStudents) false}} class="fa fa-check"></i>
             {{else}}
               <i data-test="edit-students" title="Edit" {{action (mut isEditingStudents) true}} class="far fa-edit"></i>
@@ -110,16 +110,16 @@
           {{/unless}}
         </label>
           <ul class="listing">
-            {{#each section.students as |student|}}
+            {{#each this.section.students as |student|}}
               <li>
-                {{#if currentUser.isStudent}}
+                {{#if this.currentUser.isStudent}}
                   {{student.username}}
                 {{else}}
-                  <LinkTo @route="user" @model={{student}}> {{student.username}} </LinkTo>
+                  <LinkTo @route="users.user" @model={{student}}> {{student.username}} </LinkTo>
                 {{/if}}
-                {{#unless cantEdit}}
-                  <LinkTo @route="user" @model={{student}}> </LinkTo>
-                  {{#if isEditingStudents}}
+                {{#unless this.cantEdit}}
+                  <LinkTo @route="users.user" @model={{student}}> </LinkTo>
+                  {{#if this.isEditingStudents}}
                     <button class="trash-button" {{action 'removeStudent' student}}>
                       <i class="far fa-times-circle" aria-hidden="true"></i>
                     </button>
@@ -133,34 +133,34 @@
 
         </div>
         <div class="update-students">
-          {{#if isEditingStudents}}
-            <AddCreateStudent @store={{store}} @currentUser={{currentUser}} @section={{currentSection}} @students={{studentList}} @sectionPassword={{section.sectionPassword}} />
+          {{#if this.isEditingStudents}}
+            <AddCreateStudent @store={{this.store}} @currentUser={{this.currentUser}} @section={{this.currentSection}} @students={{this.studentList}} @sectionPassword={{this.section.sectionPassword}} />
           {{/if}}
-          {{#each updateStudentErrors as |error|}}
+          {{#each this.updateStudentErrors as |error|}}
             <p class="error-message">{{error}}</p>
           {{/each}}
         </div>
 
     </fieldset>
-  {{#each queryErrors as |error|}}
+  {{#each this.queryErrors as |error|}}
     <p class="error-message">{{error}}</p>
   {{/each}}
-  {{#each updateSectionErrors as |error|}}
+  {{#each this.updateSectionErrors as |error|}}
     <p class="error-message">{{error}}</p>
   {{/each}}
-  {{#each findRecordErrors as |error|}}
+  {{#each this.findRecordErrors as |error|}}
     <p class="error-message">{{error}}</p>
   {{/each}}
   </form>
-  {{#unless cantEdit}}
+  {{#unless this.cantEdit}}
     <button id="deleteSection" class="right" {{action 'confirmDelete'}}><i class="fa fa-trash" aria-hidden="true"></i></button>
 
   {{/unless}}
 
 
-{{#each problemLoadErrors as |error|}}
+{{#each this.problemLoadErrors as |error|}}
   <p class="error-message">{{error}}</p>
 {{/each}}
-{{#if showAssignment}}
-  <AssignmentNew @cancel={{action (mut showAssignment) null}} @fromSectionInfo={{true}} @problems={{problemList}} @selectedSection={{section}} @sections={{sectionList}} @store={{store}} @toAssignmentInfo="toAssignmentInfo" />
+{{#if this.showAssignment}}
+  <AssignmentNew @cancel={{action (mut showAssignment) null}} @fromSectionInfo={{true}} @problems={{this.problemList}} @selectedSection={{this.section}} @sections={{this.sectionList}} @store={{this.store}} @toAssignmentInfo="toAssignmentInfo" />
 {{/if}}

@@ -8,10 +8,10 @@ import { alias, equal } from '@ember/object/computed';
 // orgs
 /*global _:false */
 import { isEqual } from '@ember/utils';
-import CategoriesListMixin from '../mixins/categories_list_mixin';
+// import CategoriesListMixin from '../mixins/categories_list_mixin';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Component.extend(CurrentUserMixin, CategoriesListMixin, {
+export default Component.extend(CurrentUserMixin, {
   elementId: 'problem-filter',
   primaryFilterValue: alias('primaryFilter.value'),
   primaryFilterInputs: alias('filter.primaryFilters.inputs'),

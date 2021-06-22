@@ -9,13 +9,14 @@
   */
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
 import MtAuthMixin from '../mixins/mt_auth_mixin';
 
-export default Route.extend(MtAuthMixin, {
+export default class Application extends Route.extend(MtAuthMixin) {
   //the application route can't require authentication since it's getting the user
-  userNtfs: service('user-ntfs'),
-
-  beforeModel: function () {
+  @service('user-ntfs') userNtfs;
+  @service store;
+  beforeModel() {
     let that = this;
     window.addEventListener(
       'touchstart',
@@ -25,13 +26,13 @@ export default Route.extend(MtAuthMixin, {
       },
       false
     );
-  },
+  }
 
   model() {
-    return this.store.query('user', { alias: 'current' });
-  },
+    return this.store.queryRecord('user', { alias: 'current' });
+  }
 
-  afterModel: function (user, transition) {
+  afterModel(user, transition) {
     //not crazy that this is duplicated here and in AuthenticatedRoute...
 
     // Need this check so that the user isn't auto-redirected to home after
@@ -62,53 +63,53 @@ export default Route.extend(MtAuthMixin, {
     } else if (!user.get('isAuthz')) {
       this.transitionTo('unauthorized');
     }
-  },
+  }
 
-  actions: {
-    // TODO: Remove all the modal stuff
-    openModal: function (modalName, model) {
-      if (model) {
-        this.controllerFor(modalName).set('model', model);
-      }
-      return this.render(modalName, {
-        into: 'application',
-        outlet: 'modal',
-      });
-    },
+  // TODO: Remove all the modal stuff
+  @action
+  openModal(modalName, model) {
+    if (model) {
+      this.controllerFor(modalName).set('model', model);
+    }
+    return this.render(modalName, {
+      into: 'application',
+      outlet: 'modal',
+    });
+  }
+  @action
+  closeModal() {
+    return this.disconnectOutlet({
+      outlet: 'modal',
+      parentView: 'application',
+    });
+  }
+  @action
+  openPanel(panelName, model) {
+    if (model) {
+      this.controllerFor(panelName).set('model', model);
+    }
+    return this.render(panelName, {
+      into: 'application',
+      outlet: 'modal',
+    });
+  }
 
-    closeModal: function () {
-      return this.disconnectOutlet({
-        outlet: 'modal',
-        parentView: 'application',
-      });
-    },
-
-    openPanel: function (panelName, model) {
-      if (model) {
-        this.controllerFor(panelName).set('model', model);
-      }
-      return this.render(panelName, {
-        into: 'application',
-        outlet: 'modal',
-      });
-    },
-
-    closePanel: function () {
-      return this.disconnectOutlet({
-        outlet: 'modal',
-        parentView: 'application',
-      });
-    },
-
-    doneTour: function () {
-      var user = this.model;
-      user.set('seenTour', new Date());
-      user.save();
-      window.guiders.hideAll();
-    },
-
-    reloadPage: function () {
-      window.location.reload();
-    },
-  },
-});
+  @action
+  closePanel() {
+    return this.disconnectOutlet({
+      outlet: 'modal',
+      parentView: 'application',
+    });
+  }
+  @action
+  doneTour() {
+    var user = this.model;
+    user.set('seenTour', new Date());
+    user.save();
+    window.guiders.hideAll();
+  }
+  @action
+  reloadPage() {
+    window.location.reload();
+  }
+}

@@ -1,15 +1,15 @@
-{{#if currentUser.isStudent}}
+{{#if this.currentUser.isStudent}}
   <h1>Welcome to the Problems Page</h1>
   <p>Click on a problem to view it, you can submit an answer to public problems</p>
 {{else}}
-  {{#if currentUser.isAdmin}}
+  {{#if this.currentUser.isAdmin}}
     <h1>Here are some recently created public problems</h1>
     <ul class="info">
-      {{#each publicProblems as |problem|}}
+      {{!-- {{#each publicProblems as |problem|}}
       <li>
         <LinkTo @route="problem" @model={{problem.id}}>{{problem.title}} </LinkTo> created on {{format-date  problem.createDate 'MMM Do YYYY'}}
       </li>
-      {{/each}}
+      {{/each}} --}}
     </ul>
   {{else}}
     <h1>Welcome to the Problems Page</h1>
@@ -20,12 +20,12 @@
 {{/if}}
 
 <div class="button-row">
-{{#unless showCategories}}
+{{#unless this.showCategories}}
   <button {{action 'showCategories'}}>Show Category Menu</button>
 {{/unless}}
-{{#if showCategories}}
+{{#if this.showCategories}}
   <button {{action 'showCategories'}}>Hide Category Menu</button>
-  <CategoriesMenu @categories={{categoryTree}} @store={{store}} />
+  <CategoriesMenu @categories={{this.categoryTree}} @store={{store}} />
 {{/if}}
 </div>
 {{!-- <section>

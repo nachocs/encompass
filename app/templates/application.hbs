@@ -2,7 +2,7 @@
   {{!--outlet header--}}
 
   <TopBar @store={{this.store}} @user={{this.currentUser}} @isHidden={{this.isHidden}} @toHome="toHome" />
-  <SocketLoader @store={{this.store}} @currentUser={{this.currentUser}} />
+  {{!-- <SocketLoader @store={{this.store}} @currentUser={{this.currentUser}} /> --}}
   <section id="al_body">
 
     {{outlet}}

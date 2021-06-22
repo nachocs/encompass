@@ -1,13 +1,12 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
+import { computed, observer } from '@ember/object';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import moment from 'moment';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: 'user-info',
   alert: service('sweet-alert'),
   utils: service('utility-methods'),
@@ -30,7 +29,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   didReceiveAttrs: function () {
     this.set('isEditing', false);
     let user = this.user;
-    if (user.get('sections')) {
+    if (user.sections) {
       this.getUserSections();
     }
     this.set('org', null);
@@ -54,13 +53,12 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   canEdit: computed('user.id', function () {
     let user = this.user;
     let currentUser = this.currentUser;
-
     if (!user || !currentUser) {
       return;
     }
 
     // is Admin
-    if (this.get('basePermissions.isActingAdmin')) {
+    if (this.currentUser.accountType === 'A') {
       return true;
     }
 
@@ -84,7 +82,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   }),
 
   canConfirm: computed('user.id', function () {
-    if (this.get('basePermissions.isActingAdmin')) {
+    if (this.basePermissions.isActingAdmin) {
       return true;
     }
     if (this.basePermissions.isRecordInPdDomain(this.user)) {
@@ -177,7 +175,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   actions: {
     editUser: function () {
       let user = this.user;
-      this.set('userEmail', user.get('email'));
+      this.set('userEmail', user.email);
       let accountType = user.get('accountType');
       if (accountType === 'S') {
         this.set('selectedType', 'Student');

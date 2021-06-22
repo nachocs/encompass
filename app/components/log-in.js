@@ -32,16 +32,16 @@ export default Component.extend(ErrorHandlingMixin, {
 
   @action
   login() {
-    const username = this.get('username').trim();
-    const password = this.get('password');
+    const username = "timleonard"
+    const password = "password!!"
 
     if (!username || !password) {
       this.set('missingCredentials', true);
       return;
     }
-
+    const that = this;
       var createUserData = {
-        username: usernameTrim,
+        username: username,
         password: password,
       };
       $.post({
@@ -54,7 +54,7 @@ export default Component.extend(ErrorHandlingMixin, {
           } else if (res.message === 'Incorrect username') {
             that.set('incorrectUsername', true);
           } else {
-            that.sendAction('toHome');
+            window.location.href = '/';
           }
         })
         .catch((err) => {

@@ -19,11 +19,7 @@ Router.map(function () {
   });
   // PROBLEMS PARENT ROUTE
   this.route('problems', function () {
-    this.route(
-      'problem',
-      { resetNamespace: true, path: '/:problemId' },
-      function () {}
-    );
+    this.route('problem', { resetNamespace: true, path: '/:problem_id' });
     this.route('new');
   });
   // SECTIONS ROUTE
@@ -105,15 +101,8 @@ Router.map(function () {
   });
   // USERS PARENT ROUTE
   this.route('users', function () {
-    this.route(
-      'user',
-      { resetNamespace: true, path: '/:username' },
-      function () {
-        //this.route("edit");
-      }
-    );
+    this.route('user', { path: '/:user_id' });
     this.route('new');
-    this.route('home');
   });
   // IMPORT ROUTE
   this.route('import', function () {});

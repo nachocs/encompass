@@ -55,13 +55,13 @@ async function sendUsers(req, res, next) {
 
     if(!user) {
     // they aren't authorized just send them a list of the guest user back
-    utils.sendResponse(res, {user: [makeGuest()]});
+    utils.sendResponse(res, {user: makeGuest()});
     return next();
     }
 
     if (req.query.alias === 'current') {
       // if all they wanted was the current user, fine
-      return utils.sendResponse(res, {user: [user]});
+      return utils.sendResponse(res, { user });
     }
 
     let criteria;

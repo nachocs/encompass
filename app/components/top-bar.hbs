@@ -12,7 +12,7 @@
             {{!-- My Work / Homepage Button --}}
           <li id="home-btn"><div class="dropdown-skinny"><LinkTo @route="index" @classNames="menu home">my work</LinkTo></div></li>
             {{!-- Make Button --}}
-            {{#if notStudent}}
+            {{#if this.notStudent}}
               <li>
                 <div class="dropdown dropdown-skinny">
                   <LinkTo @route="index" @classNames="menu workspaces">make<i
@@ -52,7 +52,7 @@
                     <LinkTo @route="assignments" @classNames="menu problems">solve a problem</LinkTo>
                       <LinkTo @route="workspaces" @classNames="menu workspaces">review submitted work</LinkTo>
                       <LinkTo @route="responses" @classNames="menu workspaces">mentor submissions</LinkTo>
-                    {{#if notStudent}}
+                    {{#if this.notStudent}}
                       <LinkTo @route="sections" @classNames="menu sections">manage classes</LinkTo>
                       <LinkTo @route="users" @classNames="menu users">manage users</LinkTo>
                     {{/if}}
@@ -69,7 +69,7 @@
                     <LinkTo @route="workspaces" @classNames="menu import">workspace</LinkTo>
                     <LinkTo @route="problems" @classNames="menu import">problem</LinkTo>
                     <LinkTo @route="sections.home" @classNames="menu sections">class</LinkTo>
-                    {{#if notStudent}}
+                    {{#if this.notStudent}}
                       <LinkTo @route="users" @classNames="menu vmt-import">users</LinkTo>
                     {{/if}}
                   </div>
@@ -86,13 +86,13 @@
           </li>
           {{/unless}}
           <li id="current-username">
-            <LinkTo @route="user" @model={{this.currentUser.username}}><img src={{this.currentUser.avatar}} alt={{this.currentUser.username}}></LinkTo>
+            <LinkTo @route="users.user" @model={{this.currentUser.username}}><img src={{this.currentUser.avatar}} alt={{this.currentUser.username}}></LinkTo>
           </li>
           <li id="user-image">
-            <Input @type="checkbox" @id="menu-button" @name="menu-toggle" @checked={{openMenu}} @click={{action "toggleMenu"}} />
+            <Input @type="checkbox" @id="menu-button" @name="menu-toggle" @checked={{this.openMenu}} @click={{action "toggleMenu"}} />
             <img src={{this.user.avatar}} alt="">
-            {{#if newNotifications}}
-              <CircleNtf @displayCount={{newNotifications.length}} />
+            {{#if this.newNotifications}}
+              <CircleNtf @displayCount={{this.newNotifications.length}} />
             {{/if}}
           </li>
         </ul>
@@ -114,12 +114,12 @@
         <li><LinkTo @route="import">import</LinkTo></li>
         {{/unless}}
         <li><LinkTo @route="responses">responses</LinkTo>
-          {{#if responseNotifications}}
-            <CircleNtf @displayCount={{responseNotifications.length}} />
+          {{#if this.responseNotifications}}
+            <CircleNtf @displayCount={{this.responseNotifications.length}} />
           {{/if}}
         </li>
         {{#unless this.currentUser.isStudent}}
-          <li><LinkTo @route="users.home">users</LinkTo></li>
+          <li><LinkTo @route="users">users</LinkTo></li>
         {{/unless}}
         <li id="logout-btn-side"><LinkTo @route="logout">logout</LinkTo></li>
       </ul>

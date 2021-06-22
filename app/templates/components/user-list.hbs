@@ -1,16 +1,16 @@
-{{#if currentUser.isAdmin}}
-  <UserListAdmin @store={{store}} @currentUser={{currentUser}} @users={{users}} @organization={{organiztions}} @toUserInfo="toUserInfo" />
+{{#if this.currentUser.isAdmin}}
+  <UserListAdmin @store={{@store}} @currentUser={{this.currentUser}} @users={{this.users}} @organization={{this.organiztions}} @toUserInfo="toUserInfo" />
 {{/if}}
 
-{{#if currentUser.isTeacher}}
-  <UserListTeacher @store={{store}} @currentUser={{currentUser}} @users={{users}} @organization={{organiztions}} @toUserInfo="toUserInfo" />
+{{#if this.currentUser.isTeacher}}
+  <UserListTeacher @store={{@store}} @currentUser={{this.currentUser}} @users={{this.users}} @organization={{this.organiztions}} @toUserInfo="toUserInfo" />
 {{/if}}
 
-{{#if currentUser.isPdAdmin}}
-    <UserListPd @store={{store}} @currentUser={{currentUser}} @users={{users}} @organization={{organiztions}} @toUserInfo="toUserInfo" />
+{{#if this.currentUser.isPdAdmin}}
+    <UserListPd @store={{@store}} @currentUser={{this.currentUser}} @users={{this.users}} @organization={{this.organiztions}} @toUserInfo="toUserInfo" />
 {{/if}}
 
-{{#if currentUser.isStudent}}
+{{#if this.currentUser.isStudent}}
     <div class="centered">FORBIDDEN</div>
 {{/if}}
 

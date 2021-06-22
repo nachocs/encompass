@@ -8,23 +8,21 @@
 import Route from '@ember/routing/route';
 import { hash } from 'rsvp';
 
-export default Route.extend({
-  beforeModel: function () {
+export default class UsersRoute extends Route {
+  beforeModel() {
     const user = this.modelFor('application');
     const isStudent = user.get('isStudent');
 
     if (isStudent) {
       this.transitionTo('/');
     }
-  },
-  model: function () {
+  }
+  model() {
+    const currentUser = this.modelFor('application');
     return hash({
+      currentUser,
       users: this.store.findAll('user'),
       organizations: this.store.findAll('organization'),
     });
-  },
-
-  renderTemplate: function () {
-    this.render('users/users');
-  },
-});
+  }
+}

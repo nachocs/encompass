@@ -1,4 +1,5 @@
 import Component from '@ember/component';
+import { computed } from '@ember/object';
 import { inject } from '@ember/service';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
@@ -14,11 +15,11 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   toggleRoleErrors: [],
   alert: inject('sweet-alert'),
 
-  isStudent: function () {
+  isStudent: computed('user.actingRole', 'user.id',function () {
     return (
       this.user.get('isStudent') || this.user.get('actingRole') === 'student'
     );
-  }.property('user.actingRole', 'user.id'),
+  }),
 
   notStudent: Ember.computed.not('isStudent'),
 
