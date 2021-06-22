@@ -248,7 +248,7 @@ export default Component.extend(
     },
 
     getUserOrg() {
-      return this.get('currentUser.organization').then((org) => {
+      return this.get('model.currentUser.organization').then((org) => {
         if (org) {
           return org.get('name');
         } else {
@@ -265,7 +265,7 @@ export default Component.extend(
 
     statusOptionsList: computed('problem.status', function () {
       let statusOptions = this.statusOptions;
-      let isTeacher = this.get('currentUser.isTeacher');
+      let isTeacher = this.get('model.currentUser.isTeacher');
 
       if (isTeacher) {
         statusOptions = _.filter(statusOptions, (option) => {
@@ -357,7 +357,7 @@ export default Component.extend(
           },
         },
       };
-      let isAdmin = this.get('currentUser.isAdmin');
+      let isAdmin = this.get('model.currentUser.isAdmin');
 
       if (isAdmin) {
         filter.primaryFilters.inputs.mine.isChecked = false;
@@ -436,7 +436,7 @@ export default Component.extend(
     },
     configurePrimaryFilter() {
       let primaryFilters = this.get('filter.primaryFilters');
-      if (this.get('currentUser.isAdmin')) {
+      if (this.get('model.currentUser.isAdmin')) {
         primaryFilters.selectedValue = 'all';
         this.set('primaryFilter', primaryFilters.inputs.all);
         return;
@@ -445,7 +445,7 @@ export default Component.extend(
     },
     buildMineFilter() {
       let filter = {};
-      let userId = this.get('currentUser.id');
+      let userId = this.get('model.currentUser.id');
 
       filter.createdBy = userId;
 
@@ -480,7 +480,7 @@ export default Component.extend(
 
       if (includeRecommended) {
         let recommendedProblems =
-          this.get('currentUser.organization.recommendedProblems') || [];
+          this.get('model.currentUser.organization.recommendedProblems') || [];
         let ids = recommendedProblems.mapBy('id');
 
         if (!_.isEmpty(ids)) {
@@ -498,7 +498,7 @@ export default Component.extend(
 
       if (includeFromOrg) {
         filter.$or.push({
-          organization: this.get('currentUser.organization.id'),
+          organization: this.get('model.currentUser.organization.id'),
         });
       }
 

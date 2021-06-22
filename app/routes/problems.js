@@ -39,6 +39,7 @@ export default AuthenticatedRoute.extend({
       sections: store.findAll('section'),
       problems: store.query('problem', problemCriteria),
       hideOutlet: this.hideOutlet,
+      currentUser: user,
     });
   },
 
