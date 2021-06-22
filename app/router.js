@@ -19,11 +19,7 @@ Router.map(function () {
   });
   // PROBLEMS PARENT ROUTE
   this.route('problems', function () {
-    this.route(
-      'problem',
-      { resetNamespace: true, path: '/:problem_id' },
-      function () {}
-    );
+    this.route('problem', { resetNamespace: true, path: '/:problem_id' });
     this.route('new');
   });
   // SECTIONS ROUTE
