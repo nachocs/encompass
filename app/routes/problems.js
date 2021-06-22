@@ -6,22 +6,22 @@ export default AuthenticatedRoute.extend({
   hideOutlet: true,
   // application: controller(),
 
-  beforeModel: function (transition) {
-    this._super.apply(this, arguments);
+  // beforeModel: function (transition) {
+  //   this._super.apply(this, arguments);
 
-    let problemId;
-    let params = transition.params;
-    if (params.problem) {
-      problemId = params.problem.problemId;
-    }
-    if (problemId) {
-      this.set('hideOutlet', false);
-    } else {
-      if (!this.hideOutlet) {
-        this.set('hideOutlet', true);
-      }
-    }
-  },
+  //   let problemId;
+  //   let params = transition.params;
+  //   if (params.problem) {
+  //     problemId = params.problem.problemId;
+  //   }
+  //   if (problemId) {
+  //     this.set('hideOutlet', false);
+  //   } else {
+  //     if (!this.hideOutlet) {
+  //       this.set('hideOutlet', true);
+  //     }
+  //   }
+  // },
   model: function (params) {
     const store = this.store;
     const user = this.modelFor('application');
