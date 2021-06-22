@@ -1,21 +1,29 @@
-@import "variables";
-@import "mixins";
-@import "responsive-font-size";
+@import 'variables';
+@import 'mixins';
+@import 'responsive-font-size';
 
 .search-bar-comp {
   margin-top: 8px;
   margin-bottom: 5px;
   margin-right: 50px;
   text-align: right;
-  @include flex-container(40px, null, row, no-wrap, flex-end, flex-end, stretch);
+  @include flex-container(
+    40px,
+    null,
+    row,
+    no-wrap,
+    flex-end,
+    flex-end,
+    stretch
+  );
   .select-bar {
-    @include flex-item(1, center, .3 0 auto);
+    @include flex-item(1, center, 0.3 0 auto);
     margin-right: 15px;
     #my-select {
       width: 100%;
       select {
         height: 30px;
-        @include responsive-font-size(.6em, 1em, 350px, 1200px, .1em);
+        @include responsive-font-size(0.6em, 1em, 350px, 1200px, 0.1em);
         font-size: 1em;
         border: none;
         text-indent: 5px;
@@ -26,7 +34,7 @@
         margin: 0 auto;
         text-transform: capitalize;
         color: black;
-        background: url(/images/caret-down.svg) no-repeat right;
+        background: url(../assets/images/caret-down.svg) no-repeat right;
         background-size: 12px;
         -webkit-appearance: none;
         -moz-appearance: none;
@@ -37,8 +45,8 @@
     }
   }
   .clear-field {
-    @include flex-item(2, center, .6 0 auto);
-    font-size: .8em;
+    @include flex-item(2, center, 0.6 0 auto);
+    font-size: 0.8em;
     position: relative;
     cursor: pointer;
     .search-field {
@@ -64,7 +72,7 @@
     }
   }
   .submit {
-    @include flex-item(3, center, .1 0 auto);
+    @include flex-item(3, center, 0.1 0 auto);
     font-size: 1.3em;
     margin-left: 15px;
     text-align: left;
@@ -82,5 +90,5 @@
     top: 80px;
     right: 10px;
     z-index: 10;
-   }
+  }
 }
