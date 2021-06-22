@@ -6,13 +6,13 @@ import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { isEqual } from '@ember/utils';
 import $ from 'jquery';
-import CategoriesListMixin from '../mixins/categories_list_mixin';
+// import CategoriesListMixin from '../mixins/categories_list_mixin';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(
   CurrentUserMixin,
-  CategoriesListMixin,
+  // CategoriesListMixin,
   ErrorHandlingMixin,
   {
     elementId: 'problem-list-container',
