@@ -21,7 +21,7 @@ Router.map(function () {
   this.route('problems', function () {
     this.route(
       'problem',
-      { resetNamespace: true, path: '/:problemId' },
+      { resetNamespace: true, path: '/:problem_id' },
       function () {}
     );
     this.route('new');
