@@ -6,7 +6,7 @@
 </p>
 
 <p class="sub-input-label">Select a user to configure their permissions for this workspace.</p>
-  <SelectizeInput @store={{store}} @inputId="collab-select" @maxItems={{1}} @initialOptions={{initialCollabOptions}} @selectedItemsHash={{selectedCollaborators}} @onItemAdd={{action "setCollaborator"}} @onItemRemove={{action "setCollaborator"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @placeholder="Search by username to add a collaborator" />
+  <SelectizeInput @store={{this.store}} @inputId="collab-select" @maxItems={{1}} @initialOptions={{initialCollabOptions}} @selectedItemsHash={{selectedCollaborators}} @onItemAdd={{action "setCollaborator"}} @onItemRemove={{action "setCollaborator"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @placeholder="Search by username to add a collaborator" />
 
 {{#if selectedCollaborator}}
   <div class="global-permissions">

@@ -1,7 +1,7 @@
 <div class="flex-container-full">
   {{#if showSubmissionViewer}}
     <div class="flex-item-full filter-options collapse" id="filter-list-side">
-      <SubmissionsFilter @store={{store}} @onSearch={{action "setFilterCriteria"}} @sections={{model.sections}} @assignments={{model.assignments}} @users={{model.users}} @selectedFolderSet={{selectedFolderSet}} @selectedAssignment={{selectedAssignment}} @selectedSection={{selectedSection}} @selectedProblem={{selectedProblem}} @selectedStudents={{selectedStudents}} @selectedTeacher={{selectedTeacher}} @startDate={{startDate}} @endDate={{endDate}} @isTrashedOnly={{toggleTrashed}} />
+      <SubmissionsFilter @store={{this.store}} @onSearch={{action "setFilterCriteria"}} @sections={{model.sections}} @assignments={{model.assignments}} @users={{model.users}} @selectedFolderSet={{selectedFolderSet}} @selectedAssignment={{selectedAssignment}} @selectedSection={{selectedSection}} @selectedProblem={{selectedProblem}} @selectedStudents={{selectedStudents}} @selectedTeacher={{selectedTeacher}} @startDate={{startDate}} @endDate={{endDate}} @isTrashedOnly={{toggleTrashed}} />
 
 
 
@@ -11,7 +11,7 @@
         <div class="top-row">
           <h1 class="heading">Submissions</h1>
         {{#if selectedAnswers.length}}
-          {{#if toggleTrashed}}
+          {{#if this.toggleTrashed}}
           <div class="action restore-all">
             <button class="primary-button animated fadeIn" {{action "restoreAllSelected"}}>Restore {{selectedAnswers.length}} Submissions</button>
           </div>
@@ -73,7 +73,7 @@
           {{else if isRequestTooLarge}}
             {{tooLargeRequestErrorMessage}}
           {{else}}
-          <SubmissionViewerList @answers={{sortedAnswers}} @metadata={{answersMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{store}} @onSelect={{action "updateSelectedAnswers"}} @selectedAnswers={{selectedAnswers}} @threads={{submissionThreads}} />
+          <SubmissionViewerList @answers={{sortedAnswers}} @metadata={{answersMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{this.store}} @onSelect={{action "updateSelectedAnswers"}} @selectedAnswers={{selectedAnswers}} @threads={{submissionThreads}} />
           {{/if}}
         </div>
       </div>
@@ -81,7 +81,7 @@
     {{/if}}
   </div>
   {{#if showWorkspaceSettingsMenu}}
-    <WorkspaceNewSettings @store={{store}} @users={{model.users}} @folderSets={{model.folderSets}} @onProceed={{action "createWorkspace"}} @onBack={{action "toSearchFilter"}} @createWorkspaceError={{createWorkspaceError}} />
+    <WorkspaceNewSettings @store={{this.store}} @users={{model.users}} @folderSets={{model.folderSets}} @onProceed={{action "createWorkspace"}} @onBack={{action "toSearchFilter"}} @createWorkspaceError={{createWorkspaceError}} />
   {{/if}}
   {{#if showSubmissionViewer}}
     <div class="toggle-filter-menu">

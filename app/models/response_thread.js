@@ -1,4 +1,4 @@
-import Model, { hasMany, attr } from '@ember-data/model';
+import Model, { attr, hasMany } from '@ember-data/model';
 import { computed } from '@ember/object';
 import { gt } from '@ember/object/computed';
 import { inject as service } from '@ember/service';

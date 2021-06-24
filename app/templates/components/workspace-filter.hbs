@@ -7,7 +7,7 @@
         <RadioFilter @groupValue={{primaryFilterValue}} @secondaryInputs={{input.secondaryFilters}} @isChecked={{input.isChecked}} @groupName="top-level" @inputValue={{input.value}} @onClick={{action "updateTopLevel"}} @labelName={{input.label}} @labelIcon={{input.icon}} />
         {{#if (is-equal primaryFilterValue input.value)}}
           {{#if showAdminFilters}}
-            <AdminWorkspaceFilter @filter={{adminFilter}} @mainOptions={{secondaryFilterOptions}} @secondaryFilter={{secondaryFilter}} @onUpdate={{action "onUpdate"}} @orgOptions={{orgOptions}} @store={{store}} @updateSecondLevel={{action "updateSecondLevel"}} />
+            <AdminWorkspaceFilter @filter={{adminFilter}} @mainOptions={{secondaryFilterOptions}} @secondaryFilter={{secondaryFilter}} @onUpdate={{action "onUpdate"}} @orgOptions={{orgOptions}} @store={{this.store}} @updateSecondLevel={{action "updateSecondLevel"}} />
           {{else}}
           <ul class="secondary-filter-options">
             {{#each secondaryFilterOptions as |option|}}

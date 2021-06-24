@@ -1,15 +1,9 @@
 import { computed } from '@ember/object';
-import { schedule } from '@ember/runloop';
 import Route from '@ember/routing/route';
+import { schedule } from '@ember/runloop';
 import $ from 'jquery';
 
-
-
-
-
-
 export default Route.extend({
-
   afterModel: function (model, transition) {
     this.controllerFor('workspace').set('currentSelection', model);
   },
@@ -22,7 +16,8 @@ export default Route.extend({
     var user = this.modelFor('application');
 
     schedule('afterRender', function () {
-      if (!user.get('seenTour')) { //customize for this part of the tour
+      if (!user.get('seenTour')) {
+        //customize for this part of the tour
         window.guiders.hideAll();
         //guiders.show('comments');
       }
@@ -44,5 +39,4 @@ export default Route.extend({
     //      this.doTour();
     //    }
   },
-
 });

@@ -33,7 +33,7 @@
 				<span  title={{model.name}} class="folder-name {{if containsCurrentSubmission 'bolder'}}">{{model.name}}</span>
 			</span>
 		  <aside>
-				<button style="display:none" id="updateTaggings{{this.model.id}}" {{action 'updateTaggings'}}></button>
+				<button style="display:none" id="updateTaggings{{model.id}}" {{action 'updateTaggings'}}></button>
 				{{#each queryErrors as |error|}}
 					<p class="error-message">{{error}}</p>
 				{{/each}}
@@ -47,7 +47,7 @@
 {{#if model.isExpanded}}
     <ul class="subfolders">
       {{#each model.sortedChildren as |folder|}}
-        <FolderElem @store={{store}} @model={{folder}} @currentWorkspace={{currentWorkspace}} @folderList={{folderList}} @editFolderMode={{editFolderMode}} @putInFolder={{putInFolder}} @dropped={{dropped}} @canEditFolders={{canEditFolders}} @canDeleteFolders={{canDeleteFolders}} @wsTaggings={{wsTaggings}} @currentSubmission={{currentSubmission}} @currentSelection={{currentSelection}} />
+        <FolderElem @store={{this.store}} @model={{folder}} @currentWorkspace={{currentWorkspace}} @folderList={{folderList}} @editFolderMode={{editFolderMode}} @putInFolder={{putInFolder}} @dropped={{dropped}} @canEditFolders={{canEditFolders}} @canDeleteFolders={{canDeleteFolders}} @wsTaggings={{wsTaggings}} @currentSubmission={{currentSubmission}} @currentSelection={{currentSelection}} />
       {{/each}}
     </ul>
 {{/if}}

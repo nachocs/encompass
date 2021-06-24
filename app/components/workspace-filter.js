@@ -7,17 +7,13 @@ import CurrentUserMixin from '../mixins/current_user_mixin';
 
 export default Component.extend(CurrentUserMixin, {
   elementId: 'workspace-filter',
-
   primaryFilterValue: alias('primaryFilter.value'),
   primaryFilterInputs: alias('filter.primaryFilters.inputs'),
   secondaryFilter: alias('primaryFilter.secondaryFilters'),
   showAdminFilters: equal('primaryFilter.value', 'all'),
   adminFilter: alias('filter.primaryFilters.inputs.all'),
   closedMenu: true,
-
-  currentValues: computed('secondaryFilter.selectedValues.[]', function () {
-    return this.get('secondaryFilter.selectedValues');
-  }),
+  currentValues: computed.reads('secondaryFilter.selectedValues'),
 
   // used for populating the selectize instance
   // orgs passed in from parent are all orgs from db
@@ -33,21 +29,21 @@ export default Component.extend(CurrentUserMixin, {
     return mapped;
   }),
 
-  primaryFilterOptions: computed('filter', function () {
+  primaryFilterOptions: computed('filter', 'primaryFilterInputs', function () {
     let mapped = _.map(this.primaryFilterInputs, (val, key) => {
       return val;
     });
     return _.sortBy(mapped, 'order');
   }),
 
-  secondaryFilterOptions: computed('primaryFilter', function () {
-    return _.map(
-      this.get('primaryFilter.secondaryFilters.inputs'),
-      (val, key) => {
+  secondaryFilterOptions: computed(
+    'primaryFilter.secondaryFilters.inputs',
+    function () {
+      return _.map(this.primaryFilter.secondaryFilters.inputs, (val, key) => {
         return val;
-      }
-    );
-  }),
+      });
+    }
+  ),
 
   actions: {
     updateTopLevel(val) {

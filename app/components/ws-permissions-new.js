@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
+import { computed, observer } from '@ember/object';
 /*global _:false */
 import { equal } from '@ember/object/computed';
 import { inject as service } from '@ember/service';

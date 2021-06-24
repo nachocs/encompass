@@ -7,6 +7,7 @@ export default Component.extend(CurrentUserMixin, {
   utils: service('utility-methods'),
 
   didReceiveAttrs: function () {
+    this._super();
     this.filterAssignments();
   },
 
@@ -19,10 +20,10 @@ export default Component.extend(CurrentUserMixin, {
         return assignment.id && !assignment.get('isTrashed');
       });
       filtered = filtered.sortBy('createDate').reverse();
-      if (currentUser.get('accountType') === 'S') {
-        // what is this if block for?
-        // console.log('current user is a student');
-      }
+      // if (currentUser.get('accountType') === 'S') {
+      //   // what is this if block for?
+      //   // console.log('current user is a student');
+      // }
       // let currentDate = new Date();
       this.set('assignmentList', filtered);
     }
@@ -46,6 +47,7 @@ export default Component.extend(CurrentUserMixin, {
   ),
 
   adminList: computed(
+    'assignmentList',
     'assignments.@each.isTrashed',
     'currentUser.isStudent',
     function () {
@@ -63,6 +65,7 @@ export default Component.extend(CurrentUserMixin, {
   ),
 
   pdList: computed(
+    'assignmentList',
     'assignments.@each.isTrashed',
     'currentUser.isStudent',
     function () {

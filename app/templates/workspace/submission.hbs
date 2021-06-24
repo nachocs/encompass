@@ -24,12 +24,12 @@
     <button {{action 'toggleFolderDisplay'}}><img src="/images/chevrons-right.svg"></button>
   </div>
   {{/if}}
-  <FolderList @store={{store}} @folders={{nonTrashedFolders}} @workspace={{currentWorkspace}} @fileSelection="fileSelectionInFolder" @currentSubmission={{model}} @currentSelection={{currentSelection}} @taggings={{nonTrashedTaggings}} @workspaceSubmissions={{currentWorkspace.submissions.content}} @workspaceSelections={{nonTrashedSelections}} @hideFolders={{action "toggleFolderDisplay"}} @isHidden={{areFoldersHidden}} @containerLayoutClass={{containerLayoutClass}} @hideComments={{action "toggleCommentDisplay"}} @areCommentsHidden={{areCommentsHidden}} />
+  <FolderList @store={{this.store}} @folders={{nonTrashedFolders}} @workspace={{currentWorkspace}} @fileSelection="fileSelectionInFolder" @currentSubmission={{model}} @currentSelection={{currentSelection}} @taggings={{nonTrashedTaggings}} @workspaceSubmissions={{currentWorkspace.submissions.content}} @workspaceSelections={{nonTrashedSelections}} @hideFolders={{action "toggleFolderDisplay"}} @isHidden={{areFoldersHidden}} @containerLayoutClass={{containerLayoutClass}} @hideComments={{action "toggleCommentDisplay"}} @areCommentsHidden={{areCommentsHidden}} />
 {{!-- </div> --}}
 
 <!--section class="submissions"-->
 {{!-- <div id="al_center" class="{{if makingSelection 'al_makeselect'}} workspace-flex-item submission"> --}}
-  <SubmissionGroup @store={{store}} @canRespond={{canRespond}} @submissions={{currentWorkspace.submissions.content}} @submission={{model}} @addSelection={{action "addSelection"}} @deleteSelection={{action "deleteSelection"}} @currentWorkspace={{currentWorkspace}} @toNewResponse={{action "toNewResponse"}} @toSubmission={{action "toSubmission"}} @selections={{nonTrashedSelections}} @responses={{nonTrashedResponses}} @containerLayoutClass={{containerLayoutClass}} @canSeeSelections={{canSeeSelections}} @currentSelection={{currentSelection}} @isParentWorkspace={{isParentWorkspace}} />
+  <SubmissionGroup @store={{this.store}} @canRespond={{canRespond}} @submissions={{currentWorkspace.submissions.content}} @submission={{model}} @addSelection={{action "addSelection"}} @deleteSelection={{action "deleteSelection"}} @currentWorkspace={{currentWorkspace}} @toNewResponse={{action "toNewResponse"}} @toSubmission={{action "toSubmission"}} @selections={{nonTrashedSelections}} @responses={{nonTrashedResponses}} @containerLayoutClass={{containerLayoutClass}} @canSeeSelections={{canSeeSelections}} @currentSelection={{currentSelection}} @isParentWorkspace={{isParentWorkspace}} />
 {{!-- </div> --}}
 <!--/section-->
 
@@ -40,7 +40,7 @@
     <button {{action 'toggleCommentDisplay'}}><img src="/images/chevrons-left.svg"></button>
   </div>
   {{/if}}
-  <CommentList @store={{store}} @comments={{nonTrashedComments}} @currentWorkspace={{currentWorkspace}} @currentSelection={{currentSelection}} @currentSubmission={{model}} @allowedToComment={{permittedToComment}} @resetComment={{action "cancelComment"}} @isHidden={{areCommentsHidden}} @hideComments={{action "toggleCommentDisplay"}} @containerLayoutClass={{containerLayoutClass}} @isParentWorkspace={{isParentWorkspace}} />
+  <CommentList @store={{this.store}} @comments={{nonTrashedComments}} @currentWorkspace={{currentWorkspace}} @currentSelection={{currentSelection}} @currentSubmission={{model}} @allowedToComment={{permittedToComment}} @resetComment={{action "cancelComment"}} @isHidden={{areCommentsHidden}} @hideComments={{action "toggleCommentDisplay"}} @containerLayoutClass={{containerLayoutClass}} @isParentWorkspace={{isParentWorkspace}} />
 {{!-- </div> --}}
 </div>
 

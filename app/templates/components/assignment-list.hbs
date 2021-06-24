@@ -1,7 +1,7 @@
 <section class="list-side">
   <header class="list-header">
     <h1>Assignments</h1>
-    {{#unless currentUser.isStudent}}
+    {{#unless this.currentUser.isStudent}}
       <LinkTo @route="assignments.new" @id="assignment-new-btn" class="new-link-btn"><span>Create Assignment</span><i class="fas fa-plus"></i></LinkTo>
     {{/unless}}
     <div class="clear"></div>
@@ -9,7 +9,7 @@
 
   <section>
     <nav class="list-box">
-      {{#unless currentUser.isStudent}}
+      {{#unless this.currentUser.isStudent}}
         <h2>{{currentUser.username}}'s Assignments</h2>
         <ul class="your-assignments">
           {{#if yourList}}
@@ -25,7 +25,7 @@
           {{/if}}
         </ul>
       {{/unless}}
-      {{#if currentUser.isStudent}}
+      {{#if this.currentUser.isStudent}}
       <h2>{{currentUser.username}}'s Assignments</h2>
       <ul class="your-assignments">
         {{#if assignmentList}}

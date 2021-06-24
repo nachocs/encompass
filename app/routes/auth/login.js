@@ -1,4 +1,4 @@
-import MtAuthMixin from '../mixins/mt_auth_mixin';
+import MtAuthMixin from '../../mixins/mt_auth_mixin';
 import LoggedOutRoute from './_logged_out_route';
 
 export default LoggedOutRoute.extend(MtAuthMixin, {

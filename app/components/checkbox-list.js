@@ -1,10 +1,5 @@
-import { computed } from '@ember/object';
 import Component from '@ember/component';
-
-
-
-
-
+import { computed } from '@ember/object';
 
 export default Component.extend({
   classNames: ['checkbox-list'],
@@ -44,7 +39,6 @@ export default Component.extend({
         this.set('selectedItems', this.items);
       }
       this.toggleProperty('isToggledAll');
-
-    }
-  }
+    },
+  },
 });

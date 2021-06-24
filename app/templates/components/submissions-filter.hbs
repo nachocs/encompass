@@ -3,14 +3,14 @@
   <ul class="primary-filter-list">
     <li>
       <label>Teacher</label>
-        <SelectizeInput @store={{store}} @inputId="select-add-teacher" @maxItems={{1}} @initialItems={{initialTeacherItem}} @initialOptions={{teacherPoolOptions}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="username" @searchField="username" @valueField="id" @propToUpdate="selectedTeacher" @model="user" @placeholder="Search teachers by username" @isDisabled={{isTeacher}} />
+        <SelectizeInput @store={{this.store}} @inputId="select-add-teacher" @maxItems={{1}} @initialItems={{initialTeacherItem}} @initialOptions={{teacherPoolOptions}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="username" @searchField="username" @valueField="id" @propToUpdate="selectedTeacher" @model="user" @placeholder="Search teachers by username" @isDisabled={{isTeacher}} />
       {{#each teacherFormErrors as |error|}}
         <p class="error-message">{{error}}</p>
       {{/each}}
     </li>
     <li>
       <label>Assignment</label>
-        <SelectizeInput @store={{store}} @inputId="select-add-assignment" @maxItems={{1}} @initialOptions={{assignmentOptions}} @initialItems={{initialAssignmentItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="name" @searchField="name" @valueField="id" @model="assignment" @propToUpdate="selectedAssignment" @placeholder="Search assignments by name" />
+        <SelectizeInput @store={{this.store}} @inputId="select-add-assignment" @maxItems={{1}} @initialOptions={{assignmentOptions}} @initialItems={{initialAssignmentItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="name" @searchField="name" @valueField="id" @model="assignment" @propToUpdate="selectedAssignment" @placeholder="Search assignments by name" />
 
       {{#each assignmentFormErrors as |error|}}
         <p class="error-message">{{error}}</p>
@@ -18,7 +18,7 @@
     </li>
     <li>
       <label>Problem</label>
-      <SelectizeInput @store={{store}} @inputId="select-add-problem" @isAsync={{true}} @maxItems={{1}} @initialItems={{initialProblemItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="title" @searchField="title" @valueField="id" @model="problem" @propToUpdate="selectedProblem" @queryParamsKey="title" @topLevelQueryParams="filterBy" @placeholder="Search problems by title" @preload="focus" @secondaryFilters={{problemFilters}} />
+      <SelectizeInput @store={{this.store}} @inputId="select-add-problem" @isAsync={{true}} @maxItems={{1}} @initialItems={{initialProblemItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="title" @searchField="title" @valueField="id" @model="problem" @propToUpdate="selectedProblem" @queryParamsKey="title" @topLevelQueryParams="filterBy" @placeholder="Search problems by title" @preload="focus" @secondaryFilters={{problemFilters}} />
 
       {{#each problemFormErrors as |error|}}
         <p class="error-message">{{error}}</p>
@@ -26,14 +26,14 @@
     </li>
     <li>
       <label>Class</label>
-        <SelectizeInput @store={{store}} @inputId="select-add-section" @maxItems={{1}} @initialOptions={{sectionPoolOptions}} @initialItems={{initialSectionItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="name" @searchField="name" @valueField="id" @model="section" @propToUpdate="selectedSection" @placeholder="Search classes by name" />
+        <SelectizeInput @store={{this.store}} @inputId="select-add-section" @maxItems={{1}} @initialOptions={{sectionPoolOptions}} @initialItems={{initialSectionItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="name" @searchField="name" @valueField="id" @model="section" @propToUpdate="selectedSection" @placeholder="Search classes by name" />
       {{#each sectionFormErrors as |error|}}
         <p class="error-message">{{error}}</p>
       {{/each}}
     </li>
     <li>
       <label>Student</label>
-        <SelectizeInput @store={{store}} @inputId="select-add-student" @maxItems={{20}} @initialOptions={{studentPoolOptions}} @initialItems={{initialStudentItem}} @onItemAdd={{action "updateSelectedStudents"}} @onItemRemove={{action "updateSelectedStudents"}} @labelField="username" @searchField="username" @valueField="id" @propToUpdate="selectedStudents" @model="user" @placeholder="Search students by username" />
+        <SelectizeInput @store={{this.store}} @inputId="select-add-student" @maxItems={{20}} @initialOptions={{studentPoolOptions}} @initialItems={{initialStudentItem}} @onItemAdd={{action "updateSelectedStudents"}} @onItemRemove={{action "updateSelectedStudents"}} @labelField="username" @searchField="username" @valueField="id" @propToUpdate="selectedStudents" @model="user" @placeholder="Search students by username" />
       {{#each studentFormErrors as |error|}}
         <p class="error-message">{{error}}</p>
       {{/each}}

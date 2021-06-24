@@ -6,7 +6,6 @@ export default Component.extend({
   actions: {
     toCopyWorkspace(workspace) {
       this.toCopyWorkspace(workspace);
-    }
-  }
-
+    },
+  },
 });

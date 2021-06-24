@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { alias, equal } from '@ember/object/computed';
+import { alias, equal, reads } from '@ember/object/computed';
 // attrs passed in by parent
 // store
 // onUpdate
@@ -27,9 +27,7 @@ export default Component.extend(CurrentUserMixin, {
     this.set('categoriesFilter', this.selectedCategories);
   },
   // current subFilter selected values
-  currentValues: computed('secondaryFilter.selectedValues.[]', function () {
-    return this.get('secondaryFilter.selectedValues');
-  }),
+  currentValues: reads('secondaryFilter.selectedValues'),
 
   // used for populating the selectize instance
   // orgs passed in from parent are all orgs from db
@@ -45,21 +43,24 @@ export default Component.extend(CurrentUserMixin, {
     return mapped;
   }),
 
-  primaryFilterOptions: computed('filter', function () {
+  primaryFilterOptions: computed('filter', 'primaryFilterInputs', function () {
     let mapped = _.map(this.primaryFilterInputs, (val, key) => {
       return val;
     });
     return _.sortBy(mapped, 'label');
   }),
 
-  secondaryFilterOptions: computed('primaryFilter', function () {
-    return _.map(
-      this.get('primaryFilter.secondaryFilters.inputs'),
-      (val, key) => {
-        return val;
-      }
-    );
-  }),
+  secondaryFilterOptions: computed(
+    'primaryFilter.secondaryFilters.inputs',
+    function () {
+      return _.map(
+        this.get('primaryFilter.secondaryFilters.inputs'),
+        (val, key) => {
+          return val;
+        }
+      );
+    }
+  ),
 
   actions: {
     updateTopLevel(val) {

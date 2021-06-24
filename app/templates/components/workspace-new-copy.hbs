@@ -41,7 +41,7 @@
         {{!-- <h5>Step {{currentStep.value}} / {{maxSteps}}: {{currentStep.display}}</h5> --}}
 
         {{#if showSelectWorkspace}}
-          <WsCopyWorkspace @showLoadingSubmissions={{showLoadingSubmissions}} @loadSubmissionErrors={{loadSubmissionErrors}} @store={{store}} @workspaceToCopy={{workspaceToCopy}} @selectedWorkspace={{selectedWorkspace}} @fromWorkspaceList={{fromWorkspaceList}} @onProceed={{action "setOriginalWorkspace"}} />
+          <WsCopyWorkspace @showLoadingSubmissions={{showLoadingSubmissions}} @loadSubmissionErrors={{loadSubmissionErrors}} @store={{this.store}} @workspaceToCopy={{workspaceToCopy}} @selectedWorkspace={{selectedWorkspace}} @fromWorkspaceList={{fromWorkspaceList}} @onProceed={{action "setOriginalWorkspace"}} />
         {{/if}}
 
         {{#if showSelectConfig}}
@@ -49,11 +49,11 @@
         {{/if}}
 
         {{#if showOwnerSettings}}
-          <WsCopyOwnerSettings @newWsOwner={{newWsOwner}} @newWsMode={{newWsMode}} @newWsName={{newWsName}} @newFolderSetOptions={{newFolderSetOptions}} @workspace={{selectedWorkspace}} @store={{store}} @modeInputs={{modeInputs}} @onProceed={{action "setOwnerSettings"}} @folderSetInputs={{folderSetInputs}} @folderSets={{model.folderSets}} @isCopyingFolders={{isCopyingFolders}} @onBack={{action "changeStep"}} @existingFolderSet={{existingFolderSet}} />
+          <WsCopyOwnerSettings @newWsOwner={{newWsOwner}} @newWsMode={{newWsMode}} @newWsName={{newWsName}} @newFolderSetOptions={{newFolderSetOptions}} @workspace={{selectedWorkspace}} @store={{this.store}} @modeInputs={{modeInputs}} @onProceed={{action "setOwnerSettings"}} @folderSetInputs={{folderSetInputs}} @folderSets={{model.folderSets}} @isCopyingFolders={{isCopyingFolders}} @onBack={{action "changeStep"}} @existingFolderSet={{existingFolderSet}} />
         {{/if}}
 
         {{#if showPermissions}}
-          <WsCopyPermissions @submissionsPool={{submissionsPool}} @workspace={{workspaceToCopy}} @newWsPermissions={{newWsPermissions}} @store={{store}} @newWsOwner={{newWsOwner}} @onProceed={{action "setPermissions"}} @onBack={{action "changeStep"}} />
+          <WsCopyPermissions @submissionsPool={{submissionsPool}} @workspace={{workspaceToCopy}} @newWsPermissions={{newWsPermissions}} @store={{this.store}} @newWsOwner={{newWsOwner}} @onProceed={{action "setPermissions"}} @onBack={{action "changeStep"}} />
         {{/if}}
 
         {{#if showReview}}

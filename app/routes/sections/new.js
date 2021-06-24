@@ -1,5 +1,5 @@
 import { hash } from 'rsvp';
-import AuthenticatedRoute from './_authenticated_route';
+import AuthenticatedRoute from '../_authenticated_route';
 
 export default AuthenticatedRoute.extend({
   beforeModel: function () {
@@ -9,24 +9,27 @@ export default AuthenticatedRoute.extend({
     const isStudent = user.get('isStudent');
 
     if (isStudent) {
-      this.transitionTo('assignments.home');
+      this.transitionTo('sections.home');
     }
   },
 
   model: function (params) {
     return hash({
+      users: this.store.findAll('user'),
+      organizations: this.store.findAll('organization'),
+      user: this.modelFor('application'),
       sections: this.store.findAll('section'),
     });
   },
   renderTemplate: function () {
-    this.render('assignments/new');
+    this.render('sections/new');
   },
   actions: {
-    toAssignmentInfo: function (assignment) {
-      this.transitionTo('assignment', assignment);
+    toSectionInfo: function (section) {
+      this.transitionTo('section', section);
     },
-    toAssignmentsHome: function () {
-      this.transitionTo('assignments.home');
+    toSectionsHome: function () {
+      this.transitionTo('sections.home');
     },
   },
 });

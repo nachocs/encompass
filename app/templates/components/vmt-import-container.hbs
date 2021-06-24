@@ -33,15 +33,15 @@
 
       <div class="step-content">
         {{#if showSelectRooms}}
-          <VmtImportStep2 @store={{store}} @onBack={{action "changeStep"}} @onProceed={{action "setSelectedRooms"}} @existingSelectedRooms={{selectedRooms}} @previousResults={{mostRecentSearchResults}} @existingSelectedActivities={{selectedActivities}} />
+          <VmtImportStep2 @store={{this.store}} @onBack={{action "changeStep"}} @onProceed={{action "setSelectedRooms"}} @existingSelectedRooms={{selectedRooms}} @previousResults={{mostRecentSearchResults}} @existingSelectedActivities={{selectedActivities}} />
         {{/if}}
 
         {{#if showCreateWs}}
-          <ImportWorkStep5 @users={{users}} @selectedOwner={{selectedOwner}} @selectedFolderSet={{selectedFolderSet}} @doCreateWs={{doCreateWs}} @selectedMode={{selectedMode}} @folderSets={{folderSets}} @store={{store}} @answers={{selectedRooms}} @workspaceName={{workspaceName}} @workspaceOwner={{workspaceOwner}} @workspaceMode={{workspaceMode}} @folderSet={{folderSet}} @onBack={{action "changeStep"}} @onProceed={{action "prepareReview"}} />
+          <ImportWorkStep5 @users={{users}} @selectedOwner={{selectedOwner}} @selectedFolderSet={{selectedFolderSet}} @doCreateWs={{doCreateWs}} @selectedMode={{selectedMode}} @folderSets={{folderSets}} @store={{this.store}} @answers={{selectedRooms}} @workspaceName={{workspaceName}} @workspaceOwner={{workspaceOwner}} @workspaceMode={{workspaceMode}} @folderSet={{folderSet}} @onBack={{action "changeStep"}} @onProceed={{action "prepareReview"}} />
         {{/if}}
 
         {{#if showReview}}
-          <VmtImportStep4 @store={{store}} @answers={{selectedRooms}} @workspaceName={{workspaceName}} @workspaceOwner={{workspaceOwner}} @workspaceMode={{workspaceMode}} @folderSet={{folderSet}} @isUploadingAnswer={{isUploadingAnswer}} @isCreatingWorkspace={{isCreatingWorkspace}} @uploadedAnswers={{uploadedAnswers}} @createdWorkspace={{createdWorkspace}} @onBack={{action "changeStep"}} @onProceed={{action "importWork"}} />
+          <VmtImportStep4 @store={{this.store}} @answers={{selectedRooms}} @workspaceName={{workspaceName}} @workspaceOwner={{workspaceOwner}} @workspaceMode={{workspaceMode}} @folderSet={{folderSet}} @isUploadingAnswer={{isUploadingAnswer}} @isCreatingWorkspace={{isCreatingWorkspace}} @uploadedAnswers={{uploadedAnswers}} @createdWorkspace={{createdWorkspace}} @onBack={{action "changeStep"}} @onProceed={{action "importWork"}} />
         {{/if}}
       </div>
 

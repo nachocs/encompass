@@ -70,7 +70,7 @@
 
           <div class="main-list">
   {{#each displayThreads as |thread|}}
-    <ResponseSubmissionThread @toSubmissionResponse={{action "toSubmissionResponse"}} @showStudent={{showStudentHeader}} @showMentor={{showMentorHeader}} @thread={{thread}} @store={{store}} @toResponse={{action "toResponse"}} />
+    <ResponseSubmissionThread @toSubmissionResponse={{action "toSubmissionResponse"}} @showStudent={{showStudentHeader}} @showMentor={{showMentorHeader}} @thread={{thread}} @store={{this.store}} @toResponse={{action "toResponse"}} />
   {{else}}
     <div class="no-results-container">
       <p class="notice">{{noResponsesMessage}}</p>

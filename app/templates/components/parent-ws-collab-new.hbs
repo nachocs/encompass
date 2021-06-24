@@ -4,7 +4,7 @@
     <CheckboxList @items={{usersToAdd}} @selectedItems={{collabsToAdd}} @itemDisplayProp="username" @inputName="bulkAddCollabs" @header="Add users as collaborators" @noItemsMessage="All students have been added already" />
   {{else}}
     <div class="collab-name">
-      <SelectizeInput @store={{store}} @inputId="collab-select" @maxItems={{1}} @initialOptions={{initialCollabOptions}} @selectedItemsHash={{selectedCollaborators}} @onItemAdd={{action "setCollab"}} @onItemRemove={{action "setCollab"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @queryParamsKey="usernameSearch" @isAsync={{true}} @placeholder="Search by username" @preload="focus" />
+      <SelectizeInput @store={{this.store}} @inputId="collab-select" @maxItems={{1}} @initialOptions={{initialCollabOptions}} @selectedItemsHash={{selectedCollaborators}} @onItemAdd={{action "setCollab"}} @onItemRemove={{action "setCollab"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @queryParamsKey="usernameSearch" @isAsync={{true}} @placeholder="Search by username" @preload="focus" />
     </div>
   {{/if}}
   {{#unless isNoActionToTake}}

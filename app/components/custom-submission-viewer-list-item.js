@@ -1,10 +1,5 @@
-import { computed } from '@ember/object';
 import Component from '@ember/component';
-
-
-
-
-
+import { computed } from '@ember/object';
 
 export default Component.extend({
   elementId: ['custom-submission-viewer-list-item'],
@@ -16,7 +11,6 @@ export default Component.extend({
   actions: {
     onSelect: function () {
       this.onSelect(this.get('submission.id'));
-    }
-  }
-
+    },
+  },
 });

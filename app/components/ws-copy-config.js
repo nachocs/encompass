@@ -1,14 +1,8 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
+import { equal } from '@ember/object/computed';
 /*global _:false */
 import { inject as service } from '@ember/service';
-
-import { equal } from '@ember/object/computed';
-import Component from '@ember/component';
-
-
-
-
-
 
 export default Component.extend({
   elementId: 'ws-copy-config',
@@ -19,10 +13,9 @@ export default Component.extend({
     const configInputs = this.get('copyConfig.inputs');
 
     if (this.utils.isNonEmptyArray(configInputs)) {
-      return configInputs.map(input => input.value);
+      return configInputs.map((input) => input.value);
     }
     return [];
-
   }),
 
   didReceiveAttrs() {
@@ -80,6 +73,6 @@ export default Component.extend({
     },
     back() {
       this.onBack(-1);
-    }
-  }
+    },
+  },
 });

@@ -1,7 +1,7 @@
 <div class="student-search">
   <h3>Add Existing User<i title="Start typing an existing username to see suggestions"
       class="fas fa-info-circle fa-sm"></i></h3>
-  <SelectizeInput @store={{store}} @inputId="select-add-student" @maxItems={{1}}
+  <SelectizeInput @store={{this.store}} @inputId="select-add-student" @maxItems={{1}}
     @initialOptions={{initialStudentOptions}} @onItemAdd={{action "updateStudents" }} @model="user" @isAsync={{true}}
     @labelField="username" @searchField="username" @valueField="id" @queryParamsKey="usernameSearch" />
 </div>

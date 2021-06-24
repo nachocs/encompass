@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
+import { computed, observer } from '@ember/object';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';

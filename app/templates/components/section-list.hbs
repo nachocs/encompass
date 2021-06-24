@@ -12,7 +12,7 @@
   <section>
     <nav class="list-box">
       {{#unless this.currentUser.isStudent}}
-      <h2>{{this.currentUser.username}}'s Classes</h2>
+      <h2>{{currentUser.username}}'s Classes</h2>
       <ul class="your-sections">
         {{#if this.yourSections}}
           {{#each this.yourSections as |section|}}
@@ -49,14 +49,14 @@
     {{/if}}
 
     {{#if this.currentUser.isPdAdmin}}
-      <h2>{{this.currentUser.organization.name}}'s Classes</h2>
+      <h2>{{currentUser.organization.name}}'s Classes</h2>
       <ul class="org-sections">
         {{#if orgSections}}
           {{#each orgSections as |section|}}
           <li><LinkTo @route="section" @model={{section}} @classNames="section">{{section.name}}</LinkTo></li>
           {{/each}}
         {{else}}
-          <li>{{this.currentUser.organization.name}} does not have any classes yet</li>
+          <li>{{currentUser.organization.name}} does not have any classes yet</li>
         {{/if}}
       </ul>
     {{/if}}

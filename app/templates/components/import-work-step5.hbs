@@ -36,7 +36,7 @@
         <i class="fas fa-info-circle info-icon"></i>
       </span>
     </p>
-    <SelectizeInput @store={{store}} @inputId="owner-select" @initialOptions={{ownerOptions}} @initialItems={{initialOwnerItem}} @maxItems={{1}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @propToUpdate="selectedOwner" @placeholder="Search by username to choose as owner" />
+    <SelectizeInput @store={{this.store}} @inputId="owner-select" @initialOptions={{ownerOptions}} @initialItems={{initialOwnerItem}} @maxItems={{1}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @propToUpdate="selectedOwner" @placeholder="Search by username to choose as owner" />
     {{#if missingOwnerError}}
     <div class="create-ws-error">
       <ErrorBox @error={{missingOwnerError}} @showDismiss={{true}} @resetError={{action (mut missingOwnerError) null}} />
@@ -62,13 +62,13 @@
         <i class="fas fa-info-circle info-icon"></i>
       </span>
     </p>
-    <SelectizeInput @store={{store}} @inputId="folderset-select" @initialOptions={{folderSetOptions}} @maxItems={{1}} @initialItems={{initialFolderSetItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="name" @valueField="id" @searchField="name" @model="folder-set" @propToUpdate="selectedFolderSet" @placeholder="Select a Folder Set" />
+    <SelectizeInput @store={{this.store}} @inputId="folderset-select" @initialOptions={{folderSetOptions}} @maxItems={{1}} @initialItems={{initialFolderSetItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @labelField="name" @valueField="id" @searchField="name" @model="folder-set" @propToUpdate="selectedFolderSet" @placeholder="Select a Folder Set" />
   </div>
     <p class="info">You can add collaborators and change workspace settings after creating the workspace</p>
   </div>
   {{/if}}
 
-  {{#unless currentUser.isStudent}}
+  {{#unless this.currentUser.isStudent}}
     {{#if selectedSection}}
     <div class="ws-new assignment">
       <p class="input-label">

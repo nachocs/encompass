@@ -100,7 +100,7 @@
         {{/unless}}
         {{#if showCategories}}
         <button class="cancel-button hide-cats-btn" {{action 'showCategories' }}>Hide Category Menu</button>
-        <CategoriesMenu @categories={{categoryTree}} @store={{store}} @addCategories="addCategories" />
+        <CategoriesMenu @categories={{categoryTree}} @store={{this.store}} @addCategories="addCategories" />
         {{/if}}
       </div>
       <p class="info-content-label keywords">

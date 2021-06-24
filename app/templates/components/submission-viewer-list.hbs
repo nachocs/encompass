@@ -1,6 +1,6 @@
 <div class="main-list">
   {{#each answers as |answer|}}
-      <SubmissionViewerListItem @answer={{answer}} @selectedAnswerIds={{selectedAnswerIds}} @onSelect={{action "onSelect"}} @isList={{isList}} @isGrid={{isGrid}} @store={{store}} @threads={{threads}} @selectedMap={{answersSelectedHash}} @moreMenuOptions={{moreMenuOptions}} />
+      <SubmissionViewerListItem @answer={{answer}} @selectedAnswerIds={{selectedAnswerIds}} @onSelect={{action "onSelect"}} @isList={{isList}} @isGrid={{isGrid}} @store={{this.store}} @threads={{threads}} @selectedMap={{answersSelectedHash}} @moreMenuOptions={{moreMenuOptions}} />
       {{else}}
       <div class="no-results-container">
         <p class="info">No submissions found</p>

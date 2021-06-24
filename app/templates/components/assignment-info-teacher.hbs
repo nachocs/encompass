@@ -42,7 +42,7 @@
     Class
   </p>
   {{#if showSectionInput}}
-    <SelectizeInput @inputId="assn-new-section-select" @initialOptions={{sectionOptions}} @initialItems={{initialSectionItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="name" @valueField="id" @searchField="name" @propToUpdate="selectedSection" @placeholder="Search for a section by name" @model="section" @store={{store}} />
+    <SelectizeInput @inputId="assn-new-section-select" @initialOptions={{sectionOptions}} @initialItems={{initialSectionItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="name" @valueField="id" @searchField="name" @propToUpdate="selectedSection" @placeholder="Search for a section by name" @model="section" @store={{this.store}} />
   {{else}}
     <LinkTo @route="section" @model={{section}}>
       {{section.name}}
@@ -54,7 +54,7 @@
     Problem
   </p>
   {{#if showProblemInput}}
-    <SelectizeInput @store={{store}} @inputId="assn-new-problem-select" @initialOptions={{problemOptions}} @initialItems={{initialProblemItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="title" @valueField="id" @searchField="title" @propToUpdate="selectedProblem" @placeholder="Search for a problem by title" @isAsync={{true}} @model="problem" @queryParamsKey="query" @searchCriterion="title" @topLevelQueryParams="searchBy" @preload={{problemsPreloadValue}} />
+    <SelectizeInput @store={{this.store}} @inputId="assn-new-problem-select" @initialOptions={{problemOptions}} @initialItems={{initialProblemItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="title" @valueField="id" @searchField="title" @propToUpdate="selectedProblem" @placeholder="Search for a problem by title" @isAsync={{true}} @model="problem" @queryParamsKey="query" @searchCriterion="title" @topLevelQueryParams="searchBy" @preload={{problemsPreloadValue}} />
   {{else}}
     <LinkTo @route="problem" @model={{problem}}>
       {{problem.title}}
@@ -87,7 +87,7 @@
     </p>
   {{/if}}
     {{#if showLinkedWsForm}}
-      <LinkedWorkspacesNew @students={{studentsWithoutWorkspaces}} @assignment={{assignment}} @section={{section}} @problem={{problem}} @onCancel={{action (mut showLinkedWsForm) false}} @store={{store}} @handleResults={{action "handleCreatedLinkedWs"}} />
+      <LinkedWorkspacesNew @students={{studentsWithoutWorkspaces}} @assignment={{assignment}} @section={{section}} @problem={{problem}} @onCancel={{action (mut showLinkedWsForm) false}} @store={{this.store}} @handleResults={{action "handleCreatedLinkedWs"}} />
     {{/if}}
     {{#if showAddLinkedWsBtn}}
       <button
@@ -117,7 +117,7 @@
     </p>
   {{/if}}
   {{#if showParentWsForm}}
-    <ParentWorkspaceNew @childWorkspaces={{assignment.linkedWorkspaces}} @assignment={{assignment}} @section={{section}} @problem={{problem}} @onCancel={{action (mut showParentWsForm) false}} @store={{store}} @handleResults={{action "handleCreatedParentWs"}} />
+    <ParentWorkspaceNew @childWorkspaces={{assignment.linkedWorkspaces}} @assignment={{assignment}} @section={{section}} @problem={{problem}} @onCancel={{action (mut showParentWsForm) false}} @store={{this.store}} @handleResults={{action "handleCreatedParentWs"}} />
   {{/if}}
   {{#if showAddParentWsBtn}}
     <button data-test="add-parent-ws" class="primary-button" {{action (mut showParentWsForm) true}}>Add Parent

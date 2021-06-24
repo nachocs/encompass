@@ -219,7 +219,7 @@ export default Component.extend(
 
         let toggleTrashed = this.toggleTrashed;
 
-        if (toggleTrashed) {
+        if (this.toggleTrashed) {
           msg = `${msg} - <strong>Displaying Trashed Problems</strong>`;
         }
         return msg;

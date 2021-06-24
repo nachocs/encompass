@@ -6,7 +6,7 @@
     <ul id="problem-list-ul">
       {{#each this.problems as |problem|}}
       <li>
-        <ProblemListItem @problem={{problem}} @isList={{this.isList}} @isGrid={{this.isGrid}} @store={{this.store}} @moreMenuOptions={{this.moreMenuOptions}} @toProblemInfo={{action "toProblemInfo"}} @refreshList={{action "refreshList"}} />
+        <ProblemListItem @problem={{problem}} @isList={{isList}} @isGrid={{isGrid}} @store={{this.store}} @moreMenuOptions={{moreMenuOptions}} @toProblemInfo={{action "toProblemInfo"}} @refreshList={{action "refreshList"}} />
 
       </li>
       {{/each}}

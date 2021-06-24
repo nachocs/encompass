@@ -1,12 +1,7 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
-import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
-
-
-
-
-
 
 export default Component.extend(CurrentUserMixin, {
   elementId: 'parent-workspace-new',
@@ -19,16 +14,21 @@ export default Component.extend(CurrentUserMixin, {
     this.set('workspaceName', this.defaultName);
   },
 
-  defaultName: computed('assignment.name', 'currentUser.username', 'assignmentName', function () {
-    let base = 'Parent Workspace: ';
-    let assignmentName = this.get('assignment.name') || this.assignmentName;
+  defaultName: computed(
+    'assignment.name',
+    'currentUser.username',
+    'assignmentName',
+    function () {
+      let base = 'Parent Workspace: ';
+      let assignmentName = this.get('assignment.name') || this.assignmentName;
 
-    if (assignmentName) {
-      return base + assignmentName;
+      if (assignmentName) {
+        return base + assignmentName;
+      }
+
+      return base + this.get('currentUser.username');
     }
-
-    return base + this.get('currentUser.username');
-  }),
+  ),
 
   actions: {
     cancel() {
@@ -41,10 +41,18 @@ export default Component.extend(CurrentUserMixin, {
     create() {
       let childWorkspaces = this.childWorkspaces || [];
       if (!childWorkspaces) {
-        return this.set('createWorkspaceError', 'Must provide child workspaces to create parent workspace');
+        return this.set(
+          'createWorkspaceError',
+          'Must provide child workspaces to create parent workspace'
+        );
       }
 
-      this.loading.handleLoadingMessage(this, 'start', 'isRequestInProgress', 'doShowLoadingMessage');
+      this.loading.handleLoadingMessage(
+        this,
+        'start',
+        'isRequestInProgress',
+        'doShowLoadingMessage'
+      );
 
       let assignment = this.assignment;
       let data = {
@@ -58,12 +66,22 @@ export default Component.extend(CurrentUserMixin, {
 
       // make sure linked workspaces request is not set to create
       assignment.set('linkedWorkspacesRequest', { doCreate: false });
-      return assignment.save()
+      return assignment
+        .save()
         .then((results) => {
-          this.loading.handleLoadingMessage(this, 'end', 'isRequestInProgress', 'doShowLoadingMessage');
+          this.loading.handleLoadingMessage(
+            this,
+            'end',
+            'isRequestInProgress',
+            'doShowLoadingMessage'
+          );
 
-          let createWorkspaceError = results.get('parentWorkspaceRequest.error');
-          let createdWorkspace = results.get('parentWorkspaceRequest.createdWorkspace');
+          let createWorkspaceError = results.get(
+            'parentWorkspaceRequest.error'
+          );
+          let createdWorkspace = results.get(
+            'parentWorkspaceRequest.createdWorkspace'
+          );
 
           if (createWorkspaceError) {
             return this.set('createWorkspaceError', createWorkspaceError);
@@ -73,9 +91,14 @@ export default Component.extend(CurrentUserMixin, {
           this.send('cancel');
         })
         .catch((err) => {
-          this.loading.handleLoadingMessage(this, 'end', 'isRequestInProgress', 'doShowLoadingMessage');
+          this.loading.handleLoadingMessage(
+            this,
+            'end',
+            'isRequestInProgress',
+            'doShowLoadingMessage'
+          );
           this.set('createWorkspaceError', err);
         });
-    }
-  }
+    },
+  },
 });

@@ -21,7 +21,7 @@
       <i class="fas fa-info-circle info-icon"></i>
     </span>
   </p>
-  <SelectizeInput @store={{store}} @inputId="owner-select" @initialOptions={{initialOwnerOptions}} @initialItems={{initialOwnerItem}} @maxItems={{1}} @onItemAdd={{action "setOwner"}} @onItemRemove={{action "setOwner"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @queryParamsKey="usernameSearch" @isAsync={{true}} @placeholder="Search users to choose as owner" />
+  <SelectizeInput @store={{this.store}} @inputId="owner-select" @initialOptions={{initialOwnerOptions}} @initialItems={{initialOwnerItem}} @maxItems={{1}} @onItemAdd={{action "setOwner"}} @onItemRemove={{action "setOwner"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @queryParamsKey="usernameSearch" @isAsync={{true}} @placeholder="Search users to choose as owner" />
 </div>
 
 {{#each ownerErrors as |error|}}
@@ -77,7 +77,7 @@
 
     {{else}}
       <p class="sub-input-label">Your workspace will have 0 folders. Select a pre-existing folder set below or continue on without any folders</p>
-      <SelectizeInput @store={{store}} @inputId="folderset-select" @maxItems={{1}} @initialOptions={{initialFolderSetOptions}} @initialItems={{initialFolderSetItem}} @onItemAdd={{action "setFolderSet"}} @onItemRemove={{action "setFolderSet"}} @labelField="name" @valueField="id" @searchField="name" @model="folder-set" @placeholder="Select a Folder Set" />
+      <SelectizeInput @store={{this.store}} @inputId="folderset-select" @maxItems={{1}} @initialOptions={{initialFolderSetOptions}} @initialItems={{initialFolderSetItem}} @onItemAdd={{action "setFolderSet"}} @onItemRemove={{action "setFolderSet"}} @labelField="name" @valueField="id" @searchField="name" @model="folder-set" @placeholder="Select a Folder Set" />
     {{/if}}
 </div>
 

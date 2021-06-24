@@ -6,7 +6,7 @@
       <i class="fas fa-info-circle info-icon"></i>
     </span>
   </p>
-  <SelectizeInput @store={{store}} @inputId="select-workspace" @isAsync={{true}} @maxItems={{1}} @initialOptions={{initialWorkspaceOptions}} @initialItems={{initialWorkspaceItem}} @onItemAdd={{action "setSelectedWorkspace"}} @onItemRemove={{action "setSelectedWorkspace"}} @labelField="name" @searchField="name" @valueField="id" @model="workspace" @queryParamsKey="query" @searchCriterion="name" @topLevelQueryParams="searchBy" @placeholder="Search for workspaces by name..." @preload="focus" />
+  <SelectizeInput @store={{this.store}} @inputId="select-workspace" @isAsync={{true}} @maxItems={{1}} @initialOptions={{initialWorkspaceOptions}} @initialItems={{initialWorkspaceItem}} @onItemAdd={{action "setSelectedWorkspace"}} @onItemRemove={{action "setSelectedWorkspace"}} @labelField="name" @searchField="name" @valueField="id" @model="workspace" @queryParamsKey="query" @searchCriterion="name" @topLevelQueryParams="searchBy" @placeholder="Search for workspaces by name..." @preload="focus" />
   {{#if missingWorkspace}}
     <ErrorBox @error="Please select a workspace." @resetError={{action (mut missingWorkspace) null}} @showDismiss={{true}} />
   {{/if}}

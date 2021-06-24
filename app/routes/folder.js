@@ -23,7 +23,7 @@ export default Route.extend({
   },
 
   actions: {
-    willTransition: function (transition) {
+    willTransition: function (_transition) {
       var appController = this.controllerFor('application');
       appController.set('isHidden', false);
     },

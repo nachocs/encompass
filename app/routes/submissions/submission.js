@@ -7,19 +7,13 @@
   * @see workspace_submissions_route
   */
 /*global _:false */
-import $ from 'jquery';
-
-import { resolve } from 'rsvp';
+import Route from '@ember/routing/route';
 import { schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import Route from '@ember/routing/route';
+import $ from 'jquery';
+import { resolve } from 'rsvp';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import VmtHostMixin from '../mixins/vmt-host';
-
-
-
-
-
 
 export default Route.extend(CurrentUserMixin, VmtHostMixin, {
   alert: service('sweet-alert'),
@@ -28,9 +22,7 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
   queryParams: 'vmtRoomId',
 
   model(params) {
-
     let { submission_id } = params;
-
 
     let submissions = this.modelFor('workspace.submissions');
     let submission = submissions.findBy('id', submission_id);
@@ -39,19 +31,19 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
   },
 
   afterModel(submission, transition) {
+    return this.resolveVmtRoom(submission).then((room) => {
+      if (!room) {
+        return;
+      }
+      let vmtRoomId = room._id;
 
-    return this.resolveVmtRoom(submission)
-      .then((room) => {
-        if (!room) {
-          return;
-        }
-        let vmtRoomId = room._id;
-
-        // so links to selections still work
-        if (transition.intent.name === 'workspace.submission') {
-          this.transitionTo('workspace.submission', submission, { queryParams: { vmtRoomId } });
-        }
-      });
+      // so links to selections still work
+      if (transition.intent.name === 'workspace.submission') {
+        this.transitionTo('workspace.submission', submission, {
+          queryParams: { vmtRoomId },
+        });
+      }
+    });
   },
 
   setupController: function (controller, model) {
@@ -94,18 +86,16 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
     let url = `api/vmt/rooms/${roomId}`;
     return $.get({
       url,
-    })
-      .then((data) => {
-        if (!data || !data.room) {
-          return null;
-        }
-        // put result on window if necessary
+    }).then((data) => {
+      if (!data || !data.room) {
+        return null;
+      }
+      // put result on window if necessary
 
-        this.handleRoomForVmt(data.room);
+      this.handleRoomForVmt(data.room);
 
-        return data.room;
-      });
-
+      return data.room;
+    });
   },
 
   handleRoomForVmt(room) {
@@ -133,8 +123,7 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
       this.refresh();
     },
 
-    addSelection: function (selection) {
-    },
+    addSelection: function (selection) {},
 
     tagSelection: function (selection, tags) {
       var route = this;
@@ -146,7 +135,11 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
         });
         tags.forEach(function (tag) {
           if (_.keys(lcFolders).includes(tag)) {
-            route.send('fileSelectionInFolder', selection.get('id'), lcFolders[tag]);
+            route.send(
+              'fileSelectionInFolder',
+              selection.get('id'),
+              lcFolders[tag]
+            );
           }
         });
       });
@@ -162,11 +155,19 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
         workspace,
         selection,
         folder,
-        createdBy: this.currentUser
+        createdBy: this.currentUser,
       });
-      tagging.save()
+      tagging
+        .save()
         .then((savedTagging) => {
-          this.alert.showToast('success', 'Selection Filed', 'bottom-end', 3000, false, null);
+          this.alert.showToast(
+            'success',
+            'Selection Filed',
+            'bottom-end',
+            3000,
+            false,
+            null
+          );
         })
         .catch((err) => {
           console.log('err save tagging', err);
@@ -175,12 +176,14 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
     willTransition(transition) {
       let currentUrl = window.location.hash;
       let wasVmt = currentUrl.indexOf('?vmtRoomId=') !== -1;
-      let willBeVmt = this.utils.isValidMongoId(transition.queryParams.vmtRoomId);
+      let willBeVmt = this.utils.isValidMongoId(
+        transition.queryParams.vmtRoomId
+      );
       if (wasVmt && !willBeVmt) {
         window.postMessage({
           messageType: 'DESTROY_REPLAYER',
         });
       }
-    }
-  }
+    },
+  },
 });

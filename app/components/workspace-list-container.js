@@ -275,9 +275,7 @@ export default Component.extend(ErrorHandlingMixin, {
       }
       msg = `${this.get('workspacesMetadata.total')} workspaces found`;
 
-      let toggleTrashed = this.toggleTrashed;
-
-      if (toggleTrashed) {
+      if (this.toggleTrashed) {
         msg = `${msg} - <strong>Displaying Trashed Workspaces</strong>`;
       }
 
@@ -911,7 +909,10 @@ export default Component.extend(ErrorHandlingMixin, {
     const currentUser = this.model.currentUser;
     const workspaces = this.workspaces.rejectBy('isTrashed');
 
-    this.set('ownWorkspaces', workspaces.filterBy('owner.id', this.model.currentUser.id));
+    this.set(
+      'ownWorkspaces',
+      workspaces.filterBy('owner.id', this.model.currentUser.id)
+    );
   }),
 
   setAllWorkspaces: observer('workspaces.@each.isTrashed', function () {

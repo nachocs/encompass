@@ -13,9 +13,9 @@
   <div class="card-content">
     {{#if createNewCollaborator}}
       {{#if isParentWorkspace}}
-        <ParentWsCollabNew @store={{store}} @workspace={{workspace}} @createNewCollaborator={{createNewCollaborator}} @originalCollaborators={{originalCollaborators}} @initialCollabOptions={{initialCollabOptions}} @selectedCollaborators={{selectedCollaborators}} @students={{students}} @linkedAssignment={{linkedAssignment}} @childWorkspaces={{childWorkspaces}} />
+        <ParentWsCollabNew @store={{this.store}} @workspace={{workspace}} @createNewCollaborator={{createNewCollaborator}} @originalCollaborators={{originalCollaborators}} @initialCollabOptions={{initialCollabOptions}} @selectedCollaborators={{selectedCollaborators}} @students={{students}} @linkedAssignment={{linkedAssignment}} @childWorkspaces={{childWorkspaces}} />
       {{else}}
-        <WorkspaceInfoCollaboratorsNew @store={{store}} @workspace={{workspace}} @createNewCollaborator={{createNewCollaborator}} @isShowingCustomViewer={{isShowingCustomViewer}} @customSubmissionIds={{customSubmissionIds}} @originalCollaborators={{originalCollaborators}} @globalItems={{globalItems}} @initialCollabOptions={{initialCollabOptions}} @selectedCollaborators={{selectedCollaborators}} />
+        <WorkspaceInfoCollaboratorsNew @store={{this.store}} @workspace={{workspace}} @createNewCollaborator={{createNewCollaborator}} @isShowingCustomViewer={{isShowingCustomViewer}} @customSubmissionIds={{customSubmissionIds}} @originalCollaborators={{originalCollaborators}} @globalItems={{globalItems}} @initialCollabOptions={{initialCollabOptions}} @selectedCollaborators={{selectedCollaborators}} />
       {{/if}}
     {{/if}}
     {{#if originalCollaborators}}

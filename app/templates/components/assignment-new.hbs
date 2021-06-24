@@ -26,7 +26,7 @@
                 {{selectedSection.name}}
               </p>
             {{else}}
-              <SelectizeInput @inputId="assn-new-section-select" @initialOptions={{sectionOptions}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="name" @valueField="id" @searchField="name" @propToUpdate="selectedSection" @placeholder="Search for a class by name" @model="section" @store={{store}} />
+              <SelectizeInput @inputId="assn-new-section-select" @initialOptions={{sectionOptions}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="name" @valueField="id" @searchField="name" @propToUpdate="selectedSection" @placeholder="Search for a class by name" @model="section" @store={{this.store}} />
               <Input required={{true}} @type="hidden" @value={{selectedSection}} />
               {{#each sectionFormErrors as |error|}}
                 <ErrorBox @error={{error}} @showDismiss={{true}} @resetError={{action "removeErrorFromArray" "sectionFormErrors" error}} />
@@ -52,7 +52,7 @@
             </p>
           {{else}}
             <div class="flex-input">
-              <SelectizeInput @store={{store}} @inputId="assn-new-problem-select" @initialOptions={{problemOptions}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="title" @valueField="id" @searchField="title" @propToUpdate="selectedProblem" @placeholder="Search for a problem by title" @isAsync={{true}} @model="problem" @queryParamsKey="query" @searchCriterion="title" @topLevelQueryParams="searchBy" @preload={{problemsPreloadValue}} />
+              <SelectizeInput @store={{this.store}} @inputId="assn-new-problem-select" @initialOptions={{problemOptions}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="title" @valueField="id" @searchField="title" @propToUpdate="selectedProblem" @placeholder="Search for a problem by title" @isAsync={{true}} @model="problem" @queryParamsKey="query" @searchCriterion="title" @topLevelQueryParams="searchBy" @preload={{problemsPreloadValue}} />
               {{#each problemFormErrors as |error|}}
                 <ErrorBox @error={{error}} @showDismiss={{true}} @resetError={{action "removeErrorFromArray" "problemFormErrors" error}} />
               {{/each}}

@@ -1,14 +1,8 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
 /*global _:false */
 import { inject as service } from '@ember/service';
-
-import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
-
-
-
-
-
 
 export default Component.extend(CurrentUserMixin, {
   elementId: 'import-work-step4',
@@ -31,7 +25,6 @@ export default Component.extend(CurrentUserMixin, {
     });
   }),
 
-
   addStudentNameFilter: function (name) {
     if (typeof name !== 'string') {
       return;
@@ -49,7 +42,9 @@ export default Component.extend(CurrentUserMixin, {
       let answers = this.answers;
 
       answers.forEach((ans) => {
-        let isValid = this.utils.isNonEmptyArray(ans.students) || this.utils.isNonEmptyArray(ans.studentNames);
+        let isValid =
+          this.utils.isNonEmptyArray(ans.students) ||
+          this.utils.isNonEmptyArray(ans.studentNames);
 
         if (!isValid) {
           this.set('isReadyToReviewAnswers', false);
@@ -63,11 +58,18 @@ export default Component.extend(CurrentUserMixin, {
         this.onProceed();
       } else {
         this.set('isMatchingIncompleteError', true);
-        this.alert.showToast('error', `Unmatched submission(s)`, 'bottom-end', 3000, false, null);
+        this.alert.showToast(
+          'error',
+          `Unmatched submission(s)`,
+          'bottom-end',
+          3000,
+          false,
+          null
+        );
       }
     },
     back() {
       this.onBack(-1);
-    }
-  }
+    },
+  },
 });

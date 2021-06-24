@@ -214,9 +214,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
       msg = `${this.get('answersMetadata.total')} submissions found`;
 
-      let toggleTrashed = this.toggleTrashed;
-
-      if (toggleTrashed) {
+      if (this.toggleTrashed) {
         msg = `${msg} - <strong>Displaying Trashed Submissions</strong>`;
       }
 

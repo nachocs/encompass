@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 
-
 export default Component.extend({
   utils: service('utility-methods'),
   elementId: 'section-list',

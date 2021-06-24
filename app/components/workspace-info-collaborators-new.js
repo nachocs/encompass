@@ -1,15 +1,9 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
 /*global _:false */
 import { equal } from '@ember/object/computed';
-
 import { inject as service } from '@ember/service';
-import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
-
-
-
-
-
 
 export default Component.extend(CurrentUserMixin, {
   elementId: ['workspace-info-collaborators-new'],
@@ -17,68 +11,71 @@ export default Component.extend(CurrentUserMixin, {
   alert: service('sweet-alert'),
   globalPermissionValue: 'viewOnly',
   showCustom: equal('globalPermissionValue', 'custom'),
-  mainPermissions: [{
-    id: 1,
-    display: 'Hidden',
-    value: 0,
-  },
-  {
-    id: 2,
-    display: 'View Only',
-    value: 1,
-  },
-  {
-    id: 3,
-    display: 'Create',
-    value: 2,
-  },
-  {
-    id: 4,
-    display: 'Edit',
-    value: 3,
-  },
-  {
-    id: 5,
-    display: 'Delete',
-    value: 4,
-  },
+  mainPermissions: [
+    {
+      id: 1,
+      display: 'Hidden',
+      value: 0,
+    },
+    {
+      id: 2,
+      display: 'View Only',
+      value: 1,
+    },
+    {
+      id: 3,
+      display: 'Create',
+      value: 2,
+    },
+    {
+      id: 4,
+      display: 'Edit',
+      value: 3,
+    },
+    {
+      id: 5,
+      display: 'Delete',
+      value: 4,
+    },
   ],
-  feedbackPermissions: [{
-    id: 1,
-    display: 'None',
-    value: 'none',
-  },
-  {
-    id: 2,
-    display: 'Approval Required',
-    value: 'authReq',
-  },
-  {
-    id: 3,
-    display: 'Pre-Approved',
-    value: 'preAuth',
-  },
-  {
-    id: 4,
-    display: 'Approver',
-    value: 'approver',
-  }
+  feedbackPermissions: [
+    {
+      id: 1,
+      display: 'None',
+      value: 'none',
+    },
+    {
+      id: 2,
+      display: 'Approval Required',
+      value: 'authReq',
+    },
+    {
+      id: 3,
+      display: 'Pre-Approved',
+      value: 'preAuth',
+    },
+    {
+      id: 4,
+      display: 'Approver',
+      value: 'approver',
+    },
   ],
-  submissionPermissions: [{
-    id: 1,
-    display: 'All',
-    value: 'all',
-  },
-  {
-    id: 2,
-    display: 'Own Only',
-    value: 'userOnly',
-  },
-  {
-    id: 3,
-    display: 'Custom',
-    value: 'custom',
-  },
+  submissionPermissions: [
+    {
+      id: 1,
+      display: 'All',
+      value: 'all',
+    },
+    {
+      id: 2,
+      display: 'Own Only',
+      value: 'userOnly',
+    },
+    {
+      id: 3,
+      display: 'Custom',
+      value: 'custom',
+    },
   ],
 
   modes: computed('currentUser.isAdmin', 'currentUser.isStudent', function () {
@@ -89,7 +86,6 @@ export default Component.extend(CurrentUserMixin, {
     }
 
     return ['private', 'org', 'public', 'internet'];
-
   }),
 
   createValueObject(val) {
@@ -217,7 +213,6 @@ export default Component.extend(CurrentUserMixin, {
         newObj.comments = 1;
         newObj.feedback = 'none';
         newObj.submissions.all = true;
-
       }
 
       if (globalSetting === 'editor') {
@@ -270,7 +265,14 @@ export default Component.extend(CurrentUserMixin, {
       permissions.addObject(newObj);
 
       ws.save().then(() => {
-        this.alert.showToast('success', `${this.collabUser.get('username')} added as collaborator`, 'bottom-end', 3000, null, false);
+        this.alert.showToast(
+          'success',
+          `${this.collabUser.get('username')} added as collaborator`,
+          'bottom-end',
+          3000,
+          null,
+          false
+        );
         this.set('createNewCollaborator', false);
         this.set('isShowingCustomViewer', false);
       });
@@ -284,5 +286,5 @@ export default Component.extend(CurrentUserMixin, {
         this.set('isShowingCustomViewer', false);
       }
     },
-  }
+  },
 });

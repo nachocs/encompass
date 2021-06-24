@@ -25,7 +25,7 @@
 {{/unless}}
 {{#if this.showCategories}}
   <button {{action 'showCategories'}}>Hide Category Menu</button>
-  <CategoriesMenu @categories={{this.categoryTree}} @store={{store}} />
+  <CategoriesMenu @categories={{categoryTree}} @store={{this.store}} />
 {{/if}}
 </div>
 {{!-- <section>

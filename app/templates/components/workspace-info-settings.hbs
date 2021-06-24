@@ -28,7 +28,7 @@
       </div>
       <div class="row-value">
         {{#if isEditing}}
-          <SelectizeInput @store={{store}} @inputId="owner-select" @maxItems={{1}} @initialItems={{initialOwnerItem}} @onItemAdd={{action "setOwner"}} @onItemRemove={{action "setOwner"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @queryParamsKey="usernameSearch" @isAsync={{true}} @placeholder="Search by username" @preload="focus" />
+          <SelectizeInput @store={{this.store}} @inputId="owner-select" @maxItems={{1}} @initialItems={{initialOwnerItem}} @onItemAdd={{action "setOwner"}} @onItemRemove={{action "setOwner"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @queryParamsKey="usernameSearch" @isAsync={{true}} @placeholder="Search by username" @preload="focus" />
         {{else}}
           <LinkTo @route="users.user" @model={{workspace.owner.username}}>{{workspace.owner.username}}</LinkTo>
         {{/if}}
@@ -53,7 +53,7 @@
         </div>
         <div data-test="linked-assn" class="row-value">
           {{#if isEditing}}
-            <SelectizeInput @store={{store}} @inputId="linked-assignment-select" @maxItems={{1}} @initialItems={{initialLinkedAssignmentItem}} @onItemAdd={{action "setLinkedAssignment"}} @onItemRemove={{action "setLinkedAssignment"}} @labelField="name" @valueField="id" @searchField="name" @model="assignment" @topLevelQueryParams="filterBy" @queryParamsKey="name" @isAsync={{true}} @placeholder="Search for an assignment by name" @preload="focus" />
+            <SelectizeInput @store={{this.store}} @inputId="linked-assignment-select" @maxItems={{1}} @initialItems={{initialLinkedAssignmentItem}} @onItemAdd={{action "setLinkedAssignment"}} @onItemRemove={{action "setLinkedAssignment"}} @labelField="name" @valueField="id" @searchField="name" @model="assignment" @topLevelQueryParams="filterBy" @queryParamsKey="name" @isAsync={{true}} @placeholder="Search for an assignment by name" @preload="focus" />
           {{else}}
           {{#if linkedAssignment}}
               <LinkTo @route="assignment" @model={{linkedAssignment.id}}>{{linkedAssignment.name}}</LinkTo>

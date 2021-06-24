@@ -1,5 +1,5 @@
 import Route from '@ember/routing/route';
-import MtAuthMixin from '../mixins/mt_auth_mixin';
+import MtAuthMixin from '../../mixins/mt_auth_mixin';
 
 /**
  * # Logged Out Route

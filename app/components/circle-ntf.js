@@ -1,11 +1,6 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { equal } from '@ember/object/computed';
-import Component from '@ember/component';
-
-
-
-
-
 
 export default Component.extend({
   classNames: ['circle-ntf'],

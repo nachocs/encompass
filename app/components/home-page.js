@@ -15,7 +15,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   toggleRoleErrors: [],
   alert: inject('sweet-alert'),
 
-  isStudent: computed('user.actingRole', 'user.id',function () {
+  isStudent: computed('user.actingRole', 'user.id', function () {
     return (
       this.user.get('isStudent') || this.user.get('actingRole') === 'student'
     );

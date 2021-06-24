@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import ConfirmLeavingRoute from './_confirm_leaving_route';
+import ConfirmLeavingRoute from '../_confirm_leaving_route';
 
 export default Route.extend(ConfirmLeavingRoute, {
   utils: service('utility-methods'),

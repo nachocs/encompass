@@ -1,13 +1,8 @@
-import { computed } from '@ember/object';
-import $ from 'jquery';
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import $ from 'jquery';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
-
-
-
-
-
 
 export default Component.extend(ErrorHandlingMixin, {
   classNames: ['reset-page'],
@@ -20,7 +15,7 @@ export default Component.extend(ErrorHandlingMixin, {
     const that = this;
     if (token) {
       $.get({
-        url: `/auth/reset/${token}`
+        url: `/auth/reset/${token}`,
       })
         .then((res) => {
           if (res.isValid) {
@@ -28,7 +23,6 @@ export default Component.extend(ErrorHandlingMixin, {
           } else {
             that.set('invalidTokenError', res.info);
           }
-
         })
         .catch((err) => {
           that.handleErrors(err, 'getTokenErrors');
@@ -59,10 +53,17 @@ export default Component.extend(ErrorHandlingMixin, {
 
       return $.post({
         url: `/auth/reset/${that.token}`,
-        data: resetPasswordData
+        data: resetPasswordData,
       })
         .then((res) => {
-          this.alert.showToast('success', 'Password Reset', 'bottom-end', 3000, false, null);
+          this.alert.showToast(
+            'success',
+            'Password Reset',
+            'bottom-end',
+            3000,
+            false,
+            null
+          );
           that.sendAction('toHome');
         })
         .catch((err) => {
@@ -76,6 +77,6 @@ export default Component.extend(ErrorHandlingMixin, {
           this.set(error, false);
         }
       }
-    }
-  }
+    },
+  },
 });

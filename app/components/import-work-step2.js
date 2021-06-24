@@ -1,15 +1,9 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
 /*global _:false */
 import { equal } from '@ember/object/computed';
-
 import { inject as service } from '@ember/service';
-import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
-
-
-
-
-
 
 export default Component.extend(CurrentUserMixin, {
   elementId: 'import-work-step2',
@@ -19,17 +13,17 @@ export default Component.extend(CurrentUserMixin, {
   useClass: {
     groupName: 'useClass',
     required: true,
-    inputs: [{
-      value: true,
-      label: 'Yes',
-    },
-    {
-      value: false,
-      label: 'No',
-    },
-    ]
+    inputs: [
+      {
+        value: true,
+        label: 'Yes',
+      },
+      {
+        value: false,
+        label: 'No',
+      },
+    ],
   },
-
 
   willDestroyElement: function () {
     this.set('selectedValue', this.selectedValue);
@@ -76,10 +70,9 @@ export default Component.extend(CurrentUserMixin, {
         return;
       }
       this.set('missingSection', true);
-
     },
     back() {
       this.onBack(-1);
-    }
-  }
+    },
+  },
 });

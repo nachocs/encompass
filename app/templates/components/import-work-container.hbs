@@ -42,27 +42,27 @@
 
       <div class="step-content">
         {{#if showSelectProblem}}
-          <ImportWorkStep1 @store={{store}} @selectedProblem={{selectedProblem}} @onProceed={{action "setSelectedProblem"}} />
+          <ImportWorkStep1 @store={{this.store}} @selectedProblem={{selectedProblem}} @onProceed={{action "setSelectedProblem"}} />
         {{/if}}
 
         {{#if showSelectClass}}
-          <ImportWorkStep2 @store={{store}} @selectedSection={{selectedSection}} @selectedValue={{selectedValue}} @onBack={{action "changeStep"}} @onProceed={{action "setSelectedSection"}} />
+          <ImportWorkStep2 @store={{this.store}} @selectedSection={{selectedSection}} @selectedValue={{selectedValue}} @onBack={{action "changeStep"}} @onProceed={{action "setSelectedSection"}} />
         {{/if}}
 
         {{#if showUploadFiles}}
-          <ImportWorkStep3 @store={{store}} @selectedProblem={{selectedProblem}} @selectedSection={{selectedSection}} @onBack={{action "changeStep"}} @onProceed={{action "setUploadedFiles"}} @existingAnswers={{answers}} @uploadedFiles={{uploadedFiles}} />
+          <ImportWorkStep3 @store={{this.store}} @selectedProblem={{selectedProblem}} @selectedSection={{selectedSection}} @onBack={{action "changeStep"}} @onProceed={{action "setUploadedFiles"}} @existingAnswers={{answers}} @uploadedFiles={{uploadedFiles}} />
         {{/if}}
 
         {{#if showMatchStudents}}
-          <ImportWorkStep4 @store={{store}} @uploadedFiles={{uploadedFiles}} @answers={{answers}} @selectedProblem={{selectedProblem}} @studentMap={{studentMap}} @selectedSection={{selectedSection}} @onBack={{action "changeStep"}} @onProceed={{action "setMatchedStudents"}} />
+          <ImportWorkStep4 @store={{this.store}} @uploadedFiles={{uploadedFiles}} @answers={{answers}} @selectedProblem={{selectedProblem}} @studentMap={{studentMap}} @selectedSection={{selectedSection}} @onBack={{action "changeStep"}} @onProceed={{action "setMatchedStudents"}} />
         {{/if}}
 
         {{#if showCreateWs}}
-          <ImportWorkStep5 @users={{users}} @selectedOwner={{selectedOwner}} @selectedFolderSet={{selectedFolderSet}} @createAssignmentValue={{createAssignmentValue}} @doCreateWs={{doCreateWs}} @selectedMode={{selectedMode}} @folderSets={{folderSets}} @store={{store}} @uploadedFiles={{uploadedFiles}} @answers={{answers}} @selectedProblem={{selectedProblem}} @selectedSection={{selectedSection}} @workspaceName={{workspaceName}} @workspaceOwner={{workspaceOwner}} @workspaceMode={{workspaceMode}} @folderSet={{folderSet}} @assignmentName={{assignmentName}} @onBack={{action "changeStep"}} @onProceed={{action "prepareReview"}} />
+          <ImportWorkStep5 @users={{users}} @selectedOwner={{selectedOwner}} @selectedFolderSet={{selectedFolderSet}} @createAssignmentValue={{createAssignmentValue}} @doCreateWs={{doCreateWs}} @selectedMode={{selectedMode}} @folderSets={{folderSets}} @store={{this.store}} @uploadedFiles={{uploadedFiles}} @answers={{answers}} @selectedProblem={{selectedProblem}} @selectedSection={{selectedSection}} @workspaceName={{workspaceName}} @workspaceOwner={{workspaceOwner}} @workspaceMode={{workspaceMode}} @folderSet={{folderSet}} @assignmentName={{assignmentName}} @onBack={{action "changeStep"}} @onProceed={{action "prepareReview"}} />
         {{/if}}
 
         {{#if showReview}}
-          <ImportWorkStep6 @store={{store}} @uploadedFiles={{uploadedFiles}} @answers={{answers}} @selectedProblem={{selectedProblem}} @selectedSection={{selectedSection}} @submissionCount={{submissionCount}} @workspaceName={{workspaceName}} @workspaceOwner={{workspaceOwner}} @workspaceMode={{workspaceMode}} @folderSet={{folderSet}} @assignmentName={{assignmentName}} @savingAssignment={{savingAssignment}} @isUploadingAnswer={{isUploadingAnswer}} @isCreatingWorkspace={{isCreatingWorkspace}} @uploadedAnswers={{uploadedAnswers}} @createdWorkspace={{createdWorkspace}} @createdAssignment={{createdAssignment}} @onBack={{action "changeStep"}} @onProceed={{action "importWork"}} />
+          <ImportWorkStep6 @store={{this.store}} @uploadedFiles={{uploadedFiles}} @answers={{answers}} @selectedProblem={{selectedProblem}} @selectedSection={{selectedSection}} @submissionCount={{submissionCount}} @workspaceName={{workspaceName}} @workspaceOwner={{workspaceOwner}} @workspaceMode={{workspaceMode}} @folderSet={{folderSet}} @assignmentName={{assignmentName}} @savingAssignment={{savingAssignment}} @isUploadingAnswer={{isUploadingAnswer}} @isCreatingWorkspace={{isCreatingWorkspace}} @uploadedAnswers={{uploadedAnswers}} @createdWorkspace={{createdWorkspace}} @createdAssignment={{createdAssignment}} @onBack={{action "changeStep"}} @onProceed={{action "importWork"}} />
         {{/if}}
       </div>
 

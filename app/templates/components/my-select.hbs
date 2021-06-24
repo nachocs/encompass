@@ -1,8 +1,8 @@
 {{! app/templates/components/my-select.hbs}}
-<select disabled={{this.isDisabled}} {{action 'selectChange' on='change'}}>
+<select disabled={{isDisabled}} {{action 'selectChange' on='change'}}>
   {{#if this.prompt}}
     {{#unless this.selectedValue}}
-    <option value="" id="select-prompt">{{this.prompt}}</option>
+    <option value="" id="select-prompt">{{prompt}}</option>
     {{/unless}}
   {{/if}}
   {{#each this.content key="@index" as |item|}}

@@ -20,9 +20,9 @@
       </label>
 
       {{#if this.isEditingName}}
-        <Input @name="name" @id="name" @type="text" @value={{this.currentSection.name}} />
+        <Input @name="name" @id="name" @type="text" @value={{currentSection.name}} />
       {{else}}
-        <p data-test="section-name-display" class="section-info">{{this.section.name}}</p>
+        <p data-test="section-name-display" class="section-info">{{section.name}}</p>
       {{/if}}
     </div>
       <div class="section-info-detail assignments">
@@ -91,7 +91,7 @@
           {{#if this.isEditingTeachers}}
             <div class="update-teachers">
               <label>Add Teacher<i title="Start typing a teacher's username to see suggestions" class="fas fa-info-circle fa-sm"></i></label>
-                <SelectizeInput @store={{this.store}} @inputId="select-add-teacher" @maxItems={{1}} @initialOptions={{this.initialTeacherOptions}} @onItemAdd={{action "addTeacher"}} @model="user" @isAsync={{true}} @labelField="username" @searchField="username" @valueField="id" @customQueryParams={{this.addTeacherQueryParams}} @queryParamsKey="usernameSearch" />
+                <SelectizeInput @store={{this.store}} @inputId="select-add-teacher" @maxItems={{1}} @initialOptions={{initialTeacherOptions}} @onItemAdd={{action "addTeacher"}} @model="user" @isAsync={{true}} @labelField="username" @searchField="username" @valueField="id" @customQueryParams={{addTeacherQueryParams}} @queryParamsKey="usernameSearch" />
 
               {{#each this.updateTeacherErrors as |error|}}
                 <p class="error-message">{{error}}</p>
@@ -134,7 +134,7 @@
         </div>
         <div class="update-students">
           {{#if this.isEditingStudents}}
-            <AddCreateStudent @store={{this.store}} @currentUser={{this.currentUser}} @section={{this.currentSection}} @students={{this.studentList}} @sectionPassword={{this.section.sectionPassword}} />
+            <AddCreateStudent @store={{this.store}} @currentUser={{currentUser}} @section={{currentSection}} @students={{studentList}} @sectionPassword={{section.sectionPassword}} />
           {{/if}}
           {{#each this.updateStudentErrors as |error|}}
             <p class="error-message">{{error}}</p>
@@ -162,5 +162,5 @@
   <p class="error-message">{{error}}</p>
 {{/each}}
 {{#if this.showAssignment}}
-  <AssignmentNew @cancel={{action (mut showAssignment) null}} @fromSectionInfo={{true}} @problems={{this.problemList}} @selectedSection={{this.section}} @sections={{this.sectionList}} @store={{this.store}} @toAssignmentInfo="toAssignmentInfo" />
+  <AssignmentNew @cancel={{action (mut showAssignment) null}} @fromSectionInfo={{true}} @problems={{problemList}} @selectedSection={{section}} @sections={{sectionList}} @store={{this.store}} @toAssignmentInfo="toAssignmentInfo" />
 {{/if}}

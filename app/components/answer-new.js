@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
+import { computed, observer } from '@ember/object';
 /*global _:false */
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
@@ -84,6 +84,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   }),
 
   didInsertElement: function () {
+    this._super(...arguments);
     if (this.priorAnswer) {
       //prefill form if revising
       const ans = this.priorAnswer;

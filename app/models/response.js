@@ -1,13 +1,7 @@
 import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
 import { computed } from '@ember/object';
-import { bool, alias } from '@ember/object/computed';
+import { alias, bool } from '@ember/object/computed';
 import Auditable from '../models/_auditable_mixin';
-
-
-
-
-
-
 
 export default Model.extend(Auditable, {
   persisted: bool('id'),
@@ -19,7 +13,7 @@ export default Model.extend(Auditable, {
   // where did this response originate from?
   source: attr('string'), //submission, folder, workspace
   submission: belongsTo('submission', { async: true }), //if available
-  workspace: belongsTo('workspace'),  //if available
+  workspace: belongsTo('workspace'), //if available
   // the selections and comments originally used
   selections: hasMany('selection', { async: true }),
   comments: hasMany('comment', { async: true }),

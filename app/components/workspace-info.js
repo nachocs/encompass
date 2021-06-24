@@ -8,7 +8,7 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'workspace-info',
-  // comments: controller,
+  // comments: controller(),
   alert: service('sweet-alert'),
   permissions: service('workspace-permissions'),
   utils: service('utility-methods'),

@@ -1,10 +1,5 @@
-import { computed } from '@ember/object';
 import Component from '@ember/component';
-
-
-
-
-
+import { computed } from '@ember/object';
 
 export default Component.extend({
   classNames: 'loading-elem',
@@ -14,5 +9,4 @@ export default Component.extend({
   loadingText: computed('loadingMessage', 'defaultMessage', function () {
     return this.loadingMessage || this.defaultMessage;
   }),
-
 });

@@ -5,7 +5,7 @@
     </span>
   </p>
   <p class="sub-input-label">Start typing the name of the problem of which you would like to add existing work. If your problem does not exist yet, create one <LinkTo @route="problems.new" @classNames="new-link">here</LinkTo>.</p>
-  <SelectizeInput @store={{store}} @inputId="select-problem" @isAsync={{true}} @maxItems={{1}} @initialItems={{initialProblemItem}} @onItemAdd={{action "setSelectedProblem"}} @onItemRemove={{action "setSelectedProblem"}} @labelField="title" @searchField="title" @valueField="id" @model="problem" @queryParamsKey="query" @searchCriterion="title" @topLevelQueryParams="searchBy" @placeholder="Search for problems by title..." @preload="focus" />
+  <SelectizeInput @store={{this.store}} @inputId="select-problem" @isAsync={{true}} @maxItems={{1}} @initialItems={{initialProblemItem}} @onItemAdd={{action "setSelectedProblem"}} @onItemRemove={{action "setSelectedProblem"}} @labelField="title" @searchField="title" @valueField="id" @model="problem" @queryParamsKey="query" @searchCriterion="title" @topLevelQueryParams="searchBy" @placeholder="Search for problems by title..." @preload="focus" />
 
 
 {{#if missingProblem}}

@@ -49,7 +49,7 @@ Router.map(function () {
         this.route('work');
         this.route('folders', { resetNamespace: false }, function () {
           this.route(
-            'workspace.folder',
+            'folder',
             { resetNamespace: true, path: '/:folder_id' },
             function () {}
           );
@@ -58,21 +58,17 @@ Router.map(function () {
           this.route('first');
           // this.resource("workspace.submission", {path: '/:submission_id'}, function()
           this.route(
-            'workspace.submission',
+            'workspace-submission',
             { resetNamespace: true, path: '/:submission_id' },
             function () {
               this.route('response');
-              this.route(
-                'workspace.submission.selections',
-                { resetNamespace: true, path: '/selections' },
-                function () {
-                  this.route(
-                    'workspace.submission.selection',
-                    { resetNamespace: true, path: '/:selection_id' },
-                    function () {}
-                  );
-                }
-              );
+              this.route('selections', { resetNamespace: true }, function () {
+                this.route(
+                  'selection',
+                  { resetNamespace: true, path: '/:selection_id' },
+                  function () {}
+                );
+              });
             }
           );
         });

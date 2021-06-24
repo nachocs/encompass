@@ -7,7 +7,7 @@
   <div class="dropZone" style="height:10px;"></div>
   <ul id="al_folders">
     {{#each this.sortedFolders as |folder|}}
-      <FolderElem @store={{store}} @model={{folder}} @currentWorkspace={{workspace}} @folderList={{this}} @editFolderMode={{editFolderMode}} @dropped={{action "fileSelectionInFolder"}} @confirm="askToDelete" @currentSubmission={{currentSubmission}} @currentSelection={{currentSelection}} @canEditFolders={{canEdit}} @canDeleteFolders={{canDelete}} @wsTaggings={{taggings}} />
+      <FolderElem @store={{this.store}} @model={{folder}} @currentWorkspace={{workspace}} @folderList={{this}} @editFolderMode={{editFolderMode}} @dropped={{action "fileSelectionInFolder"}} @confirm="askToDelete" @currentSubmission={{currentSubmission}} @currentSelection={{currentSelection}} @canEditFolders={{canEdit}} @canDeleteFolders={{canDelete}} @wsTaggings={{taggings}} />
     {{/each}}
   </ul>
   <div class="dropZone" style="height:10px;"></div>

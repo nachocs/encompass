@@ -1,6 +1,6 @@
 <div class="flex-container-full">
   <div class="flex-item-full filter-options collapse" id="filter-list-side">
-    <WorkspaceFilter @store={{store}} @onUpdate={{action "triggerFetch"}} @triggerShowTrashed={{action "triggerShowTrashed"}} @triggerShowHidden={{action "triggerShowHidden"}} @toggleTrashed={{toggleTrashed}} @toggleHidden={{toggleHidden}} @filter={{filter}} @primaryFilter={{primaryFilter}} @adminFilterSelect={{adminFilterSelect}} @orgs={{organizations}} />
+    <WorkspaceFilter @store={{this.store}} @onUpdate={{action "triggerFetch"}} @triggerShowTrashed={{action "triggerShowTrashed"}} @triggerShowHidden={{action "triggerShowHidden"}} @toggleTrashed={{toggleTrashed}} @toggleHidden={{toggleHidden}} @filter={{filter}} @primaryFilter={{primaryFilter}} @adminFilterSelect={{adminFilterSelect}} @orgs={{organizations}} />
   </div>
 
   <div class="flex-item-full list-view">
@@ -59,10 +59,10 @@
           <div class="sort-bar-item more"></div>
         </div>
         {{#if showList}}
-          <WorkspaceList @currentUser={{this.model.currentUser}} @isSearching={{isSearchingWorkspaces}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{store}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
+          <WorkspaceList @currentUser={{model.currentUser}} @isSearching={{isSearchingWorkspaces}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{this.store}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
         {{/if}}
         {{#if showGrid}}
-          <WorkspaceList @isSearching={{isSearchingWorkspaces}} @store={{store}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{false}} @isGrid={{true}} @moreMenuOptions={{moreMenuOptions}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
+          <WorkspaceList @isSearching={{isSearchingWorkspaces}} @store={{this.store}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{false}} @isGrid={{true}} @moreMenuOptions={{moreMenuOptions}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
         {{/if}}
 
         <PaginationControl @details={{workspacesMetadata}} @initiatePageChange={{action "initiatePageChange"}} />

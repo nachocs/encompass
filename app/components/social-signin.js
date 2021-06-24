@@ -1,11 +1,6 @@
-import { computed } from '@ember/object';
 import Component from '@ember/component';
+import { computed } from '@ember/object';
 import MtAuthMixin from '../mixins/mt_auth_mixin';
-
-
-
-
-
 
 export default Component.extend(MtAuthMixin, {
   content: null,
@@ -14,6 +9,5 @@ export default Component.extend(MtAuthMixin, {
     return this.getSsoGoogleUrl();
   }),
 
-  actions: {
-  }
+  actions: {},
 });

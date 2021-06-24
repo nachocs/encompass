@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import EmberMap from '@ember/map';
-import { computed } from '@ember/object';
+import { computed, observer } from '@ember/object';
 import { equal } from '@ember/object/computed';
 /*global _:false */
 import { later } from '@ember/runloop';

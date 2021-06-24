@@ -1,11 +1,6 @@
-import { computed } from '@ember/object';
 import Component from '@ember/component';
+import { computed } from '@ember/object';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
-
-
-
-
-
 
 export default Component.extend(ErrorHandlingMixin, {
   elementId: 'pagination-control',
@@ -60,8 +55,6 @@ export default Component.extend(ErrorHandlingMixin, {
       }
       this.initiatePageChange(pageToLoad);
       return;
-
     },
-  }
-
+  },
 });

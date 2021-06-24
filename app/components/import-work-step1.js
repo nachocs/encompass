@@ -1,14 +1,8 @@
+import Component from '@ember/component';
 import { computed } from '@ember/object';
 /*global _:false */
 import { inject as service } from '@ember/service';
-
-import Component from '@ember/component';
 import CurrentUserMixin from '../mixins/current_user_mixin';
-
-
-
-
-
 
 export default Component.extend(CurrentUserMixin, {
   elementId: 'import-work-step1',
@@ -53,7 +47,6 @@ export default Component.extend(CurrentUserMixin, {
         return;
       }
       this.set('missingProblem', true);
-
-    }
-  }
+    },
+  },
 });

@@ -141,7 +141,7 @@
                 <div class="button-row-list">
                   <button class="cancel-button" {{action 'showCategories'}}>Hide Categories</button>
                 </div>
-                <CategoriesMenu @categories={{categoryTree}} @store={{store}} @addCategories="addCategories" />
+                <CategoriesMenu @categories={{categoryTree}} @store={{this.store}} @addCategories="addCategories" />
               {{/if}}
             {{else}}
               {{#unless showCategories}}
@@ -154,7 +154,7 @@
                   <button class="cancel-button" {{action 'showCategories'}}>Hide Categories</button>
                 </div>
                 {{#if categoryTree}}
-                  <CategoriesMenu @categories={{categoryTree}} @store={{store}} @addCategories="addCategories" />
+                  <CategoriesMenu @categories={{categoryTree}} @store={{this.store}} @addCategories="addCategories" />
                 {{/if}}
               {{/if}}
             {{/if}}
@@ -368,7 +368,7 @@
   {{/each}}
 
   {{#if showAssignment}}
-    <AssignmentNew @cancel={{action (mut showAssignment) null}} @fromProblemInfo={{true}} @problems={{problemList}} @selectedProblem={{problem}} @sections={{sectionList}} @store={{store}} @toAssignmentInfo="toAssignmentInfo" />
+    <AssignmentNew @cancel={{action (mut showAssignment) null}} @fromProblemInfo={{true}} @problems={{problemList}} @selectedProblem={{problem}} @sections={{sectionList}} @store={{this.store}} @toAssignmentInfo="toAssignmentInfo" />
   {{/if}}
 </div>
 

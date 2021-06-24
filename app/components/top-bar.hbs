@@ -4,14 +4,14 @@
 
 <div class="clear_r"></div>
 
-{{#if user.isAuthenticated}}
+{{#if this.user.isAuthenticated}}
   <ul class="al_nav menu-toggle" id="main-nav">
     <li class="menu-items" id="home-btn">
       <div class="dropdown-skinny">
         {{#link-to "index" }}my work{{/link-to}}
       </div>
     </li>
-    {{#unless currentUser.isStudent}}
+    {{#unless this.currentUser.isStudent}}
       <li class="menu-items">
         <div class="dropdown dropdown-skinny">
           {{#link-to "index" }}
@@ -67,9 +67,9 @@
           <i class="fa fa-caret-down caret-down"></i>
         {{/link-to}}
         <div class="dropdown-content">
-          {{#each do as |item|}}
+          {{#each this.do as |item|}}
             {{#if item.restricted}}
-              {{#unless currentUser.isStudent}}
+              {{#unless this.currentUser.isStudent}}
                 {{#link-to item.link classNames=item.link}}{{item.text}}{{/link-to}}
               {{/unless}}
             {{else}}
@@ -86,9 +86,9 @@
           <i class="fa fa-caret-down caret-down"></i>
         {{/link-to}}
         <div class="dropdown-content">
-          {{#each find as |item|}}
+          {{#each this.find as |item|}}
             {{#if item.restricted}}
-              {{#unless currentUser.isStudent}}
+              {{#unless this.currentUser.isStudent}}
                 {{#link-to item.link classNames=item.link}}{{item.text}}{{/link-to}}
               {{/unless}}
             {{else}}
@@ -104,7 +104,7 @@
         <span id="logout-text">log out</span>
       {{/link-to}}
     </li>
-    {{#unless isStudentAccount}}
+    {{#unless this.isStudentAccount}}
       <li id="role-toggle">
         <span class="acting-role">Role: {{user.actingRoleName}}</span>
         <span class="toggle-role" {{action "showToggleModal"}}>
@@ -113,7 +113,7 @@
       </li>
     {{/unless}}
     <li id="current-username">
-      {{#link-to "user" currentUser.username}}
+      {{#link-to "user" this.currentUser.username}}
         <img
           src={{currentUser.avatar}}
           alt={{currentUser.username}}
@@ -122,8 +122,8 @@
     </li>
     <li id="user-image">
       <img id="menu-button" src={{user.avatar}} alt="" />
-      {{#if newNotifications}}
-        {{circle-ntf displayCount=newNotifications.length}}
+      {{#if this.newNotifications}}
+        {{circle-ntf displayCount=this.newNotifications.length}}
       {{/if}}
     </li>
   </ul>
@@ -136,7 +136,7 @@
       <li>
         {{#link-to "assignments"}}assignments{{/link-to}}
       </li>
-      {{#unless currentUser.isStudent}}
+      {{#unless this.currentUser.isStudent}}
         <li>
           {{#link-to "problems"}}problems{{/link-to}}
         </li>
@@ -147,18 +147,18 @@
       <li>
         {{#link-to "workspaces"}}workspaces{{/link-to}}
       </li>
-      {{#unless currentUser.isStudent}}
+      {{#unless this.currentUser.isStudent}}
         <li>
           {{#link-to "import"}}import{{/link-to}}
         </li>
       {{/unless}}
       <li>
         {{#link-to "responses"}}responses{{/link-to}}
-        {{#if responseNotifications}}
-          {{circle-ntf displayCount=responseNotifications.length}}
+        {{#if this.responseNotifications}}
+          {{circle-ntf displayCount=this.responseNotifications.length}}
         {{/if}}
       </li>
-      {{#unless currentUser.isStudent}}
+      {{#unless this.currentUser.isStudent}}
         <li>
           {{#link-to "users"}}users{{/link-to}}
         </li>

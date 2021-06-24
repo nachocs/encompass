@@ -1,16 +1,11 @@
-import { computed } from '@ember/object';
-import { later } from '@ember/runloop';
-import { isEqual } from '@ember/utils';
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
+import { computed, observer } from '@ember/object';
+import { later } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import { isEqual } from '@ember/utils';
 import $ from 'jquery';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
-
-
-
-
-
 
 export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'section-new',
@@ -28,14 +23,14 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   constraints: {
     name: {
-      presence: { allowEmpty: false }
+      presence: { allowEmpty: false },
     },
     teacher: {
-      presence: { allowEmpty: false }
+      presence: { allowEmpty: false },
     },
     organization: {
-      presence: { allowEmpty: false }
-    }
+      presence: { allowEmpty: false },
+    },
   },
 
   init: function () {
@@ -43,7 +38,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     let tooltips = {
       name: 'Please give your class a name',
       leader: 'The main owner of this class',
-      organization: 'The organization of this class is the same as the leader\'s',
+      organization:
+        "The organization of this class is the same as the leader's",
     };
     this.set('tooltips', tooltips);
   },
@@ -120,10 +116,11 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       let values = {
         name: newSectionName,
         teacher: teacher,
-        organization: organization
+        organization: organization,
       };
       let validation = window.validate(values, constraints);
-      if (validation) { // errors
+      if (validation) {
+        // errors
         for (let key of Object.keys(validation)) {
           let errorProp = `${key}FormErrors`;
           this.set(errorProp, validation[key]);
@@ -152,11 +149,18 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
       sectionData.get('teachers').addObject(teacher);
 
-
-      sectionData.save()
+      sectionData
+        .save()
         .then((section) => {
           let name = section.get('name');
-          this.alert.showToast('success', `${name} created`, 'bottom-end', 3000, false, null);
+          this.alert.showToast(
+            'success',
+            `${name} created`,
+            'bottom-end',
+            3000,
+            false,
+            null
+          );
           that.set('createdSection', section);
           that.sendAction('toSectionInfo', section);
         })
@@ -184,10 +188,6 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     cancel: function () {
       this.sendAction('toSectionsHome');
-    }
-  }
+    },
+  },
 });
-
-
-
-

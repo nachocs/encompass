@@ -2,7 +2,6 @@ import Model, { attr, belongsTo, hasMany } from '@ember-data/model';
 import { computed } from '@ember/object';
 import Auditable from '../models/_auditable_mixin';
 
-
 export default Model.extend(Auditable, {
   label: attr('string'),
   text: attr('string'),
@@ -19,5 +18,5 @@ export default Model.extend(Auditable, {
   type: computed('selection', 'submission', 'workspace', function () {
     return 'selection';
   }),
-  originalComment: belongsTo('comment', { inverse: null })
+  originalComment: belongsTo('comment', { inverse: null }),
 });
