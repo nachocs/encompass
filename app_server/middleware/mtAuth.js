@@ -95,8 +95,11 @@ const getMtUser = async (req, res) => {
     let { accessToken } = await ssoService.requestNewAccessToken(
       currentRefreshToken
     );
-
-    verifiedAccessToken = await verifyJwt(accessToken, secret);
+    try {
+      verifiedAccessToken = await verifyJwt(accessToken, secret);
+    } catch (error) {
+      console.log('error', error);
+    }
 
     setSsoCookie(res, accessToken);
     return verifiedAccessToken;
