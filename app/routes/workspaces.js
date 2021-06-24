@@ -9,6 +9,7 @@ import AuthenticatedRoute from './_authenticated_route';
 
 export default AuthenticatedRoute.extend({
   model: function () {
+    console.log('workspaces');
     // return this.get('store').findAll('user');
   },
 

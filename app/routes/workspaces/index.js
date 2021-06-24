@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 import { hash } from 'rsvp';
-import AuthenticatedRoute from './_authenticated_route';
+import AuthenticatedRoute from '../_authenticated_route';
 
 export default AuthenticatedRoute.extend({
   model: function () {
@@ -21,6 +21,7 @@ export default AuthenticatedRoute.extend({
       };
     }
     return hash({
+      currentUser: user,
       organizations: store.findAll('organization'),
       workspaces: store.query('workspace', workspaceCriteria),
     });

@@ -17,7 +17,7 @@
       <p class="loading-message">Searching workspaces...</p>
     {{else}}
       {{#each workspaces as |workspace|}}
-        <WorkspaceListItem @workspace={{workspace}} @isList={{isList}} @isGrid={{isGrid}} @store={{store}} @toWorkspaceInfo={{action "toWorkspaceInfo"}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
+        <WorkspaceListItem @currentUser={{this.currentUser}} @workspace={{workspace}} @isList={{isList}} @isGrid={{isGrid}} @store={{store}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
       {{/each}}
     {{/if}}
   </div>

@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { inject as controller } from '@ember/controller';
+// import { inject as controller } from '@ember/controller';
 import { computed } from '@ember/object';
 import { equal } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
@@ -8,7 +8,7 @@ import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   elementId: 'workspace-info',
-  comments: controller,
+  // comments: controller,
   alert: service('sweet-alert'),
   permissions: service('workspace-permissions'),
   utils: service('utility-methods'),
