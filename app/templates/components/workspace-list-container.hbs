@@ -59,10 +59,10 @@
           <div class="sort-bar-item more"></div>
         </div>
         {{#if showList}}
-          <WorkspaceList @isSearching={{isSearchingWorkspaces}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{store}} @toWorkspaceInfo="toWorkspaceInfo" @toCopyWorkspace={{action "toCopyWorkspace"}} />
+          <WorkspaceList @isSearching={{isSearchingWorkspaces}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{store}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
         {{/if}}
         {{#if showGrid}}
-          <WorkspaceList @isSearching={{isSearchingWorkspaces}} @store={{store}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{false}} @isGrid={{true}} @moreMenuOptions={{moreMenuOptions}} @toWorkspaceInfo="toWorkspaceInfo" @toCopyWorkspace={{action "toCopyWorkspace"}} />
+          <WorkspaceList @isSearching={{isSearchingWorkspaces}} @store={{store}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{false}} @isGrid={{true}} @moreMenuOptions={{moreMenuOptions}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
         {{/if}}
 
         <PaginationControl @details={{workspacesMetadata}} @initiatePageChange={{action "initiatePageChange"}} />
