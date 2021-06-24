@@ -4,14 +4,8 @@ import { alias } from '@ember/object/computed';
 
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-
-
-
-
-
-export default Component.extend(CurrentUserMixin, {
+export default Component.extend({
   classNames: ['workspace-list-item'],
   alert: service('sweet-alert'),
   permissions: service('workspace-permissions'),

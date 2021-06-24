@@ -23,12 +23,12 @@
           <i class="fas fa-redo-alt refresh-icon" {{action 'refreshList'}} title="Refresh Workspace list"></i>
           <span class="layout-icons">
           {{#if showList}}
-            <img src="/images/grid.svg" alt="grid" {{action 'setGrid'}} title="Show in grid view">
-            <img src="/images/list-active.svg" alt="list" {{action 'setList'}} title="Currently in list view">
+            <img src="../assets/images/grid.svg" alt="grid" {{action 'setGrid'}} title="Show in grid view">
+            <img src="../assets/images/list-active.svg" alt="list" {{action 'setList'}} title="Currently in list view">
           {{/if}}
           {{#if showGrid}}
-            <img src="/images/grid-active.svg" alt="grid" {{action 'setGrid'}} title="Currently in grid view">
-            <img src="/images/list.svg" alt="list" {{action 'setList'}} title="Show in list view">
+            <img src="../assets/images/grid-active.svg" alt="grid" {{action 'setGrid'}} title="Currently in grid view">
+            <img src="../assets/images/list.svg" alt="list" {{action 'setList'}} title="Show in list view">
           {{/if}}
           </span>
         </div>
@@ -59,7 +59,7 @@
           <div class="sort-bar-item more"></div>
         </div>
         {{#if showList}}
-          <WorkspaceList @isSearching={{isSearchingWorkspaces}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{store}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
+          <WorkspaceList @currentUser={{this.model.currentUser}} @isSearching={{isSearchingWorkspaces}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{store}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
         {{/if}}
         {{#if showGrid}}
           <WorkspaceList @isSearching={{isSearchingWorkspaces}} @store={{store}} @workspaces={{displayWorkspaces}} @metadata={{workspacesMetadata}} @isList={{false}} @isGrid={{true}} @moreMenuOptions={{moreMenuOptions}} @toCopyWorkspace={{action "toCopyWorkspace"}} />
