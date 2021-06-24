@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { computed } from '@ember/object';
+import { computed, observer } from '@ember/object';
 import { alias, or } from '@ember/object/computed';
 /*global _:false */
 import { later } from '@ember/runloop';
@@ -7,10 +7,9 @@ import { inject as service } from '@ember/service';
 import { isEqual } from '@ember/utils';
 import $ from 'jquery';
 import moment from 'moment';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: 'workspace-list-container',
   showList: true,
   showGrid: false,
@@ -297,7 +296,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   getUserOrg() {
-    return this.get('currentUser.organization').then((org) => {
+    return this.model.currentUser.organization.then((org) => {
       if (org) {
         return org.get('name');
       } else {
@@ -403,8 +402,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         },
       },
     };
-    let isAdmin = this.get('currentUser.isAdmin');
-    let isPdadmin = this.get('currentUser.accountType') === 'P';
+    let isAdmin = this.get('model.currentUser.isAdmin');
+    let isPdadmin = this.get('model.currentUser.accountType') === 'P';
     if (isPdadmin) {
       filter.primaryFilters.inputs.myOrg.secondaryFilters = {
         selectedValues: ['orgProblems', 'fromOrg'],
@@ -489,7 +488,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   configurePrimaryFilter() {
     let primaryFilters = this.get('filter.primaryFilters');
-    if (this.get('currentUser.isAdmin')) {
+    if (this.get('model.currentUser.isAdmin')) {
       primaryFilters.selectedValue = 'all';
       this.set('primaryFilter', primaryFilters.inputs.all);
       return;
@@ -499,7 +498,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   buildMineFilter() {
     let filter = {};
-    let userId = this.get('currentUser.id');
+    let userId = this.get('model.currentUser.id');
     let secondaryValues = this.get(
       'primaryFilter.secondaryFilters.selectedValues'
     );
@@ -535,7 +534,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   buildMyOrgFilter() {
     let filter = {};
-    let userOrgId = this.currentUser.get('organization.id');
+    let userOrgId = this.model.currentUser.get('organization.id');
     let secondaryValues = this.get(
       'primaryFilter.secondaryFilters.selectedValues'
     );
@@ -632,7 +631,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   buildCollabFilter() {
     const utils = this.utils;
-    const collabWorkspaces = this.get('currentUser.collabWorkspaces');
+    const collabWorkspaces = this.get('model.currentUser.collabWorkspaces');
 
     let ids;
     let filter = {};
@@ -691,7 +690,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   buildFilterBy: function () {
     let primaryFilterValue = this.primaryFilterValue;
-    let isPdadmin = this.get('currentUser.accountType') === 'P';
+    let isPdadmin = this.get('model.currentUser.accountType') === 'P';
     let filterBy;
 
     if (primaryFilterValue === 'mine') {
@@ -739,7 +738,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'toggleTrashed',
     'currentUser.hiddenWorkspaces',
     function () {
-      let hiddenWorkspaces = this.get('currentUser.hiddenWorkspaces');
+      let hiddenWorkspaces = this.get('model.currentUser.hiddenWorkspaces');
       let workspaces = this.workspaces;
       let visibileWorkspaces = workspaces.filter((workspace) => {
         if (!hiddenWorkspaces.includes(workspace.id)) {
@@ -909,10 +908,10 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   ),
 
   setOwnWorkspaces: observer('workspaces.@each.isTrashed', function () {
-    const currentUser = this.currentUser;
+    const currentUser = this.model.currentUser;
     const workspaces = this.workspaces.rejectBy('isTrashed');
 
-    this.set('ownWorkspaces', workspaces.filterBy('owner.id', currentUser.id));
+    this.set('ownWorkspaces', workspaces.filterBy('owner.id', this.model.currentUser.id));
   }),
 
   setAllWorkspaces: observer('workspaces.@each.isTrashed', function () {
