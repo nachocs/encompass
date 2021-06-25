@@ -6,6 +6,7 @@
  */
 import Route from '@ember/routing/route';
 import $ from 'jquery';
+import { hash } from 'rsvp';
 
 export default Route.extend({
   needs: 'application',
@@ -15,18 +16,23 @@ export default Route.extend({
   */
 
   model: function (params) {
-    let url = `/api/workspaces/${params.workspace_id}`;
+    let currentUser = this.modelFor('application');
+    return hash({
+      currentUser,
+      workspace: this.store.findRecord('workspace', params.workspace_id)
+    })
+    // let url = `/api/workspaces/${params.workspace_id}`;
 
-    return $.get({ url }).then((results) => {
-      _.each(results, (val, key) => {
-        if (val) {
-          this.store.pushPayload({
-            [key]: val,
-          });
-        }
-      });
-      return this.store.peekRecord('workspace', params.workspace_id);
-    });
+    // return $.get({ url }).then((results) => {
+    //   _.each(results, (val, key) => {
+    //     if (val) {
+    //       this.store.pushPayload({
+    //         [key]: val,
+    //       });
+    //     }
+    //   });
+    //   return this.store.peekRecord('workspace', params.workspace_id);
+    // });
   },
 
   actions: {
