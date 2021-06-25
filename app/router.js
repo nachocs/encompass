@@ -112,11 +112,10 @@ Router.map(function () {
   this.route('assignments', function () {
     this.route(
       'assignment',
-      { resetNamespace: true, path: '/:assignmentId' },
+      { resetNamespace: true, path: '/:assignment_id' },
       function () {}
     );
     this.route('new');
-    this.route('home');
   });
 
   // ANSWERS ROUTE
