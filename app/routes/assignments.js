@@ -9,8 +9,4 @@ export default AuthenticatedRoute.extend({
     let assignments = this.store.findAll('assignment');
     return assignments;
   },
-
-  renderTemplate: function () {
-    this.render('assignments/assignments');
-  },
 });
