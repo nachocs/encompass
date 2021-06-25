@@ -1,12 +1,16 @@
 import AuthenticatedRoute from './_authenticated_route';
+import { hash } from 'rsvp';
 /**
  * # Assignments Route
  * @description Route for dealing with all assignment objects
- * @todo This is really the assignments_index route and should be named as such by convention
  */
 export default AuthenticatedRoute.extend({
   model: function () {
+    let currentUser = this.modelFor('application');
     let assignments = this.store.findAll('assignment');
-    return assignments;
+    return hash({
+      currentUser,
+      assignments,
+    });
   },
 });

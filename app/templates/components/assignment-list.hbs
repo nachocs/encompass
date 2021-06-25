@@ -10,10 +10,10 @@
   <section>
     <nav class="list-box">
       {{#unless this.currentUser.isStudent}}
-        <h2>{{currentUser.username}}'s Assignments</h2>
+        <h2>{{this.currentUser.username}}'s Assignments</h2>
         <ul class="your-assignments">
-          {{#if yourList}}
-          {{#each yourList as |assignment|}}
+          {{#if this.yourList}}
+          {{#each this.yourList as |assignment|}}
             {{#if assignment.name}}
               <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
@@ -26,10 +26,10 @@
         </ul>
       {{/unless}}
       {{#if this.currentUser.isStudent}}
-      <h2>{{currentUser.username}}'s Assignments</h2>
+      <h2>{{this.currentUser.username}}'s Assignments</h2>
       <ul class="your-assignments">
-        {{#if assignmentList}}
-          {{#each assignmentList as |assignment|}}
+        {{#if this.assignmentList}}
+          {{#each this.assignmentList as |assignment|}}
             {{#if assignment.name}}
             <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
@@ -42,11 +42,11 @@
         {{/if}}
       </ul>
       {{/if}}
-      {{#if currentUser.isAdmin}}
+      {{#if this.currentUser.isAdmin}}
         <h2>All Assignments</h2>
         <ul class="admin-assignments">
-          {{#if adminList}}
-          {{#each adminList as |assignment|}}
+          {{#if this.adminList}}
+          {{#each this.adminList as |assignment|}}
             {{#if assignment.name}}
             <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
@@ -59,11 +59,11 @@
           {{/if}}
         </ul>
       {{/if}}
-      {{#if currentUser.isPdAdmin}}
-        <h2>{{currentUser.organization.name}} Assignments</h2>
+      {{#if this.currentUser.isPdAdmin}}
+        <h2>{{this.currentUser.organization.name}} Assignments</h2>
         <ul class="pd-assignments">
-          {{#if pdList}}
-          {{#each pdList as |assignment|}}
+          {{#if this.pdList}}
+          {{#each this.pdList as |assignment|}}
             {{#if assignment.name}}
             <li><LinkTo @route="assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
