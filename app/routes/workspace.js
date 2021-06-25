@@ -15,11 +15,11 @@ export default Route.extend({
   when using ember data, which was causing unnecessary api requests being made
   */
 
-  model: function (params) {
+  model: async function (params) {
     let currentUser = this.modelFor('application');
     return hash({
       currentUser,
-      workspace: this.store.findRecord('workspace', params.workspace_id)
+      workspace: await this.store.findRecord('workspace', params.workspace_id)
     })
     // let url = `/api/workspaces/${params.workspace_id}`;
 
