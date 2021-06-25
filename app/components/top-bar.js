@@ -91,7 +91,6 @@ export default Component.extend(ErrorHandlingMixin, {
     toggleActingRole: function () {
       // should this action be moved to the application controller?
       const currentUser = this.currentUser;
-      console.log(currentUser);
       // student account types cannot toggle to teacher role
       if (currentUser.accountType === 'S') {
         return;
