@@ -9,7 +9,7 @@ export default AuthenticatedRoute.extend({
     const isStudent = user.get('isStudent');
 
     if (isStudent) {
-      this.transitionTo('assignments.home');
+      this.transitionTo('assignments');
     }
   },
 
@@ -26,7 +26,7 @@ export default AuthenticatedRoute.extend({
       this.transitionTo('assignment', assignment);
     },
     toAssignmentsHome: function () {
-      this.transitionTo('assignments.home');
+      this.transitionTo('assignments');
     },
   },
 });

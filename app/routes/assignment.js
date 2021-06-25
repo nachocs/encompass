@@ -10,7 +10,7 @@ export default AuthenticatedRoute.extend({
       this.transitionTo('answer', answer);
     },
     toAssignments: function () {
-      this.transitionTo('assignments.home');
+      this.transitionTo('assignments');
     },
   },
 

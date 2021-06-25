@@ -38,7 +38,7 @@
         <ul class="listing">
           {{#if this.section.assignments}}
             {{#each this.section.assignments as |assignment|}}
-            <li><LinkTo @route="assignment" @model={{assignment.id}}>{{assignment.name}}</LinkTo></li>
+            <li><LinkTo @route="assignments.assignment" @model={{assignment.id}}>{{assignment.name}}</LinkTo></li>
             {{/each}}
           {{else}}
             <li>No Assignments yet</li>

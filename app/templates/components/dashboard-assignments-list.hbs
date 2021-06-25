@@ -20,7 +20,7 @@
         <table cellspacing="0" cellpadding="1" border="1" width="100%">
           {{#each yourList as |assignment|}}
           <tr>
-            <td><LinkTo @route="assignment" @model={{assignment.id}} @classNames="link">{{assignment.name}}</LinkTo></td>
+            <td><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="link">{{assignment.name}}</LinkTo></td>
             <td><LinkTo @route="section" @model={{assignment.section.sectionId}} @classNames="link">{{assignment.section.name}}</LinkTo></td>
             <td>{{format-date assignment.assignedDate 'MMM Do YYYY' }}</td>
             <td>{{format-date assignment.dueDate 'MMM Do YYYY' }}</td>
