@@ -18,7 +18,7 @@
     <td>
       <div class="dash-problems al_body" style="width:100%; height:80px; overflow:auto;">
         <table cellspacing="0" cellpadding="1" border="1" width="100%">
-          {{#each yourList as |assignment|}}
+          {{#each this.yourList as |assignment|}}
           <tr>
             <td><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="link">{{assignment.name}}</LinkTo></td>
             <td><LinkTo @route="section" @model={{assignment.section.sectionId}} @classNames="link">{{assignment.section.name}}</LinkTo></td>
