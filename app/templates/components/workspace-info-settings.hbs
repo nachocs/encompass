@@ -56,7 +56,7 @@
             <SelectizeInput @store={{this.store}} @inputId="linked-assignment-select" @maxItems={{1}} @initialItems={{initialLinkedAssignmentItem}} @onItemAdd={{action "setLinkedAssignment"}} @onItemRemove={{action "setLinkedAssignment"}} @labelField="name" @valueField="id" @searchField="name" @model="assignment" @topLevelQueryParams="filterBy" @queryParamsKey="name" @isAsync={{true}} @placeholder="Search for an assignment by name" @preload="focus" />
           {{else}}
           {{#if linkedAssignment}}
-              <LinkTo @route="assignment" @model={{linkedAssignment.id}}>{{linkedAssignment.name}}</LinkTo>
+              <LinkTo @route="assignments.assignment" @model={{linkedAssignment.id}}>{{linkedAssignment.name}}</LinkTo>
             {{else}}
             N/A
             {{/if}}

@@ -110,13 +110,8 @@ Router.map(function () {
 
   // ASSIGNMENTS ROUTE
   this.route('assignments', function () {
-    this.route(
-      'assignment',
-      { resetNamespace: true, path: '/:assignmentId' },
-      function () {}
-    );
+    this.route('assignment', { path: '/:assignment_id' });
     this.route('new');
-    this.route('home');
   });
 
   // ANSWERS ROUTE

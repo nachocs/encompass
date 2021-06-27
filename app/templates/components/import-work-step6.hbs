@@ -103,7 +103,7 @@
     {{#if createdAssignment}}
       <p class="input-label">Created Assignment</p>
       <p class="success-info animated fadeIn"><b>{{createdAssignment.name}}</b> was successfully created.
-        View it <LinkTo @route="assignment" @model={{createdAssignment}}>here</LinkTo>
+        View it <LinkTo @route="assignments.assignment" @model={{createdAssignment}}>here</LinkTo>
       </p>
     {{else}}
       <p class="input-label">Assignment to be created</p>

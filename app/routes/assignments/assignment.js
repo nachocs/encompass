@@ -1,8 +1,8 @@
-import AuthenticatedRoute from './_authenticated_route';
+import AuthenticatedRoute from '../_authenticated_route';
 
 export default AuthenticatedRoute.extend({
   model: function (params) {
-    return this.store.findRecord('assignment', params.assignmentId);
+    return this.store.findRecord('assignment', params.assignment_id);
   },
 
   actions: {
@@ -10,7 +10,7 @@ export default AuthenticatedRoute.extend({
       this.transitionTo('answer', answer);
     },
     toAssignments: function () {
-      this.transitionTo('assignments.home');
+      this.transitionTo('assignments');
     },
   },
 

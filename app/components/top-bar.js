@@ -2,10 +2,9 @@ import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { not } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   tagName: 'header',
   classNameBindings: ['isSmallHeader:small', 'isHidden:hide'],
   elementId: 'al_header',
@@ -92,9 +91,9 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     toggleActingRole: function () {
       // should this action be moved to the application controller?
       const currentUser = this.currentUser;
-
+      console.log(currentUser);
       // student account types cannot toggle to teacher role
-      if (currentUser.get('accountType') === 'S') {
+      if (currentUser.accountType === 'S') {
         return;
       }
       const actingRole = currentUser.get('actingRole');

@@ -1,6 +1,6 @@
-{{#link-to "index"}}
+<LinkTo @route="index">
   <h1 id="encompass-logo" class="al_logo">Drexel | EnCoMPASS</h1>
-{{/link-to}}
+</LinkTo>
 
 <div class="clear_r"></div>
 
@@ -8,72 +8,72 @@
   <ul class="al_nav menu-toggle" id="main-nav">
     <li class="menu-items" id="home-btn">
       <div class="dropdown-skinny">
-        {{#link-to "index" }}my work{{/link-to}}
+        <LinkTo @route="index">my work</LinkTo>
       </div>
     </li>
     {{#unless this.currentUser.isStudent}}
       <li class="menu-items">
         <div class="dropdown dropdown-skinny">
-          {{#link-to "index" }}
+          <LinkTo @route="index">
             make
             <i class="fa fa-caret-down caret-down"></i>
-          {{/link-to}}
+          </LinkTo>
           <div class="dropdown-content">
-            {{#link-to "assignments.new" }}
+            <LinkTo @route="assignments.new">
               assignment
-            {{/link-to}}
+            </LinkTo>
             <div class="parent-dropdown">
               <div class="dropdown dropdown-skinny">
-                {{#link-to "workspaces.new" }}
+                <LinkTo @route="workspaces.new">
                   workspace
                   <i class="fa fa-caret-right caret-right spacing"></i>
-                {{/link-to}}
+                </LinkTo>
               </div>
               <div
                 id="dropdown-hidden"
                 class="dropdown-content dropdown-right dropdown-hidden"
               >
-                {{#link-to "workspaces.new" }}
+                <LinkTo @route="workspaces.new">
                   new
-                {{/link-to}}
-                {{#link-to "import" }}
+                </LinkTo>
+                <LinkTo @route="import">
                   import
-                {{/link-to}}
-                {{#link-to "workspaces.copy" }}
+                </LinkTo>
+                <LinkTo @route="workspaces.copy">
                   copy
-                {{/link-to}}
-                {{#link-to "vmt.import" }}
+                </LinkTo>
+                <LinkTo @route="vmt.import">
                   vmt
-                {{/link-to}}
+                </LinkTo>
               </div>
             </div>
-            {{#link-to "problems.new" }}
+            <LinkTo @route="problems.new">
               problem
-            {{/link-to}}
-            {{#link-to "sections.new" }}
+            </LinkTo>
+            <LinkTo @route="sections.new">
               class
-            {{/link-to}}
-            {{#link-to "users.new" }}
+            </LinkTo>
+            <LinkTo @route="users.new">
               users
-            {{/link-to}}
+            </LinkTo>
           </div>
         </div>
       </li>
     {{/unless}}
     <li class="menu-items">
       <div class="dropdown dropdown-wide">
-        {{#link-to "index" }}
+        <LinkTo @route="index">
           do
           <i class="fa fa-caret-down caret-down"></i>
-        {{/link-to}}
+        </LinkTo>
         <div class="dropdown-content">
           {{#each this.do as |item|}}
             {{#if item.restricted}}
               {{#unless this.currentUser.isStudent}}
-                {{#link-to item.link classNames=item.link}}{{item.text}}{{/link-to}}
+                <LinkTo @route={{item.link}} class={{item.link}}>{{item.text}}</LinkTo>
               {{/unless}}
             {{else}}
-              {{#link-to item.link classNames=item.link}}{{item.text}}{{/link-to}}
+              <LinkTo @route={{item.link}} class={{item.link}}>{{item.text}}</LinkTo>
             {{/if}}
           {{/each}}
         </div>
@@ -81,47 +81,47 @@
     </li>
     <li class="menu-items">
       <div class="dropdown dropdown-skinny">
-        {{#link-to "index" }}
+        <LinkTo @route="index">
           find
           <i class="fa fa-caret-down caret-down"></i>
-        {{/link-to}}
+        </LinkTo>
         <div class="dropdown-content">
           {{#each this.find as |item|}}
             {{#if item.restricted}}
               {{#unless this.currentUser.isStudent}}
-                {{#link-to item.link classNames=item.link}}{{item.text}}{{/link-to}}
+                <LinkTo @route={{item.link}} class={{item.link}}>{{item.text}}</LinkTo>
               {{/unless}}
             {{else}}
-              {{#link-to item.link classNames=item.link}}{{item.text}}{{/link-to}}
+              <LinkTo @route={{item.link}} class={{item.link}}>{{item.text}}</LinkTo>
             {{/if}}
           {{/each}}
         </div>
       </div>
     </li>
     <li class="menu-items" id="logout-btn">
-      {{#link-to "logout" classNames="menu logout"}}
+      <LinkTo @route="logout" class="menu logout">
         <i class="fas fa-power-off logout-icon"></i>
         <span id="logout-text">log out</span>
-      {{/link-to}}
+      </LinkTo>
     </li>
     {{#unless this.isStudentAccount}}
       <li id="role-toggle">
-        <span class="acting-role">Role: {{user.actingRoleName}}</span>
+        <span class="acting-role">Role: {{this.user.actingRoleName}}</span>
         <span class="toggle-role" {{action "showToggleModal"}}>
           <i class="fas fa-sync-alt"></i>
         </span>
       </li>
     {{/unless}}
     <li id="current-username">
-      {{#link-to "user" this.currentUser.username}}
+      <LinkTo @route="users.user" @model={{this.currentUser.username}}>
         <img
-          src={{currentUser.avatar}}
-          alt={{currentUser.username}}
+          src={{this.currentUser.avatar}}
+          alt={{this.currentUser.username}}
         />
-      {{/link-to}}
+      </LinkTo>
     </li>
     <li id="user-image">
-      <img id="menu-button" src={{user.avatar}} alt="" />
+      <img id="menu-button" src={{this.user.avatar}} alt="" />
       {{#if this.newNotifications}}
         {{circle-ntf displayCount=this.newNotifications.length}}
       {{/if}}
@@ -131,40 +131,40 @@
   <div id="hide-menu" class="hidden animated">
     <ul>
       <li>
-        {{#link-to "index"}}home{{/link-to}}
+        <LinkTo @route="index">home</LinkTo>
       </li>
       <li>
-        {{#link-to "assignments"}}assignments{{/link-to}}
-      </li>
-      {{#unless this.currentUser.isStudent}}
-        <li>
-          {{#link-to "problems"}}problems{{/link-to}}
-        </li>
-      {{/unless}}
-      <li>
-        {{#link-to "sections"}}classes{{/link-to}}
-      </li>
-      <li>
-        {{#link-to "workspaces"}}workspaces{{/link-to}}
+        <LinkTo @route="assignments">assignments</LinkTo>
       </li>
       {{#unless this.currentUser.isStudent}}
         <li>
-          {{#link-to "import"}}import{{/link-to}}
+          <LinkTo @route="problems">problems</LinkTo>
         </li>
       {{/unless}}
       <li>
-        {{#link-to "responses"}}responses{{/link-to}}
+        <LinkTo @route="sections">classes</LinkTo>
+      </li>
+      <li>
+        <LinkTo @route="workspaces">workspaces</LinkTo>
+      </li>
+      {{#unless this.currentUser.isStudent}}
+        <li>
+          <LinkTo @route="import">import</LinkTo>
+        </li>
+      {{/unless}}
+      <li>
+        <LinkTo @route="responses">responses</LinkTo>
         {{#if this.responseNotifications}}
           {{circle-ntf displayCount=this.responseNotifications.length}}
         {{/if}}
       </li>
       {{#unless this.currentUser.isStudent}}
         <li>
-          {{#link-to "users"}}users{{/link-to}}
+          <LinkTo @route="users">users</LinkTo>
         </li>
       {{/unless}}
       <li id="logout-btn-side">
-        {{#link-to "logout"}}logout{{/link-to}}
+        <LinkTo @route="logout">logout</LinkTo>
       </li>
     </ul>
   </div>
@@ -173,14 +173,14 @@
   <nav id="topbar-unauth">
     <ul>
       <li data-test="login">
-        {{#link-to "auth.login" classNames="menu login hidden" }}
+        <LinkTo @route="auth.login" class="menu login hidden">
           log in
-        {{/link-to}}
+        </LinkTo>
       </li>
       <li data-test="signup">
-        {{#link-to "auth.signup" classNames="menu signup" }}
+        <LinkTo @route="auth.signup" classNames="menu signup">
           sign up
-        {{/link-to}}
+        </LinkTo>
       </li>
     </ul>
   </nav>
