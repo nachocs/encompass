@@ -33,7 +33,6 @@ export default Component.extend(ErrorHandlingMixin, {
   @action
   login() {
     var username = this.get('username');
-    console.log(username);
     var usernameTrim;
     if (username) {
       usernameTrim = username.trim();
@@ -51,7 +50,7 @@ export default Component.extend(ErrorHandlingMixin, {
       password: password,
     };
     $.post({
-      url: 'http://localhost:8080/auth/login',
+      url: '/auth/login',
       data: createUserData,
     })
       .then((res) => {
