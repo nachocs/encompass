@@ -1,7 +1,7 @@
 <div class="flex-container-full">
   {{#if this.showSubmissionViewer}}
     <div class="flex-item-full filter-options collapse" id="filter-list-side">
-      <SubmissionsFilter @store={{this.store}} @onSearch={{action "setFilterCriteria"}} @sections={{this.model.sections}} @assignments={{this.model.assignments}} @users={{this.model.users}} @selectedFolderSet={{this.selectedFolderSet}} @selectedAssignment={{this.selectedAssignment}} @selectedSection={{this.selectedSection}} @selectedProblem={{this.selectedProblem}} @selectedStudents={{this.selectedStudents}} @selectedTeacher={{this.selectedTeacher}} @startDate={{this.startDate}} @endDate={{this.endDate}} @isTrashedOnly={{this.toggleTrashed}} />
+      <SubmissionsFilter @store={{this.store}} @onSearch={{action "setFilterCriteria"}} @sections={{this.model.sections}} @assignments={{this.model.assignments}} @users={{this.model.users}} @selectedFolderSet={{this.selectedFolderSet}} @selectedAssignment={{this.selectedAssignment}} @selectedSection={{this.selectedSection}} @selectedProblem={{this.selectedProblem}} @selectedStudents={{this.selectedStudents}} @selectedTeacher={{this.selectedTeacher}} @startDate={{this.startDate}} @endDate={{this.endDate}} @isTrashedOnly={{this.toggleTrashed}} @currentUser={{this.currentUser}} />
 
     </div>
     <div class="flex-item-full list-view">
