@@ -20,9 +20,9 @@
       </label>
 
       {{#if this.isEditingName}}
-        <Input @name="name" @id="name" @type="text" @value={{currentSection.name}} />
+        <Input @name="name" @id="name" @type="text" @value={{this.currentSection.name}} />
       {{else}}
-        <p data-test="section-name-display" class="section-info">{{section.name}}</p>
+        <p data-test="section-name-display" class="section-info">{{this.section.name}}</p>
       {{/if}}
     </div>
       <div class="section-info-detail assignments">
