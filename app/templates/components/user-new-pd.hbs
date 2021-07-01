@@ -54,7 +54,7 @@
     <tr>
       <td>Account Type <span class="required-star">*</span></td>
       <td>
-        <MySelect @selectedValue={{this,.selectedType}} @prompt="Select Account Type" @content={{this.accountTypes}} @cannotBeNull={{true}} @action={{action (mut this.selectedType)}} />
+        <MySelect @selectedValue={{this.selectedType}} @prompt="Select Account Type" @content={{this.accountTypes}} @cannotBeNull={{true}} @action={{action (mut this.selectedType)}} />
       </td>
     </tr>
     <tr>
