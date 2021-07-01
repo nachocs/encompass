@@ -2,7 +2,6 @@ import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import $ from 'jquery';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 import UserSignupMixin from '../mixins/user_signup_mixin';
 
@@ -11,7 +10,7 @@ import UserSignupMixin from '../mixins/user_signup_mixin';
 
 
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, UserSignupMixin, {
+export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
   elementId: 'user-new-admin',
   alert: service('sweet-alert'),
   errorMessage: null,
