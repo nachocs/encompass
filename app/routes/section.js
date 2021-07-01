@@ -1,9 +1,14 @@
 import AuthenticatedRoute from './_authenticated_route';
+import { hash } from 'rsvp';
 
 export default AuthenticatedRoute.extend({
   model: function (params) {
-    var section = this.store.findRecord('section', params.sectionId);
-    return section;
+    let section = this.store.findRecord('section', params.sectionId);
+    const currentUser = this.modelFor('application');
+    return hash({
+      section,
+      currentUser,
+    });
   },
 
   renderTemplate: function () {
