@@ -32,27 +32,32 @@ export default Component.extend(ErrorHandlingMixin, {
 
   @action
   login() {
-    const username = 'timleonard';
-    const password = 'password!!';
+    var username = this.get('username');
+    var usernameTrim;
+    if (username) {
+      usernameTrim = username.trim();
+    } else {
+      usernameTrim = '';
+    }
+    var password = this.get('password');
 
-    if (!username || !password) {
+    if (!usernameTrim || !password) {
       this.set('missingCredentials', true);
       return;
     }
-    const that = this;
     var createUserData = {
-      username: username,
+      username: usernameTrim,
       password: password,
     };
     $.post({
-      url: 'http://localhost:8080/auth/login',
+      url: '/auth/login',
       data: createUserData,
     })
       .then((res) => {
         if (res.message === 'Incorrect password') {
-          that.set('incorrectPassword', true);
+          this.set('incorrectPassword', true);
         } else if (res.message === 'Incorrect username') {
-          that.set('incorrectUsername', true);
+          this.set('incorrectUsername', true);
         } else {
           window.location.href = '/';
         }

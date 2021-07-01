@@ -36,11 +36,11 @@ if (process.env.NODE_ENV === 'seed') {
 }
 
 
-const localLogin = async (req, res, next) => {
+const localLogin = async (req, res) => {
   try {
     let { message, accessToken, refreshToken } = await ssoService.login(req.body);
     if (message) {
-      return res.json({message});
+      return res.json({ message });
     }
 
     // do we need to verify the accessToken
@@ -50,8 +50,7 @@ const localLogin = async (req, res, next) => {
     setSsoCookie(res, accessToken);
     setSsoRefreshCookie(res, refreshToken);
     // send back user?
-
-    return res.json({message: 'success'});
+    return res.json({ message: 'success' });
   }catch(err) {
     utils.handleError(err, res);
   }

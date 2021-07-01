@@ -7,8 +7,4 @@ export default AuthenticatedRoute.extend({
     let currentUser = this.modelFor('application');
     return RSVP.hash({ sections, currentUser });
   },
-
-  renderTemplate: function () {
-    this.render('sections/sections');
-  },
 });
