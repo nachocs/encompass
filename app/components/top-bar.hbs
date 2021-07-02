@@ -113,7 +113,7 @@
       </li>
     {{/unless}}
     <li id="current-username">
-      <LinkTo @route="users.user" @model={{this.currentUser.username}}>
+      <LinkTo @route="users.user" @model={{this.currentUser.id}}>
         <img
           src={{this.currentUser.avatar}}
           alt={{this.currentUser.username}}

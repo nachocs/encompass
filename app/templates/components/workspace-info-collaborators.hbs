@@ -23,7 +23,7 @@
       {{#each workspacePermissions as |collaborator|}}
       <div class="collab-container">
         <div class="collab-name">
-          <LinkTo @route="users.user" @model={{collaborator.userObj.username}}>{{collaborator.userObj.username}}</LinkTo>
+          <LinkTo @route="users.user" @model={{collaborator.userObj.id}}>{{collaborator.userObj.username}}</LinkTo>
           {{#if canEdit}}
           <span class="collab-actions">
             {{#if (is-equal collaborator.userObj selectedCollaborator)}}
@@ -56,7 +56,7 @@
         {{#each workspacePermissions as |collaborator|}}
           <div class="collab-container">
             <div class="collab-name">
-              <LinkTo @route="users.user" @model={{collaborator.userObj.username}}>{{collaborator.userObj.username}}</LinkTo>
+              <LinkTo @route="users.user" @model={{collaborator.userObj.id}}>{{collaborator.userObj.username}}</LinkTo>
               {{#if canEdit}}
               <span class="collab-actions">
                 {{#if (is-equal collaborator.userObj selectedCollaborator)}}
