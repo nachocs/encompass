@@ -5,16 +5,16 @@
     </div>
 
     <div class="item-section name">
-      <LinkTo @route="problem" @model={{problem}} class="problem-title">
-        <span class={{if this.problem.isTrashed 'strikethrough'}}>{{{problem.title}}}</span>
+      <LinkTo @route="problem" @model={{this.problem}} class="problem-title">
+        <span class={{if this.problem.isTrashed 'strikethrough'}}>{{{this.problem.title}}}</span>
         {{#if this.isRecommended}}
           <span><i class="fas fa-star star-icon"></i></span>
         {{/if}}
       </LinkTo>
     </div>
     <div class="item-section description">
-      <LinkTo @route="problem" @model={{problem}} class="problem-title">
-        {{{problem.text}}}
+      <LinkTo @route="problem" @model={{this.problem}} class="problem-title">
+        {{{this.problem.text}}}
       </LinkTo>
     </div>
     <div class="item-section date">
@@ -22,15 +22,15 @@
     </div>
     <div class="item-section status">
       <svg height="20" width="20">
-        <circle cx="10" cy="15" r="5" fill={{statusIconFill}} />
+        <circle cx="10" cy="15" r="5" fill={{this.statusIconFill}} />
       </svg>
       <span class="status-text">
-        {{problem.status}}
+        {{this.problem.status}}
       </span>
     </div>
     <div class="item-section action">
       <button {{action this.actionButton.function this.problem this.actionButton.argument1 this.actionButton.argument2}} class="primary-button">
-        {{actionButton.name}}
+        {{this.actionButton.name}}
       </button>
     </div>
     <div class="item-section more" {{action "toggleShowMoreMenu"}}>
@@ -88,8 +88,8 @@
     </div>
     <div class="item-card row-2">
       <div class="item-card name">
-        <LinkTo @route="problem" @model={{problem}} class="problem-title">
-          <span class={{if this.problem.isTrashed 'strikethrough'}}>{{{problem.title}}}</span>
+        <LinkTo @route="problem" @model={{this.problem}} class="problem-title">
+          <span class={{if this.problem.isTrashed 'strikethrough'}}>{{{this.problem.title}}}</span>
           {{#if this.isRecommended}}
             <span><i class="fas fa-star star-icon"></i></span>
           {{/if}}
@@ -98,23 +98,23 @@
     </div>
     <div class="item-card row-3">
       <div class="item-card description">
-        <LinkTo @route="problem" @model={{problem}} class="problem-title">
-          {{{problem.text}}}
+        <LinkTo @route="problem" @model={{this.problem}} class="problem-title">
+          {{{this.problem.text}}}
         </LinkTo>
       </div>
     </div>
     <div class="item-card row-4">
       <div class="item-card status">
         <svg height="20" width="20">
-          <circle cx="10" cy="15" r="5" fill={{statusIconFill}} />
+          <circle cx="10" cy="15" r="5" fill={{this.statusIconFill}} />
         </svg>
         <span class="status-text">
-          {{problem.status}}
+          {{this.problem.status}}
         </span>
       </div>
       <div class="item-card action">
-        <button {{action actionButton.function this.problem actionButton.argument1 actionButton.argument2}} class="primary-button">
-        {{actionButton.name}}
+        <button {{action this.actionButton.function this.problem this.actionButton.argument1 this.actionButton.argument2}} class="primary-button">
+        {{this.actionButton.name}}
       </button>
       </div>
     </div>

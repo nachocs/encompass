@@ -1,13 +1,13 @@
 <div class="flex-container-full">
   <div class="flex-item-full filter-options collapse" id="filter-list-side">
-    <ProblemFilter @store={{this.store}} @onUpdate={{action "triggerFetch"}} @triggerShowTrashed={{action "triggerShowTrashed"}} @filter={{filter}} @primaryFilter={{primaryFilter}} @adminFilterSelect={{adminFilterSelect}} @orgs={{model.organizations}} @categoriesFilter={{categoriesFilter}} @doIncludeSubCategories={{doIncludeSubCategories}} @toggleTrashed={{toggleTrashed}} @sendtoApplication="sendtoApplication" />
+    <ProblemFilter @store={{this.store}} @onUpdate={{action "triggerFetch"}} @triggerShowTrashed={{action "triggerShowTrashed"}} @filter={{this.filter}} @primaryFilter={{this.primaryFilter}} @adminFilterSelect={{this.adminFilterSelect}} @orgs={{this.model.organizations}} @categoriesFilter={{this.categoriesFilter}} @doIncludeSubCategories={{this.doIncludeSubCategories}} @toggleTrashed={{this.toggleTrashed}} @sendtoApplication="sendtoApplication" />
   </div>
 
   <div class="flex-item-full list-view">
     <div class="list-container">
       <h1>Problems</h1>
       <div class="searchbar">
-        <SearchBar @onSearch={{action "searchProblems"}} @showFilter={{true}} @searchOptions={{searchOptions}} @basePlaceholder="Search problems" @inputValue={{searchInputValue}} @clearSearchResults={{action "clearSearchResults"}} @selectedCriterion={{searchCriterion}} />
+        <SearchBar @onSearch={{action "searchProblems"}} @showFilter={{true}} @searchOptions={{this.searchOptions}} @basePlaceholder="Search problems" @inputValue={{this.searchInputValue}} @clearSearchResults={{action "clearSearchResults"}} @selectedCriterion={{this.searchCriterion}} />
 
         <LinkTo @route="problems.new" @id="problem-new-link" class="new-link-btn">
           <i class="fas fa-plus" title="Create new problem"></i>
@@ -17,7 +17,7 @@
     <div class="results-list">
       <div class="results-info">
         <div class="results-message">
-          {{{listResultsMessage}}}
+          {{{this.listResultsMessage}}}
         </div>
         <div class="side-icons">
           <i class="fas fa-redo-alt refresh-icon" {{action 'refreshList'}} title="Refresh problem list"></i>
@@ -41,17 +41,17 @@
               <ul>
                 {{#each this.privacySettingOptions as |option|}}
                 <li>
-                  <RadioFilter @labelName={{option.label}} @labelIcon={{option.icon}} @inputValue={{option.value}} @isChecked={{option.isChecked}} @groupName="privacy" @onClick={{action "updatePrivacySetting"}} @groupValue={{selectedPrivacySetting}} />
+                  <RadioFilter @labelName={{this.option.label}} @labelIcon={{this.option.icon}} @inputValue={{this.option.value}} @isChecked={{this.option.isChecked}} @groupName="privacy" @onClick={{action "updatePrivacySetting"}} @groupValue={{this.selectedPrivacySetting}} />
                 </li>
                 {{/each}}
               </ul>
             </span>
           </div>
-          <ToggleControl @classToAdd="sort-bar-item name" @onUpdate={{action "updateSortCriterion"}} @initialState={{1}} @options={{sortOptions.title}} @label="Title" @parentProp={{sortCriterion}} @type="title" @activeType={{sortCriterion.type}} />
+          <ToggleControl @classToAdd="sort-bar-item name" @onUpdate={{action "updateSortCriterion"}} @initialState={{1}} @options={{this.sortOptions.title}} @label="Title" @parentProp={{this.sortCriterion}} @type="title" @activeType={{this.sortCriterion.type}} />
           <div class="sort-bar-item description">
             Description
           </div>
-          <ToggleControl @classToAdd="sort-bar-item date" @onUpdate={{action "updateSortCriterion"}} @initialState={{0}} @options={{sortOptions.createDate}} @label="Date" @type="date" @activeType={{sortCriterion.type}} />
+          <ToggleControl @classToAdd="sort-bar-item date" @onUpdate={{action "updateSortCriterion"}} @initialState={{0}} @options={{this.sortOptions.createDate}} @label="Date" @type="date" @activeType={{this.sortCriterion.type}} />
           <div class="sort-bar-item status">
             Status <i class="fas fa-filter sort-icon"></i>
             <span class="hover-menu checkbox">
@@ -76,13 +76,13 @@
           <div class="sort-bar-item more"></div>
         </div>
         {{#if this.showList}}
-          <ProblemList @isSearching={{isSearchingProblems}} @problems={{displayProblems}} @metadata={{problemsMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{moreMenuOptions}} @store={{this.store}} @toProblemInfo="toProblemInfo" @refreshList={{action "refreshList"}} />
+          <ProblemList @isSearching={{this.isSearchingProblems}} @problems={{this.displayProblems}} @metadata={{this.problemsMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{this.moreMenuOptions}} @store={{this.store}} @toProblemInfo="toProblemInfo" @refreshList={{action "refreshList"}} />
         {{/if}}
         {{#if this.showGrid}}
-          <ProblemList @isSearching={{isSearchingProblems}} @store={{this.store}} @problems={{displayProblems}} @metadata={{problemsMetadata}} @isList={{false}} @isGrid={{true}} @moreMenuOptions={{moreMenuOptions}} @toProblemInfo="toProblemInfo" @refreshList={{action "refreshList"}} />
+          <ProblemList @isSearching={{this.isSearchingProblems}} @store={{this.store}} @problems={{this.displayProblems}} @metadata={{this.problemsMetadata}} @isList={{false}} @isGrid={{true}} @moreMenuOptions={{this.moreMenuOptions}} @toProblemInfo="toProblemInfo" @refreshList={{action "refreshList"}} />
         {{/if}}
 
-        <PaginationControl @details={{problemsMetadata}} @initiatePageChange={{action "initiatePageChange"}} />
+        <PaginationControl @details={{this.problemsMetadata}} @initiatePageChange={{action "initiatePageChange"}} />
       </div>
     </div>
   </div>
