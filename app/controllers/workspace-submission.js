@@ -10,9 +10,8 @@ import { computed } from '@ember/object';
  */
 import { alias, equal, not } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Controller.extend(CurrentUserMixin, {
+export default Controller.extend({
   workspace: controller(),
   utils: service('utility-methods'),
   alert: service('sweet-alert'),
@@ -21,7 +20,8 @@ export default Controller.extend(CurrentUserMixin, {
 
   // workspaceSubmissions: Ember.inject.controller(),
   // currentSubmission: Ember.computed.alias('workspaceSubmissions.currentSubmission'),
-  currentWorkspace: alias('workspace.model'),
+  currentUser: alias('workspace.model.currentUser'),
+  currentWorkspace: alias('workspace.model.workspace'),
   currentSelection: alias('workspace.currentSelection'),
   workspaceOwner: alias('currentWorkspace.owner'),
   permissions: service('workspace-permissions'),

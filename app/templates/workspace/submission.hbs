@@ -2,7 +2,7 @@
 <header class="{{makingSelection}} ws-header">
   <div class="ws-meta">
     <h2 class="workspace-name">{{currentWorkspace.name}}</h2>
-    <span class="info-link"><LinkTo @route="workspace.info" @model={{workspace}}><i class="fa fa-info-circle" aria-hidden="true"></i>
+    <span class="info-link"><LinkTo @route="workspace.info" @model={{this.currentWorkspace.id}}><i class="fa fa-info-circle" aria-hidden="true"></i>
       </LinkTo>
     </span>
     <span class="info workspaceOwner {{if isMyWorkspace 'isMine' 'notMine'}}">by {{currentWorkspace.owner.displayName}} </span>

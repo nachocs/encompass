@@ -21,12 +21,9 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
 
   queryParams: 'vmtRoomId',
 
-  model(params) {
-    let { submission_id } = params;
-
-    let submissions = this.modelFor('workspace.submissions');
-    let submission = submissions.findBy('id', submission_id);
-
+  async model({ submission_id }) {
+    let { workspace } = this.modelFor('workspace.submissions');
+    let submission = await workspace.submissions.findBy('id', submission_id);
     return submission;
   },
 
@@ -59,7 +56,7 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
   },
 
   renderTemplate: function (controller, model) {
-    this.render();
+    this.render('workspace/submission');
 
     let user = this.modelFor('application');
 

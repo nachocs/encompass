@@ -17,14 +17,12 @@ export default Route.extend({
 
   afterModel: function (model, transition) {
     let workspace = this.modelFor('workspace');
-    if (model.workspace.submissions.get('length') > 0) {
+    if (model.workspace.submissions.length > 0) {
       let sorted = model.workspace.submissions.sortBy('student', 'createDate');
       let firstStudent = sorted.get('firstObject.student');
       let lastRevision = sorted.getEach('student').lastIndexOf(firstStudent);
-
       this.transitionTo(
         'workspace-submission',
-        workspace,
         sorted.objectAt(lastRevision).get('id')
       );
     } else {

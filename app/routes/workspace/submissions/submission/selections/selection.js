@@ -5,6 +5,7 @@ import $ from 'jquery';
 
 export default Route.extend({
   afterModel: function (model, transition) {
+    console.log('models.workspace.submissions.submission.selections.selection');
     this.controllerFor('workspace').set('currentSelection', model);
   },
 
