@@ -7,7 +7,7 @@
 </div>
 <div class="info-flex-item creation-details">
   by
-  <LinkTo @route="users.user" @model={{this.assignment.createdBy}}>
+  <LinkTo @route="users.user" @model={{this.assignment.createdBy.id}}>
     {{this.assignment.createdBy.username}}
   </LinkTo>
   on

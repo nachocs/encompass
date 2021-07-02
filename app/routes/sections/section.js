@@ -11,10 +11,6 @@ export default AuthenticatedRoute.extend({
     });
   },
 
-  renderTemplate: function () {
-    this.render('sections/section');
-  },
-
   actions: {
     toSectionList: function () {
       this.transitionTo('sections.home');
