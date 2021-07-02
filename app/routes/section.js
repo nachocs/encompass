@@ -2,9 +2,10 @@ import AuthenticatedRoute from './_authenticated_route';
 import { hash } from 'rsvp';
 
 export default AuthenticatedRoute.extend({
-  model: function (params) {
-    let section = this.store.findRecord('section', params.sectionId);
-    const currentUser = this.modelFor('application');
+  async model(params) {
+    let section = await this.store.findRecord('section', params.section_id);
+    const currentUser = await this.modelFor('application');
+    console.log(section);
     return hash({
       section,
       currentUser,
