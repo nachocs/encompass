@@ -44,7 +44,7 @@
   {{#if this.showSectionInput}}
     <SelectizeInput @inputId="assn-new-section-select" @initialOptions={{this.sectionOptions}} @initialItems={{this.initialSectionItem}} @onItemAdd={{action "updateSelectizeSingle"}} @onItemRemove={{action "updateSelectizeSingle"}} @maxItems={{1}} @labelField="name" @valueField="id" @searchField="name" @propToUpdate="selectedSection" @placeholder="Search for a section by name" @model="section" @store={{this.store}} />
   {{else}}
-    <LinkTo @route="section" @model={{this.section}}>
+    <LinkTo @route="sections.section" @model={{this.section}}>
       {{this.section.name}}
     </LinkTo>
   {{/if}}
