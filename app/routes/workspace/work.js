@@ -9,8 +9,8 @@ import { inject as service } from '@ember/service';
 export default Route.extend({
   alert: service('sweet-alert'),
 
-  afterModel: function (model, transition) {
-    let hasSubmissions = model.get('submissions.length') > 0;
+  afterModel: async function (model, transition) {
+    let hasSubmissions = await model.workspace.submissions.length > 0;
 
     if (hasSubmissions) {
       this.transitionTo('workspace.submissions.first');
