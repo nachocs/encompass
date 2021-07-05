@@ -1,5 +1,5 @@
 import Mixin from '@ember/object/mixin';
-import { App as Encompass } from '../app';
+import Encompass from '../app';
 import './DragNDrop';
 
 

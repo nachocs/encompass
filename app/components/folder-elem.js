@@ -20,13 +20,11 @@ import { aliasMethod, computed } from '@ember/object';
 import { gt } from '@ember/object/computed';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import { App as Encompass } from '../app';
+import Encompass from '../app';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(
-  Encompass.DragNDrop.Droppable,
-  Encompass.DragNDrop.Draggable,
   ErrorHandlingMixin,
   CurrentUserMixin,
   {
