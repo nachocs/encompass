@@ -15,10 +15,10 @@ import Route from '@ember/routing/route';
 
 
 export default Route.extend({
-  model() {
+  async model() {
     let workspace = this.modelFor('workspace');
 
-    let submissions = workspace.hasMany('submissions').value();
+    let submissions = await workspace.hasMany('submissions').value();
     if (submissions !== null) {
       return submissions;
     }

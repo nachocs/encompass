@@ -40,12 +40,12 @@ export default AuthenticatedRoute.extend({
 
   },
 
-  model(params) {
+  async model(params) {
     if (!params.submission_id) {
       return null;
     }
 
-    let allResponses = this.store.peekAll('response');
+    let allResponses = await this.store.peekAll('response');
 
     return this.resolveSubmission(params.submission_id)
       .then((submission) => {
@@ -86,7 +86,6 @@ export default AuthenticatedRoute.extend({
           response: response,
           allResponses,
         };
-
       });
   },
 

@@ -21,11 +21,11 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
 
   queryParams: 'vmtRoomId',
 
-  model(params) {
+  async model(params) {
     let { submission_id } = params;
 
     let submissions = this.modelFor('workspace.submissions');
-    let submission = submissions.findBy('id', submission_id);
+    let submission = await submissions.findBy('id', submission_id);
 
     return submission;
   },

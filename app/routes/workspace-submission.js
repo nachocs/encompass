@@ -23,7 +23,7 @@ export default Route.extend(VmtHostMixin, {
 
   async model({ submission_id }) {
     let currentUser = this.modelFor('application');
-    let { workspace } = this.modelFor('workspace.submissions');
+    let { workspace } = await this.modelFor('workspace.submissions');
     let submission = await workspace.submissions.findBy('id', submission_id);
     return hash({
       currentUser,
