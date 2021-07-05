@@ -1,7 +1,8 @@
 import Component from '@ember/component';
-import EmberMap from '@ember/map';
+// import EmberMap from '@ember/map';
 import { computed, observer } from '@ember/object';
 import { alias, equal, gte, or, sort } from '@ember/object/computed';
+import { inject as service } from "@ember/service";
 /**
  * Passed in by template:
  * - submissions
@@ -13,11 +14,10 @@ import { alias, equal, gte, or, sort } from '@ember/object/computed';
 import { isEqual } from '@ember/utils';
 import $ from 'jquery';
 import moment from 'moment';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Component.extend(CurrentUserMixin, {
+export default Component.extend({
   elementId: 'submission-group',
-
+  utils: service('utility-methods'),
   classNameBindings: [
     'makingSelection:al_makeselect',
     'isHidden:hidden',
@@ -80,20 +80,17 @@ export default Component.extend(CurrentUserMixin, {
 
   //TODO Use the new thread.threadId property on submissions
   submissionThreads: computed('submissions.[]', function () {
-    let threads = EmberMap.create();
-
-    let sortedSubs = this.submissions.sortBy('student');
-
-    sortedSubs.forEach((sub) => {
-      let student = sub.get('student');
-
-      let thread = threads.get(student);
-
-      if (!thread) {
-        threads.set(student, this.studentWork(student));
-      }
-    });
-
+    let threads = {};
+    console.log(threads);
+    this.submissions.sortBy('student')
+      .getEach('student')
+      .uniq()
+      .forEach((student) => {
+        if (!threads[student]) {
+          const answers = this.studentWork(student);
+          threads[student]=answers;
+        }
+      });
     return threads;
   }),
 
@@ -105,8 +102,8 @@ export default Component.extend(CurrentUserMixin, {
     var pointers = [];
     var threads = this.submissionThreads;
 
-    threads.forEach(function (submissions, student) {
-      pointers.pushObject(submissions.get('lastObject'));
+    Object.keys(threads).forEach(function (student) {
+      pointers.pushObject(threads[student].get('lastObject'));
     });
 
     return pointers;
@@ -131,7 +128,7 @@ export default Component.extend(CurrentUserMixin, {
   }),
 
   currentThread: computed('submission', function () {
-    return this.submissionThreads.get(this.currentStudent);
+    return this.submissionThreads[this.currentStudent];
   }),
 
   prevThread: computed('currentThread', 'firstThread', function () {

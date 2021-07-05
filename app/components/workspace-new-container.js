@@ -475,8 +475,8 @@ export default Component.extend(ErrorHandlingMixin, {
     if (!this.filteredAnswers) {
       return [];
     }
-    const threads = Ember.Map;
-
+    const threads = {};
+    console.log(threads);
     this.filteredAnswers
       .sortBy('student')
       .getEach('student')
