@@ -4,23 +4,11 @@
  * - makingSelection
  * - showingSelections
  */
-import { alias } from '@ember/object/computed';
-
-import { inject as controller } from '@ember/controller';
 import Component from '@ember/component';
 import $ from 'jquery';
-import SelectionHighlighting from '../../vendor/selection-highlighting';
-
-
-
-
 
 export default Component.extend({
   elementId: 'selectable-area',
-
-  application: controller(),
-
-  isTouchScreen: alias('application.isTouchScreen'),
 
   init: function () {
     this._super(...arguments);

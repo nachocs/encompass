@@ -352,10 +352,10 @@ export default Controller.extend({
     addSelection: function (selection, isUpdateOnly) {
       var user = this.currentUser;
       var workspace = this.currentWorkspace;
-      var submission = this.model;
+      var submission = this.model.submission;
       var controller = this;
       var newSelection = null;
-      var alreadyExists = this.get('model.selections').filterBy(
+      var alreadyExists = this.get('model.submission.selections').filterBy(
         'id',
         selection.id
       );
