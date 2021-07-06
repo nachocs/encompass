@@ -138,7 +138,7 @@ export default Controller.extend(CurrentUserMixin, {
           window.opener.$(selector).click();
         } else {
           controller.transitionToRoute(
-            'workspace.submission.selection',
+            'selection',
             selection.get('workspace'),
             selection.get('submission'),
             selection
