@@ -1,15 +1,11 @@
 import Namespace from '@ember/application/namespace';
-import { App as Encompass } from '../app';
+import Encompass from '../app';
 
-
-
-
-
-
-export default Namespace.create();
-
+Encompass.DragNDrop = Namespace.create();
 
 Encompass.DragNDrop.cancel = function (event) {
   event.preventDefault();
   return false;
 };
+
+export default Encompass.DragNDrop;

@@ -16,6 +16,7 @@ export default class Application extends Route.extend(MtAuthMixin) {
   //the application route can't require authentication since it's getting the user
   @service('user-ntfs') userNtfs;
   @service store;
+  @service('workspace-permissions') workspacePermissions;
   beforeModel() {
     let that = this;
     window.addEventListener(
@@ -28,8 +29,10 @@ export default class Application extends Route.extend(MtAuthMixin) {
     );
   }
 
-  model() {
-    return this.store.queryRecord('user', { alias: 'current' });
+  async model() {
+    let user = await this.store.queryRecord('user', { alias: 'current' });
+    this.workspacePermissions.setUser(user);
+    return user;
   }
 
   afterModel(user, transition) {

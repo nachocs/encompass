@@ -17,10 +17,9 @@ import { and, equal } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import moment from 'moment';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: 'comment-list',
   alert: service('sweet-alert'),
   utils: service('utility-methods'),

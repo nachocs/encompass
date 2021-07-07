@@ -2,7 +2,7 @@ import { hash } from 'rsvp';
 import AuthenticatedRoute from '../_authenticated_route';
 
 export default AuthenticatedRoute.extend({
-  model: function (params) {
+  model: function () {
     return hash({
       problems: this.store.findAll('problem'),
       organizations: this.store.findAll('organization'),

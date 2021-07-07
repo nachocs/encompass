@@ -13,9 +13,11 @@ export default AuthenticatedRoute.extend({
     }
   },
   model: function () {
+    const currentUser = this.modelFor('application');
     return hash({
       // pdSets: this.get('store').findAll('PdSet'),
-      folderSets: this.store.findAll('folderSet'),
+      currentUser,
+      folderSets: this.store.findAll('folder-set'),
       sections: this.store.findAll('section'),
       assignments: this.store.findAll('assignment'),
       users: this.store.findAll('user'),

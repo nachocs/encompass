@@ -1,14 +1,11 @@
 /* eslint-disable complexity */
 import Service, { inject as service } from '@ember/service';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-
-
-
-
-
-
-export default Service.extend(CurrentUserMixin, {
+export default Service.extend({
+  currentUser: null,
+  setUser(user) {
+    this.set('currentUser', user);
+  },
   utils: service('utility-methods'),
 
   isAdmin() {

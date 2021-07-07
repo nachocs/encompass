@@ -9,25 +9,26 @@
 /*global _:false */
 import Route from '@ember/routing/route';
 import { schedule } from '@ember/runloop';
+import { hash } from 'rsvp';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import { resolve } from 'rsvp';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import VmtHostMixin from '../mixins/vmt-host';
 
-export default Route.extend(CurrentUserMixin, VmtHostMixin, {
+export default Route.extend(VmtHostMixin, {
   alert: service('sweet-alert'),
   utils: service('utility-methods'),
 
   queryParams: 'vmtRoomId',
 
-  model(params) {
-    let { submission_id } = params;
-
-    let submissions = this.modelFor('workspace.submissions');
-    let submission = submissions.findBy('id', submission_id);
-
-    return submission;
+  async model({ submission_id }) {
+    let currentUser = this.modelFor('application');
+    let { workspace } = await this.modelFor('workspace.submissions');
+    let submission = await workspace.submissions.findBy('id', submission_id);
+    return hash({
+      currentUser,
+      submission,
+    })
   },
 
   afterModel(submission, transition) {
@@ -59,7 +60,7 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
   },
 
   renderTemplate: function (controller, model) {
-    this.render();
+    this.render('workspace/submission');
 
     let user = this.modelFor('application');
 
@@ -71,7 +72,7 @@ export default Route.extend(CurrentUserMixin, VmtHostMixin, {
   },
 
   resolveVmtRoom(submission) {
-    let roomId = submission.get('vmtRoomInfo.roomId');
+    let roomId = submission.submission.get('vmtRoomInfo.roomId');
     let utils = this.utils;
 
     if (!utils.isValidMongoId(roomId)) {

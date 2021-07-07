@@ -10,9 +10,8 @@ import { computed } from '@ember/object';
  */
 import { alias, equal, not } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Controller.extend(CurrentUserMixin, {
+export default Controller.extend({
   workspace: controller(),
   utils: service('utility-methods'),
   alert: service('sweet-alert'),
@@ -21,7 +20,8 @@ export default Controller.extend(CurrentUserMixin, {
 
   // workspaceSubmissions: Ember.inject.controller(),
   // currentSubmission: Ember.computed.alias('workspaceSubmissions.currentSubmission'),
-  currentWorkspace: alias('workspace.model'),
+  currentUser: alias('workspace.model.currentUser'),
+  currentWorkspace: alias('workspace.model.workspace'),
   currentSelection: alias('workspace.currentSelection'),
   workspaceOwner: alias('currentWorkspace.owner'),
   permissions: service('workspace-permissions'),
@@ -352,10 +352,10 @@ export default Controller.extend(CurrentUserMixin, {
     addSelection: function (selection, isUpdateOnly) {
       var user = this.currentUser;
       var workspace = this.currentWorkspace;
-      var submission = this.model;
+      var submission = this.model.submission;
       var controller = this;
       var newSelection = null;
-      var alreadyExists = this.get('model.selections').filterBy(
+      var alreadyExists = this.get('model.submission.selections').filterBy(
         'id',
         selection.id
       );

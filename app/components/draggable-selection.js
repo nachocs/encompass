@@ -3,7 +3,7 @@ import { computed } from '@ember/object';
 import { alias, equal } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import moment from 'moment';
-import { App as Encompass } from '../app';
+import Encompass from '../app';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import './Draggable';
 

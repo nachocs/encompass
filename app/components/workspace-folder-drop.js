@@ -7,13 +7,12 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { next } from '@ember/runloop';
-import { App as Encompass } from '../app';
+import Encompass from '../app';
 import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 import './Droppable';
 
 export default Component.extend(
-  Encompass.DragNDrop.Droppable,
   CurrentUserMixin,
   ErrorHandlingMixin,
   {

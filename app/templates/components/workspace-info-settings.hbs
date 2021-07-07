@@ -30,7 +30,7 @@
         {{#if isEditing}}
           <SelectizeInput @store={{this.store}} @inputId="owner-select" @maxItems={{1}} @initialItems={{initialOwnerItem}} @onItemAdd={{action "setOwner"}} @onItemRemove={{action "setOwner"}} @labelField="username" @valueField="id" @searchField="username" @model="user" @queryParamsKey="usernameSearch" @isAsync={{true}} @placeholder="Search by username" @preload="focus" />
         {{else}}
-          <LinkTo @route="users.user" @model={{workspace.owner.username}}>{{workspace.owner.username}}</LinkTo>
+          <LinkTo @route="users.user" @model={{workspace.owner.id}}>{{workspace.owner.username}}</LinkTo>
         {{/if}}
       </div>
     </div>

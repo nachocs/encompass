@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import EmberMap from '@ember/map';
+// import EmberMap from '@ember/map';
 import { computed } from '@ember/object';
 import { equal, or } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
@@ -7,10 +7,9 @@ import $ from 'jquery';
 import moment from 'moment';
 /*global _:false */
 import { all } from 'rsvp';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: 'workspace-new-container',
   showList: true,
   showGrid: false,
@@ -476,8 +475,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     if (!this.filteredAnswers) {
       return [];
     }
-    const threads = EmberMap.create();
-
+    const threads = {};
+    console.log(threads);
     this.filteredAnswers
       .sortBy('student')
       .getEach('student')
