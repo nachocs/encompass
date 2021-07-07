@@ -46,179 +46,32 @@ Sections
 
 # assignments_student.js
   1) Assignments as Student
-       As Student
-         Visting Summer's Org Problem / Sep 6th 2018
-           should display assignment details:
-     TimeoutError: Could not find Nov 30th 2018 in DOM
-Wait timed out after 10172ms
-      at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  2) Assignments as Student
-       As Student
-         Submitting response to assignment
-           should display Revise button:
-     AssertionError: expected undefined to deeply equal 'Revise'
-      at Context.<anonymous> (test/selenium/assignments_student.js:74:104)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  3) Assignments as Student
-       As Student
-         Submitting response to assignment
-           Clicking button should bring up new answer form:
-
-      AssertionError: expected false to be true
-      + expected - actual
-
-      -false
-      +true
-      
-      at Context.<anonymous> (test/selenium/assignments_student.js:80:95)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  4) Assignments as Student
-       As Student
-         Submitting response to assignment
-           brief summary should be prefilled:
-     AssertionError: expected undefined to deeply equal 'This is a brief summary of my thoughts.'
-      at Context.<anonymous> (test/selenium/assignments_student.js:86:107)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  5) Assignments as Student
-       As Student
-         Submitting response to assignment
-           explanation should be prefilled:
-     AssertionError: expected undefined to deeply equal 'This is my explanation.'
-      at Context.<anonymous> (test/selenium/assignments_student.js:89:102)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  6) Assignments as Student
-       As Student
-         Submitting response to assignment
-           contributors should list all contributors from previous answer:
-
-      AssertionError: expected [] to have a length of 1 but got 0
-      + expected - actual
-
-      -0
-      +1
-      
-      at Context.<anonymous> (test/selenium/assignments_student.js:94:41)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  7) Assignments as Student
-       As Teacher acting as Student
-         Visting Summer's Org Problem / Sep 6th 2018
-           should display assignment details:
-     TimeoutError: Could not find Nov 30th 2018 in DOM
-Wait timed out after 10078ms
-      at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  8) Assignments as Student
-       As Teacher acting as Student
-         Submitting response to assignment
-           should display Share Your Ideas button:
-     AssertionError: expected undefined to deeply equal 'Share Your Ideas'
-      at Context.<anonymous> (test/selenium/assignments_student.js:74:104)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  9) Assignments as Student
-       As Teacher acting as Student
-         Submitting response to assignment
-           Clicking button should bring up new answer form:
-
-      AssertionError: expected false to be true
-      + expected - actual
-
-      -false
-      +true
-      
-      at Context.<anonymous> (test/selenium/assignments_student.js:80:95)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  10) Assignments as Student
-       As Teacher acting as Student
-         Submitting response to assignment
-           brief summary should empty:
-     AssertionError: expected undefined to deeply equal ''
-      at Context.<anonymous> (test/selenium/assignments_student.js:100:107)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  11) Assignments as Student
-       As Teacher acting as Student
-         Submitting response to assignment
-           explanation should empty:
-     AssertionError: expected undefined to deeply equal ''
-      at Context.<anonymous> (test/selenium/assignments_student.js:103:102)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  12) Assignments as Student
        As Teacher acting as Student
          Submitting response to assignment
            contributors should only contain the submitting student:
 
-      AssertionError: expected [] to have a length of 1 but got 0
+      AssertionError: expected '' to deeply equal 'actingstudent'
       + expected - actual
 
-      -0
-      +1
+      +actingstudent
       
-      at Context.<anonymous> (test/selenium/assignments_student.js:107:41)
-      at runMicrotasks (<anonymous>)
+      at Context.<anonymous> (test/selenium/assignments_student.js:109:55)
       at processTicksAndRejections (internal/process/task_queues.js:97:5)
 
-  13) Assignments as Student
-       As Teacher acting as Student
-         Submitting response to assignment
-           should display error if explanation is omitted:
-
-      AssertionError: expected [] to have a length of 1 but got 0
-      + expected - actual
-
-      -0
-      +1
-      
-      at Context.<anonymous> (test/selenium/assignments_student.js:127:38)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  14) Assignments as Student
-       As Teacher acting as Student
-         Submitting response to assignment
-           should display error if brief summary is omitted:
-
-      AssertionError: expected [] to have a length of 1 but got 0
-      + expected - actual
-
-      -0
-      +1
-      
-      at Context.<anonymous> (test/selenium/assignments_student.js:141:38)
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  15) Assignments as Student
+  2) Assignments as Student
        As Teacher acting as Student
          Submitting response to assignment
            should succesfully create answer:
      TimeoutError: Waiting for element to be located By(css selector, #past-submissions-header)
-Wait timed out after 10075ms
+Wait timed out after 10052ms
       at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
-      at runMicrotasks (<anonymous>)
       at processTicksAndRejections (internal/process/task_queues.js:97:5)
 
-  16) Assignments as Student
+  3) Assignments as Student
        As Teacher acting as Student
          Submitting response to assignment
            Viewing most recent submission
              "before all" hook for "should display correct brief summary":
      TypeError: Cannot read property 'click' of undefined
-      at Context.<anonymous> (test/selenium/assignments_student.js:196:30)
-      at runMicrotasks (<anonymous>)
+      at Context.<anonymous> (test/selenium/assignments_student.js:197:30)
       at processTicksAndRejections (internal/process/task_queues.js:97:5)

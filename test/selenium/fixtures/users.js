@@ -325,8 +325,8 @@ module.exports = {
         _id: '5b91743a3da5efca74705773',
         name: `Summer's Org Problem / Sep 6th 2018`,
         problemName: `Summer's Private Problem`,
-        assignedDate: '6th Sep 2018',
-        dueDate: '30th Nov 2018',
+        assignedDate: 'Sep 6th 2018',
+        dueDate: 'Nov 30th 2018',
         className: `Summer's Algebra 2 1st Period`,
         problemStatement: `This is Summer's private problem`
 
