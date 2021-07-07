@@ -1,6 +1,10 @@
 ## workspace-list-container
 - fix rendering of filters: props are getting updated after rendering and are no longer receieved by workspace-filter
 
+## workspaces.workspace
+- chevrons and carat images not working
+- error with workspaces.submission.selection transition
+
 ## problems.new
 - tabs do not work
 
