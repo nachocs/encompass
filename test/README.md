@@ -4,15 +4,15 @@
 2. Move file to local mt-sso directory
 3. Rename current .env to .env-dev and mt-sso_env-test to .env
 4. Start sso server: in vmt/server/ `npm run dev-sso` 
-5. Start EnCoMPASS test server: in encompass/ `grunt serve-seed`
-5. Start EnCoMPASS tests: in encompass/ `npm run test`
+5. Open encompass/app_server/config.js: `testPort: 8082`
+6. Open encompass/.env: `NODE_ENV:'seed'`
+7. In terminal in /encompass `npm run seed`
+8. In terminal in /encompass `npm run start-back`
+9. Open encompass/app_server/config.js: `testPort: 8081`
+10. In new terminal in /encompass `npm run start-test`
+11. In new terminal in /encompass `npm run selenium`
 
 Note: switch mt-sso .env files when running development server (.env -> .env-test, .env-dev -> .env)
-
-## Executing
-
-- In vmt/server `npm run dev-sso`
-- In encompass `npm run test`
 
 ## Overview
 
