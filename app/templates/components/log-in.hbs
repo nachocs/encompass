@@ -10,7 +10,7 @@
 
       <label for="username">Username:</label>
       <Input class="form-control" @name="username" @id="username" @required={{true}} @type="text" @value={{this.username}}
-        {{on "key-down" this.resetErrors}} />
+        {{on "keydown" this.resetErrors}} />
 
       {{#if this.incorrectUsername}}
       <ErrorBox @error="Incorrect Username" @showDismiss={{true}} />
@@ -20,7 +20,7 @@
     <div class="auth-form-input">
       <label for="password">Password:</label>
       <Input class="form-control" @name="password" @id="password" @required={{true}} @type="password" @value={{this.password}}
-        {{on "key-down" this.resetErrors}} />
+        {{on "keydown" this.resetErrors}} />
 
       {{#if this.incorrectPassword}}
       <ErrorBox @error="Incorrect Password" @showDismiss={{true}} />
