@@ -61,11 +61,11 @@ describe('Problems', async function () {
               // await helpers.findAndClickElement(driver, topLink);
               let options = {
                 selector: 'a',
-                urlToWaitFor: `${helpers.host}/#/problems`,
+                urlToWaitFor: `${helpers.host}/problems`,
                 timeout: 10000
               };
           
-              await helpers.navigateAndWait(driver, `${helpers.host}/#/problems`, options );
+              await helpers.navigateAndWait(driver, `${helpers.host}/problems`, options );
               if (!isStudent) {
                 await helpers.waitForSelector(driver, css.problemPageSelectors.problemContainer);
               }
