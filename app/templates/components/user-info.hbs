@@ -45,7 +45,7 @@
       <td>Email</td>
       <td>
         {{#if this.isEditing}}
-          <Input @value={{userEmail}} @classNames="user-email" />
+          <Input @value={{this.userEmail}} @classNames="user-email" />
         {{else}}
           {{@user.email}}
         {{/if}}
@@ -83,7 +83,7 @@
         <td>Organization {{#if this.isEditing}}<span class="required-star">*</span>{{/if}}</td>
         {{#if this.isEditing}}
           {{#if this.currentUser.isAdmin}}
-            <td><TwitterTypeahead @dataList={{orgList}} @selectedValue={{@user.organization}} @onSelect="setOrg" @minLength={{0}} @optionLabelPath="name" @setSelectedValueOnChange={{true}} /></td>
+            <td><TwitterTypeahead @dataList={{this.orgList}} @selectedValue={{@user.organization}} @onSelect="setOrg" @minLength={{0}} @optionLabelPath="name" @setSelectedValueOnChange={{true}} /></td>
           {{else}}
             <td>{{@user.organization.name}}</td>
           {{/if}}
@@ -140,7 +140,7 @@
         {{else}}
         <button class='doneTour' {{action 'doneTour' }}>don't show the tour</button>
         {{/if}} {{/if}}
-        <span class='tourDate'>{{tourDate}}</span>
+        <span class='tourDate'>{{this.tourDate}}</span>
       </td>
     </tr>
     <tr>
@@ -162,8 +162,8 @@
       {{#if this.isEditing}}
       <td>
         {{#if this.canEdit}}
-        <MySelect @selectedValue={{selectedType}} @cannotBeNull={{true}} @content={{accountTypes}} @action={{action (mut selectedType)}} />
-        <Input required={{true}} @type="hidden" @value={{selectedType}} />
+        <MySelect @selectedValue={{this.selectedType}} @cannotBeNull={{true}} @content={{this.accountTypes}} @action={{action (mut this.selectedType)}} />
+        <Input required={{true}} @type="hidden" @value={{this.selectedType}} />
         {{/if}}
       </td>
       {{else}}
@@ -176,7 +176,7 @@
       <td>
         {{#if this.isEditing}}
         {{#if this.canEdit}}
-        <Input @type="checkbox" @checked={{@user.isAuthorized}} @value={{authorized}} @classNames="user-isAuth" />
+        <Input @type="checkbox" @checked={{@user.isAuthorized}} @classNames="user-isAuth" />
         {{else}}
         {{@user.isAuthorized}}
         {{/if}}
@@ -224,7 +224,7 @@
       {{#if this.isResettingPassword}}
         <ResetPasswordUser @user={{@user}} @handleResetSuccess={{action "handleResetSuccess"}} @cancelReset={{action "handleCancelForm"}} />
       {{/if}}
-    {{#unless isResettingPassword}}
+    {{#unless this.isResettingPassword}}
       <div class="button-row">
         <button class='action_button save-user' {{action 'checkOrgExists' }}>Save</button>
         <button class='action_button cancel-button cancel-user' {{action 'cancel' }}>Cancel</button>
