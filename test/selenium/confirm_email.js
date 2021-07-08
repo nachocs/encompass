@@ -10,7 +10,7 @@ const css = require('./selectors');
 const fixtures = require('./fixtures/confirm_email');
 
 const host = helpers.host;
-const confirmPath = '/#/auth/confirm';
+const confirmPath = '/auth/confirm';
 
 const confirmLink = `${host}${confirmPath}/${fixtures.userLiveToken.token}`;
 const invalidResetLink = `${host}${confirmPath}/${fixtures.userLiveToken.invalidToken}`;
