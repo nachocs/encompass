@@ -1,10 +1,9 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   utils: service('utility-methods'),
 
   currentAssignment: null,

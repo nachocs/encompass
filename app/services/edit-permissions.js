@@ -1,12 +1,13 @@
 import { computed } from '@ember/object';
 import { alias, equal } from '@ember/object/computed';
 import Service, { inject as service } from '@ember/service';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Service.extend(CurrentUserMixin, {
+export default Service.extend({
   utils: service('utility-methods'),
-
-  user: alias('currentUser'),
+  user: null,
+  setUser(user) {
+    this.set('user', user);
+  },
   userId: alias('user.id'),
   userOrg: alias('user.organization'),
   accountType: alias('user.accountType'),

@@ -1,8 +1,13 @@
 import AuthenticatedRoute from '../_authenticated_route';
+import { hash } from 'rsvp';
 
 export default AuthenticatedRoute.extend({
-  model: function (params) {
-    return this.store.findRecord('assignment', params.assignment_id);
+  model: async function (params) {
+    let currentUser = this.modelFor('application');
+    return hash({
+      currentUser,
+      assignment: await this.store.findRecord('assignment', params.assignment_id),
+    });
   },
 
   actions: {

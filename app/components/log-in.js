@@ -16,6 +16,8 @@ export default Component.extend(ErrorHandlingMixin, {
       return 'The provided email address is already associated with an existing account';
     }
   }),
+  
+  @action
   resetErrors() {
     const errors = [
       'incorrectUsername',

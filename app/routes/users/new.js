@@ -2,11 +2,11 @@ import AuthenticatedRoute from '../_authenticated_route';
 import { hash } from 'rsvp';
 
 export default AuthenticatedRoute.extend({
-  model() {
+  async model() {
     const currentUser = this.modelFor('application');
     return hash({
       currentUser,
-      oranizations: this.store.findAll('organization'),
+      organizations: await this.store.findAll('organization'),
     });
   },
   renderTemplate: function () {

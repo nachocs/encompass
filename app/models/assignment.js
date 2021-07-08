@@ -17,21 +17,25 @@ export default Model.extend(Auditable, {
   parentWorkspace: belongsTo("workspace", { inverse: null }),
   reportDetails: attr(), // for assignment report,
   linkedWorkspacesRequest: attr({
-    defaultValue: {
-      doCreate: false,
-      error: null,
-      createdWorkspaces: [],
-      doAllowSubmissionUpdates: false,
-      name: null,
+    defaultValue: () => {
+    return {
+        doCreate: false,
+        error: null,
+        createdWorkspaces: [],
+        doAllowSubmissionUpdates: false,
+        name: null,
+      }
     },
   }),
   parentWorkspaceRequest: attr({
-    defaultValue: {
-      doCreate: false,
-      error: null,
-      createdWorkspace: null,
-      doAutoUpdateFromChildren: false,
-      name: null,
+    defaultValue: () => {
+        return {
+        doCreate: false,
+        error: null,
+        createdWorkspace: null,
+        doAutoUpdateFromChildren: false,
+        name: null,
+      }
     },
   }),
 });
