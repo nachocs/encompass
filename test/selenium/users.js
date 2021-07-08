@@ -78,16 +78,15 @@ describe('Users', function() {
       });
 
       it('should show certain fields', async function () {
-        return true;
-        // expect(await helpers.isElementVisible(driver, 'input.user-username')).to.be.true;
-        // expect(await helpers.isElementVisible(driver, 'input.user-password')).to.be.true;
-        // expect(await helpers.isElementVisible(driver, 'input.user-first-name')).to.be.true;
-        // expect(await helpers.isElementVisible(driver, 'input.user-last-name')).to.be.true;
-        // expect(await helpers.isElementVisible(driver, 'input.user-email')).to.be.true;
-        // expect(await helpers.isElementVisible(driver, 'input.typeahead')).to.be.true;
-        // expect(await helpers.isElementVisible(driver, 'input.user-location')).to.be.true;
-        // expect(await helpers.isElementVisible(driver, 'select')).to.be.true;
-        // expect(await helpers.isElementVisible(driver, 'input.user-isAuth')).to.be.true;
+        expect(await helpers.isElementVisible(driver, 'input.user-username')).to.be.true;
+        expect(await helpers.isElementVisible(driver, 'input.user-password')).to.be.true;
+        expect(await helpers.isElementVisible(driver, 'input.user-first-name')).to.be.true;
+        expect(await helpers.isElementVisible(driver, 'input.user-last-name')).to.be.true;
+        expect(await helpers.isElementVisible(driver, 'input.user-email')).to.be.true;
+        expect(await helpers.isElementVisible(driver, 'input.typeahead')).to.be.true;
+        expect(await helpers.isElementVisible(driver, 'input.user-location')).to.be.true;
+        expect(await helpers.isElementVisible(driver, 'select')).to.be.true;
+        expect(await helpers.isElementVisible(driver, 'input.user-isAuth')).to.be.true;
       });
 
       it('should not let you submit form with missing fields', async function () {
