@@ -5,9 +5,8 @@
 3. Rename current .env to .env-dev and mt-sso_env-test to .env
 4. Start sso server: in vmt/server/ `npm run dev-sso` 
 5. Open encompass/app_server/config.js: `testPort: 8082`
-6. Open encompass/.env: `NODE_ENV:'seed'`
 7. In terminal in /encompass `npm run seed`
-8. In terminal in /encompass `npm run start-back`
+8. In terminal in /encompass `npm run test-back`
 9. Open encompass/app_server/config.js: `testPort: 8081`
 10. In new terminal in /encompass `npm run start-test`
 11. In new terminal in /encompass `npm run selenium`
@@ -43,6 +42,8 @@ Sections
 
 # Flaky Tests
 - returning to login randomly results in 404 but clicking the logout button puts it back on track
+
+# confirm_email tests don't route properly
 
 # assignments_student.js
   1) Assignments as Student
