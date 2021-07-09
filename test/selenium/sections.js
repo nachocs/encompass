@@ -17,7 +17,7 @@ describe('Sections', async function () {
       const isStudent = accountType === 'S' || actingRole === 'student';
 
       const sectionDetails = sections.testExample;
-      const sectionLink = `a[href='#/sections/${sectionDetails._id}`;
+      const sectionLink = `a[href='/sections/${sectionDetails._id}`;
 
 
       describe(`As ${testDescriptionTitle}`, function() {
@@ -62,7 +62,7 @@ describe('Sections', async function () {
         describe(`Visiting ${sectionDetails.name}`, function () {
           before(async function () {
             await helpers.findAndClickElement(driver, sectionLink);
-            await helpers.waitForSelector(driver, css.sectionInfo.container);
+            // await helpers.waitForSelector(driver, css.sectionInfo.container);
           });
           it('should display the section details', async function () {
             await helpers.waitForSelector(driver, css.sectionInfo.details.name);
