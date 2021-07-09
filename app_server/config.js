@@ -22,7 +22,8 @@ nconf.add('release', { type: 'file', file: 'release.json' });
 nconf.defaults({
   port: '8080',
   devPort: '8080',
-  testPort: '8081',
+  clientPort: '8081',
+  testPort: '8082',
   web: {
     base: '/',
   },
