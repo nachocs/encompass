@@ -38,7 +38,7 @@ describe('Sections', async function () {
 
         describe('Visiting sections page', function () {
           before(async function () {
-            await helpers.navigateAndWait(driver, `${helpers.host}/#/sections`, {selector: 'ul.your-sections'});
+            await helpers.navigateAndWait(driver, `${helpers.host}/sections`, {selector: 'ul.your-sections'});
           });
           it('should display list of user\'s own sections', async function () {
             expect(await helpers.getWebElements(driver, 'ul.your-sections a')).to.have.lengthOf(sections.own.count);
@@ -94,8 +94,8 @@ describe('Sections', async function () {
               });
 
               it('new student should persist after page refresh', async function() {
-                await driver.get(`${host}/#/assignments`);
-                await driver.get(`${host}/#/sections/${sectionDetails._id}`);
+                await driver.get(`${host}/assignments`);
+                await driver.get(`${host}/sections/${sectionDetails._id}`);
                 expect(await helpers.isTextInDom(driver, usernameLinkSelector)).to.eql(true);
               });
             });
@@ -104,7 +104,7 @@ describe('Sections', async function () {
         });
 
         describe('Create section', function () {
-          const url = `${host}/#/sections/new`;
+          const url = `${host}/sections/new`;
           const verifyForm = function () {
             const inputs = css.newSection.inputs;
 
@@ -146,7 +146,7 @@ describe('Sections', async function () {
               it(`should display new section form`, async function() {
                 try {
                   await helpers.findAndClickElement(driver, sel);
-                  await driver.wait(until.urlIs(`${host}/#/sections/new`), 5000);
+                  await driver.wait(until.urlIs(`${host}/sections/new`), 5000);
                   await helpers.waitForSelector(driver, css.newSection.form);
 
                 }catch(err) {
@@ -168,12 +168,12 @@ describe('Sections', async function () {
             if (isStudent) {
               it(`should redirect to sections`, async function() {
                 await helpers.waitForSelector(driver, css.sectionHome);
-                expect(await helpers.getCurrentUrl(driver)).to.eql(`${host}/#/sections`);
+                expect(await helpers.getCurrentUrl(driver)).to.eql(`${host}/sections`);
               });
             } else {
               it(`should display new section form`, async function() {
                 try {
-                  await helpers.navigateAndWait(driver, `${helpers.host}/#/sections/new`, {selector: css.newSection.form} );
+                  await helpers.navigateAndWait(driver, `${helpers.host}/sections/new`, {selector: css.newSection.form} );
                 }catch(err) {
                   throw(err);
                 }
