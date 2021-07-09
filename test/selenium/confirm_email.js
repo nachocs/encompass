@@ -125,7 +125,7 @@ describe('Confirm Email', function () {
     });
 
     it('should redirect to /unconfirmed', async function() {
-      expect(await helpers.getCurrentUrl(driver)).to.eql(`${host}/#/unconfirmed`);
+      expect(await helpers.getCurrentUrl(driver)).to.eql(`${host}/unconfirmed`);
 
     });
 
