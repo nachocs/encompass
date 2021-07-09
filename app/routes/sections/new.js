@@ -9,16 +9,16 @@ export default AuthenticatedRoute.extend({
     const isStudent = user.get('isStudent');
 
     if (isStudent) {
-      this.transitionTo('sections.home');
+      this.transitionTo('sections');
     }
   },
 
-  model: function (params) {
+  model: async function (params) {
     return hash({
-      users: this.store.findAll('user'),
-      organizations: this.store.findAll('organization'),
-      user: this.modelFor('application'),
-      sections: this.store.findAll('section'),
+      users: await this.store.findAll('user'),
+      organizations: await this.store.findAll('organization'),
+      user: await this.modelFor('application'),
+      sections: await this.store.findAll('section'),
     });
   },
   renderTemplate: function () {
@@ -26,10 +26,10 @@ export default AuthenticatedRoute.extend({
   },
   actions: {
     toSectionInfo: function (section) {
-      this.transitionTo('section', section);
+      this.transitionTo('sections.section', section.id);
     },
     toSectionsHome: function () {
-      this.transitionTo('sections.home');
+      this.transitionTo('sections');
     },
   },
 });

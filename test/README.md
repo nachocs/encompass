@@ -47,10 +47,16 @@ Sections
 1) Sections
        As PD Admin
          Visiting Morty's Math 101
-           "before all" hook for "should display the section details":
-     TimeoutError: Waiting for element to be located By(css selector, form[data-test="section-info-form"])
-Wait timed out after 10166ms
-      at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
+           adding a student to class
+             new student should persist after page refresh:
+
+      AssertionError: expected false to deeply equal true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (test/selenium/sections.js:99:84)
       at processTicksAndRejections (internal/process/task_queues.js:97:5)
 
   2) Sections
@@ -60,7 +66,7 @@ Wait timed out after 10166ms
              submitting empty form
                should display error message(s):
      TimeoutError: Waiting for element to be located By(css selector, .error-message)
-Wait timed out after 10025ms
+Wait timed out after 10079ms
       at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
       at processTicksAndRejections (internal/process/task_queues.js:97:5)
 
@@ -83,11 +89,16 @@ Wait timed out after 10025ms
   4) Sections
        As Teacher
          Visiting Summer's Algebra 2 1st Period
-           "before all" hook for "should display the section details":
-     TimeoutError: Waiting for element to be located By(css selector, form[data-test="section-info-form"])
-Wait timed out after 10090ms
-      at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
-      at runMicrotasks (<anonymous>)
+           adding a student to class
+             new student should persist after page refresh:
+
+      AssertionError: expected false to deeply equal true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (test/selenium/sections.js:99:84)
       at processTicksAndRejections (internal/process/task_queues.js:97:5)
 
   5) Sections
@@ -95,9 +106,13 @@ Wait timed out after 10090ms
          Create section
            Verify form inputs
              teacher field should be fixed as current user:
-     AssertionError: expected undefined to deeply equal 'ssmith'
+
+      AssertionError: expected '' to deeply equal 'ssmith'
+      + expected - actual
+
+      +ssmith
+      
       at Context.<anonymous> (test/selenium/sections.js:116:103)
-      at runMicrotasks (<anonymous>)
       at processTicksAndRejections (internal/process/task_queues.js:97:5)
 
   6) Sections
@@ -107,7 +122,7 @@ Wait timed out after 10090ms
              submitting empty form
                should display error message(s):
      TimeoutError: Waiting for element to be located By(css selector, .error-message)
-Wait timed out after 10114ms
+Wait timed out after 10141ms
       at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
       at runMicrotasks (<anonymous>)
       at processTicksAndRejections (internal/process/task_queues.js:97:5)
@@ -115,10 +130,16 @@ Wait timed out after 10114ms
   7) Sections
        As Admin
          Visiting Drexel University
-           "before all" hook for "should display the section details":
-     TimeoutError: Waiting for element to be located By(css selector, form[data-test="section-info-form"])
-Wait timed out after 10147ms
-      at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
+           adding a student to class
+             new student should persist after page refresh:
+
+      AssertionError: expected false to deeply equal true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (test/selenium/sections.js:99:84)
       at runMicrotasks (<anonymous>)
       at processTicksAndRejections (internal/process/task_queues.js:97:5)
 
@@ -129,49 +150,7 @@ Wait timed out after 10147ms
              submitting empty form
                should display error message(s):
      TimeoutError: Waiting for element to be located By(css selector, .error-message)
-Wait timed out after 10121ms
-      at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  9) Sections
-       As Student
-         Visiting Summer's Algebra 2 1st Period
-           "before all" hook for "should display the section details":
-     TimeoutError: Waiting for element to be located By(css selector, form[data-test="section-info-form"])
-Wait timed out after 10166ms
-      at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  10) Sections
-       As Student
-         Create section
-           Navigating directly
-             should redirect to sections:
-     TimeoutError: Waiting for element to be located By(css selector, div#section-home)
-Wait timed out after 10141ms
-      at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  11) Sections
-       As Teacher acting as Student
-         Visiting Summer's Algebra 2 1st Period
-           "before all" hook for "should display the section details":
-     TimeoutError: Waiting for element to be located By(css selector, form[data-test="section-info-form"])
-Wait timed out after 10174ms
-      at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
-      at runMicrotasks (<anonymous>)
-      at processTicksAndRejections (internal/process/task_queues.js:97:5)
-
-  12) Sections
-       As Teacher acting as Student
-         Create section
-           Navigating directly
-             should redirect to sections:
-     TimeoutError: Waiting for element to be located By(css selector, div#section-home)
-Wait timed out after 10179ms
+Wait timed out after 10044ms
       at /Users/timothyleonard/Documents/21PSTEM/migration/encompass/node_modules/selenium-webdriver/lib/webdriver.js:897:17
       at runMicrotasks (<anonymous>)
       at processTicksAndRejections (internal/process/task_queues.js:97:5)

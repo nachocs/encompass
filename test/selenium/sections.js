@@ -79,7 +79,7 @@ describe('Sections', async function () {
                 rick: ['pdadmin','5b7321ee59a672806ec903d5', 'pdadmin'],
                 pdadmin: ['drex','5b1e7bf9a5d2157ef4c911a6', 'drex']
               };
-              let usernameLinkSelector = `${hash[username][2]}`;
+              let usernameLinkSelector = `${hash[username][1]}`;
               it('clicking on edit students should bring up menus', async function() {
                 expect(await helpers.isElementVisible(driver, css.sectionInfo.editButtons.students)).to.eql(true);
 

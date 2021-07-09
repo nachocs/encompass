@@ -4,10 +4,9 @@ import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { isEqual } from '@ember/utils';
 import $ from 'jquery';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: 'section-new',
   className: ['sections'],
   alert: service('sweet-alert'),
@@ -103,8 +102,6 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   actions: {
     createSection: function () {
-      var that = this;
-
       if (this.invalidTeacherUsername) {
         return;
       }
@@ -129,8 +126,6 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      var currentUser = this.currentUser;
-
       if (typeof teacher === 'string') {
         let users = this.users;
         let user = users.findBy('username', teacher);
@@ -144,7 +139,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       var sectionData = this.store.createRecord('section', {
         name: newSectionName,
         organization: this.organization,
-        createdBy: currentUser,
+        createdBy: this.user,
       });
 
       sectionData.get('teachers').addObject(teacher);
@@ -161,11 +156,11 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
             false,
             null
           );
-          that.set('createdSection', section);
-          that.sendAction('toSectionInfo', section);
+          this.set('createdSection', section);
+          this.sendAction('toSectionInfo', section);
         })
         .catch((err) => {
-          that.handleErrors(err, 'createRecordErrors', sectionData);
+          this.handleErrors(err, 'createRecordErrors', sectionData);
         });
     },
 
@@ -177,10 +172,6 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     checkError: function () {
-      // if (this.invalidTeacherUsername) {
-      //   this.set('invalidTeacherUsername', false);
-      // }
-
       if (this.missingFieldsError) {
         this.set('missingFieldsError', false);
       }
