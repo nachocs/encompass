@@ -5,18 +5,15 @@
   <form class="form-signup">
     <div class="auth-form-input">
       <label for="first-name">First Name:</label>
-      <Input class="form-control" @type="text" @name="first-name" @id="first-name" @value={{this.firstName}} {{on "key-down"
-        this.resetErrors}} />
+      <Input class="form-control" @type="text" @name="first-name" @id="first-name" @value={{this.firstName}} @keydown={{this.resetErrors}} />
     </div>
     <div class="auth-form-input">
       <label for="last-name">Last Name:</label>
-      <Input class="form-control" @type="text" @name="last-name" @id="last-name" @value={{this.lastName}} {{on "key-down"
-        this.resetErrors}} />
+      <Input class="form-control" @type="text" @name="last-name" @id="last-name" @value={{this.lastName}} @keydown={{this.resetErrors}} />
     </div>
     <div class="auth-form-input">
       <label for="email">Email:</label>
-      <Input class="form-control" @type="text" @name="email" @id="email" @value={{this.email}} {{on "key-down"
-        this.resetErrors}} />
+      <Input class="form-control" @type="text" @name="email" @id="email" @value={{this.email}} @keydown={{this.resetErrors}} />
       {{#if this.isEmailInvalid}}
       <p class="error-message">{{this.emailErrors.invalid}}</p>
       {{/if}}
@@ -42,21 +39,18 @@
     </div>
     <div class="auth-form-input">
       <label for="location">City and State:</label>
-      <Input class="form-control" @type="text" @name="location" @id="location" @value={{this.location}} {{on "key-down"
-        this.resetErrors}} />
+      <Input class="form-control" @type="text" @name="location" @id="location" @value={{this.location}} @keydown={{this.resetErrors}} />
     </div>
     <div class="auth-form-input">
       <label for="username">Username:</label>
-      <Input class="form-control" @type="text" @name="username" @id="username" @value={{this.username}} {{on "key-down"
-        this.usernameValidate}} />
+      <Input class="form-control" @type="text" @name="username" @id="username" @value={{this.username}} @keydown={{this.usernameValidate}} />
       {{#if this.usernameError}}
       <p class="error-message">{{this.usernameError}}</p>
       {{/if}}
     </div>
     <div class="auth-form-input">
       <label for="password">Password:</label>
-      <Input class="form-control" @type="password" @name="password" @id="password" @value={{this.password}} {{on "key-down"
-        this.resetErrors}} />
+      <Input class="form-control" @type="password" @name="password" @id="password" @value={{this.password}} @keydown={{this.resetErrors}} />
 
       {{#if this.isPasswordInvalid}}
       <p class="error-message">{{this.passwordErrors.invalid}}</p>
@@ -66,7 +60,7 @@
     <div class="auth-form-input">
       <label for="confirmPassword">Confirm Password:</label>
       <Input class="form-control" @type="password" @name="confirmPassword" @id="confirmPassword"
-        @value={{this.confirmPassword}} {{on "key-down" this.resetErrors}} />
+        @value={{this.confirmPassword}} @keydown={{this.resetErrors}} />
 
       {{#unless this.doPasswordsMatch}}
       <p class="error-message">{{this.passwordErrors.mismatch}}</p>
@@ -76,7 +70,7 @@
     <div class="auth-form-input">
       <label for="requestReason">Reason for Registering with EnCoMPASS:</label>
       <Input class="form-control" @type="text" @name="requestReason" @id="requestReason" @value={{this.requestReason}}
-        {{on "key-down" this.resetErrors}} />
+        @keydown={{this.resetErrors}} />
       {{#if this.missingCredentials}}
       <p class="error-message">You must complete all of the fields in order to signup.</p>
       {{/if}}
