@@ -99,7 +99,7 @@ describe('Workspaces New', async function() {
                 }
               });
 
-              describe('Workspace Settings', function() {
+              xdescribe('Workspace Settings', function() {
                 const inputs = css.newWorkspaceEnc.workspaceSettings.inputs;
                 const fixedInputs = css.newWorkspaceEnc.workspaceSettings.fixedInputs;
                 for (let input of Object.keys(inputs)) {
@@ -129,7 +129,7 @@ describe('Workspaces New', async function() {
                 expect(await helpers.isElementVisible(driver, css.newWorkspaceEnc.create));
               });
 
-              describe('teacher pool', function() {
+              xdescribe('teacher pool', function() {
                 let selectors = css.newWorkspaceEnc.filterCriteria;
                 let teacherSel = selectors.inputs.teacher;
                 let test;
@@ -164,7 +164,7 @@ describe('Workspaces New', async function() {
 
                 }
               });
-              describe('owner pool', function() {
+              xdescribe('owner pool', function() {
                 let selectors = css.newWorkspaceEnc.workspaceSettings;
                 let ownerSel = selectors.inputs.owner;
                 let test;
