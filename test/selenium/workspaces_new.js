@@ -11,9 +11,9 @@ const css = require('./selectors');
 const testUsers = require('./fixtures/users');
 
 const host = helpers.host;
-let url = `${host}/#/workspaces/new`;
+let url = `${host}/workspaces/new`;
 
-xdescribe('Workspaces New', async function() {
+describe('Workspaces New', async function() {
   this.timeout(helpers.timeoutTestMsStr);
   function runTests(users) {
     function _runTests(user) {
@@ -37,8 +37,8 @@ xdescribe('Workspaces New', async function() {
         describe('Clicking topbar link', function() {
           if (accountType === 'S' || actingRole === 'student') {
             it('should redirect to homepage', async function() {
-              await helpers.navigateAndWait(driver, `${host}/#/workspaces`, {});
-              await helpers.navigateAndWait(driver, `${host}/#/workspaces/new`, {});
+              await helpers.navigateAndWait(driver, `${host}/workspaces`, {});
+              await helpers.navigateAndWait(driver, `${host}/workspaces/new`, {});
 
               await helpers.waitForUrlMatch(driver, /\//);
 
@@ -47,8 +47,8 @@ xdescribe('Workspaces New', async function() {
             });
           } else {
             it(`should display new workspace creation form`, async function() {
-              await helpers.navigateAndWait(driver, `${host}/#/workspaces`, {selector: '#workspace-list-container'});
-              await helpers.navigateAndWait(driver, `${host}/#/workspaces/new`, {selector: '#workspace-new-container'});
+              await helpers.navigateAndWait(driver, `${host}/workspaces`, {selector: '#workspace-list-container'});
+              await helpers.navigateAndWait(driver, `${host}/workspaces/new`, {selector: '#workspace-new-container'});
               await helpers.waitForUrlMatch(driver, /workspaces\/new/);
               expect(await helpers.isElementVisible(driver, "#filter-list-side")).to.be.true;
             });
