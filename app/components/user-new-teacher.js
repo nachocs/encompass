@@ -4,12 +4,8 @@ import Component from '@ember/component';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 import UserSignupMixin from '../mixins/user_signup_mixin';
 
-
-
-
-
-
 export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
+  router: service('router'),
   elementId: 'user-new-teacher',
   alert: service('sweet-alert'),
   errorMessage: null,
@@ -76,7 +72,7 @@ export default Component.extend(ErrorHandlingMixin, UserSignupMixin, {
 
           if (res.username) {
             this.alert.showToast('success', `${res.username} created`, 'bottom-end', 3000, null, false);
-            return this.sendAction('toUserInfo', res.username);
+            return this.router.transitionTo('users.user', res.id);
           }
           if (res.message === 'There already exists a user with that username') {
             this.set('usernameError', this.get('usernameErrors.taken'));
