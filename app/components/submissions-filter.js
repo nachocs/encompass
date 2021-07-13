@@ -156,11 +156,11 @@ export default Component.extend(ErrorHandlingMixin, {
   }),
 
   didReceiveAttrs: function () {
-    if (this.get('currentUser.isStudent')) {
-      this.set('selectedStudent', this.currentUser);
-    } else if (this.get('currentUser.isTeacher')) {
-      this.set('selectedTeacher', this.currentUser);
-    }
+    // if (this.get('currentUser.isStudent')) {
+    //   this.set('selectedStudent', this.currentUser);
+    // } else if (this.get('currentUser.isTeacher')) {
+    //   this.set('selectedTeacher', this.currentUser);
+    // }
 
     for (let attr of ['sections', 'assignments', 'users']) {
       let modelProp = this.get(attr);
