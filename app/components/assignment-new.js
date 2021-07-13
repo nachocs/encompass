@@ -146,7 +146,7 @@ export default Component.extend(ErrorHandlingMixin, {
     //   );
     //   $('input[name="daterange"]').attr('placeholder', 'mm/dd/yyyy');
     // });
-    this.set('cachedProblems', this.store.peekAll('problem'));
+    this.set('cachedProblems', this.store.findAll('problem'));
   },
 
   didReceiveAttrs: function () {
@@ -175,11 +175,11 @@ export default Component.extend(ErrorHandlingMixin, {
     const createdBy = this.currentUser;
 
     if (!name) {
-      let nameDate = $('#assignedDate')
-        .data('daterangepicker')
-        .startDate.format('MMM Do YYYY');
+      // let nameDate = $('#assignedDate')
+      //   .data('daterangepicker')
+      //   .startDate.format('MMM Do YYYY');
       let problemTitle = problem.get('title');
-      name = problemTitle + ' / ' + nameDate;
+      name = problemTitle + ' / ' + assignedDate;
     }
     if (assignedDate && dueDate && assignedDate > dueDate) {
       this.set('invalidDateRange', true);
@@ -315,24 +315,11 @@ export default Component.extend(ErrorHandlingMixin, {
         return;
       }
 
-      let startDate;
-      let endDate;
-
       if (!assignedDate) {
         delete values.assignedDate;
-      } else {
-        startDate = $('#assignedDate')
-          .data('daterangepicker')
-          .startDate.format('YYYY-MM-DD');
-        values.assignedDate = this.getMongoDate(startDate);
       }
       if (!dueDate) {
         delete values.dueDate;
-      } else {
-        endDate = $('#dueDate')
-          .data('daterangepicker')
-          .startDate.format('YYYY-MM-DD');
-        values.dueDate = this.getEndDate(endDate);
       }
 
       this.createAssignment(values);
