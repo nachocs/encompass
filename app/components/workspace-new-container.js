@@ -475,7 +475,6 @@ export default Component.extend(ErrorHandlingMixin, {
       return [];
     }
     const threads = {};
-    console.log(threads);
     this.filteredAnswers
       .sortBy('student')
       .getEach('student')
@@ -521,7 +520,7 @@ export default Component.extend(ErrorHandlingMixin, {
     if (field === 'revisions') {
       let ascending = _.sortBy(defaultSorted, (answer) => {
         let student = answer.get('student');
-        let revisionCount = this.submissionThreads.get(student).get('length');
+        let revisionCount = this.submissionThreads[student].get('length');
         return revisionCount;
       });
       if (direction === 1) {
@@ -665,7 +664,7 @@ export default Component.extend(ErrorHandlingMixin, {
           return;
         }
         let student = answer.get('student');
-        let revisions = this.submissionThreads.get(student);
+        let revisions = this.submissionThreads[student];
         this.selectedAnswers.removeObjects(revisions);
       }
       if (isChecked === false) {
@@ -674,7 +673,7 @@ export default Component.extend(ErrorHandlingMixin, {
           return;
         }
         let student = answer.get('student');
-        let revisions = this.submissionThreads.get(student);
+        let revisions = this.submissionThreads[student];
         this.selectedAnswers.addObjects(revisions);
       }
     },
