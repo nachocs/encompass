@@ -13,7 +13,7 @@ const testUsers = require('./fixtures/users');
 const host = helpers.host;
 let url = `${host}/workspaces/new`;
 
-describe('Workspaces New', async function() {
+xdescribe('Workspaces New', async function() {
   this.timeout(helpers.timeoutTestMsStr);
   function runTests(users) {
     function _runTests(user) {
