@@ -4,15 +4,9 @@ import { observer } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import $ from 'jquery';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-
-
-
-
-
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: 'problem-new',
   classNames: ['side-info'],
   showGeneral: true,
@@ -373,6 +367,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     nextStep: function () {
+      console.log("next step!")
       if (this.showGeneral) {
         this.send('showCats');
       } else if (this.showCats) {
