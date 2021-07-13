@@ -23,6 +23,7 @@ module.exports = function (defaults) {
    */
   app.import('vendor/jquery-3.2.1.min.js');
   app.import('vendor/jquery.cookie.js');
+  app.import('vendor/underscore-min.js');
 
   app.import('vendor/guiders.js');
   app.import('vendor/jq.keys.js');
