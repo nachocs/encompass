@@ -18,7 +18,7 @@
     Assigned
   </p>
   {{#if this.showAssignedDateInput}}
-    <Input @name="daterange" @id="assignedDate" @type="text" @value={{this.assignedDateEditVal}} />
+    <Input @name="daterange" @id="assignedDate" @type="date" @value={{this.assignedDateEditVal}} />
   {{else}}
     <p class="value">
       {{format-date this.assignment.assignedDate "Do MMM YYYY"}}
@@ -30,7 +30,7 @@
     Due
   </p>
   {{#if this.showDueDateInput}}
-    <Input @id="dueDate" @name="daterange" @type="text" @value={{this.dueDateEditVal}} />
+    <Input @id="dueDate" @name="daterange" @type="date" @value={{this.dueDateEditVal}} />
   {{else}}
     <p class="value">
       {{format-date this.assignment.dueDate "Do MMM YYYY"}}

@@ -328,43 +328,43 @@ export default Component.extend(ErrorHandlingMixin, {
         assignedDate !== null && assignedDate !== undefined;
       let autoUpdateDue = dueDate !== null && dueDate !== undefined;
 
-      $(function () {
-        $('input#assignedDate').daterangepicker(
-          {
-            singleDatePicker: true,
-            showDropdowns: true,
-            autoUpdateInput: autoUpdateAssigned,
-          },
-          function (start, end, label) {
-            let assignedDate = start.format(format);
-            $('input#assignedDate').val(assignedDate);
-          }
-        );
-        $('input#dueDate').daterangepicker(
-          {
-            singleDatePicker: true,
-            showDropdowns: true,
-            autoUpdateInput: autoUpdateDue,
-          },
-          function (start, end, label) {
-            let dueDate = start.format(format);
-            $('input#dueDate').val(dueDate);
-          }
-        );
+      // $(function () {
+      //   $('input#assignedDate').daterangepicker(
+      //     {
+      //       singleDatePicker: true,
+      //       showDropdowns: true,
+      //       autoUpdateInput: autoUpdateAssigned,
+      //     },
+      //     function (start, end, label) {
+      //       let assignedDate = start.format(format);
+      //       $('input#assignedDate').val(assignedDate);
+      //     }
+      //   );
+      //   $('input#dueDate').daterangepicker(
+      //     {
+      //       singleDatePicker: true,
+      //       showDropdowns: true,
+      //       autoUpdateInput: autoUpdateDue,
+      //     },
+      //     function (start, end, label) {
+      //       let dueDate = start.format(format);
+      //       $('input#dueDate').val(dueDate);
+      //     }
+      //   );
 
-        let assignedInputVal = assignedDate
-          ? moment(assignedDate).format(format)
-          : '';
-        let dueInputVal = dueDate ? moment(dueDate).format(format) : '';
+      //   let assignedInputVal = assignedDate
+      //     ? moment(assignedDate).format(format)
+      //     : '';
+      //   let dueInputVal = dueDate ? moment(dueDate).format(format) : '';
 
-        that.set('assignedDateEditVal', assignedInputVal);
-        that.set('dueDateEditVal', dueInputVal);
+      //   that.set('assignedDateEditVal', assignedInputVal);
+      //   that.set('dueDateEditVal', dueInputVal);
 
-        $('input#assignedDate').val(assignedInputVal);
-        $('input#dueDate').val(dueInputVal);
+      //   $('input#assignedDate').val(assignedInputVal);
+      //   $('input#dueDate').val(dueInputVal);
 
-        $('input[name="daterange"]').attr('placeholder', 'mm/dd/yyyy');
-      });
+      //   $('input[name="daterange"]').attr('placeholder', 'mm/dd/yyyy');
+      // });
 
       this.set('isEditing', true);
     },
@@ -499,9 +499,7 @@ export default Component.extend(ErrorHandlingMixin, {
 
       if (this.canEditAssignedDate) {
         if (assignedDateEditVal) {
-          startDate = $('#assignedDate')
-            .data('daterangepicker')
-            .startDate.format('YYYY-MM-DD');
+          startDate = this.assignedDateEditVal
 
           assignedDate = this.getMongoDate(startDate);
         }
@@ -511,9 +509,7 @@ export default Component.extend(ErrorHandlingMixin, {
 
       if (this.canEditDueDate) {
         if (dueDateEditVal) {
-          endDate = $('#dueDate')
-            .data('daterangepicker')
-            .startDate.format('YYYY-MM-DD');
+          endDate = this.dueDateEditVal;
 
           dueDate = this.getEndDate(endDate);
         } else {
