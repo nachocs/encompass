@@ -13,8 +13,10 @@ export default AuthenticatedRoute.extend({
     }
   },
 
-  model: function (params) {
+  model: function () {
+    let currentUser = this.modelFor('application');
     return hash({
+      currentUser,
       sections: this.store.findAll('section'),
     });
   },

@@ -4,10 +4,9 @@ import { and, notEmpty } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import moment from 'moment';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: 'assignment-new',
   createAssignmentError: null,
   isMissingRequiredFields: null,
@@ -121,32 +120,32 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         'If "Yes", an empty Parent workspace will be created from the newly linked student workspaces. The parent workspace will automatically update as the children workspaces are populated with new submissions and markup',
     };
     this.set('tooltips', tooltips);
-    $(function () {
-      $('input#assignedDate').daterangepicker(
-        {
-          singleDatePicker: true,
-          showDropdowns: true,
-          autoUpdateInput: false,
-        },
-        function (start, end, label) {
-          let assignedDate = start.format('MM/DD/YYYY');
-          $('input#assignedDate').val(assignedDate);
-          that.set('nameDate', start.format('MMM Do YYYY'));
-        }
-      );
-      $('input#dueDate').daterangepicker(
-        {
-          singleDatePicker: true,
-          showDropdowns: true,
-          autoUpdateInput: false,
-        },
-        function (start, end, label) {
-          let dueDate = start.format('MM/DD/YYYY');
-          $('input#dueDate').val(dueDate);
-        }
-      );
-      $('input[name="daterange"]').attr('placeholder', 'mm/dd/yyyy');
-    });
+    // $(function () {
+    //   $('input#assignedDate').daterangepicker(
+    //     {
+    //       singleDatePicker: true,
+    //       showDropdowns: true,
+    //       autoUpdateInput: false,
+    //     },
+    //     function (start, end, label) {
+    //       let assignedDate = start.format('MM/DD/YYYY');
+    //       $('input#assignedDate').val(assignedDate);
+    //       that.set('nameDate', start.format('MMM Do YYYY'));
+    //     }
+    //   );
+    //   $('input#dueDate').daterangepicker(
+    //     {
+    //       singleDatePicker: true,
+    //       showDropdowns: true,
+    //       autoUpdateInput: false,
+    //     },
+    //     function (start, end, label) {
+    //       let dueDate = start.format('MM/DD/YYYY');
+    //       $('input#dueDate').val(dueDate);
+    //     }
+    //   );
+    //   $('input[name="daterange"]').attr('placeholder', 'mm/dd/yyyy');
+    // });
     this.set('cachedProblems', this.store.peekAll('problem'));
   },
 
