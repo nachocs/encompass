@@ -15,9 +15,9 @@
           {{#if this.yourList}}
           {{#each this.yourList as |assignment|}}
             {{#if assignment.name}}
-              <li><LinkTo @route="assignments.assignment" @model={{assignment}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
+              <li><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
-              <li><LinkTo @route="assignments.assignment" @model={{assignment}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date assignment.assignedDate 'MMM Do YYYY' }}</LinkTo></li>
+              <li><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date assignment.assignedDate 'MMM Do YYYY' }}</LinkTo></li>
             {{/if}}
           {{/each}}
           {{else}}
@@ -31,9 +31,9 @@
         {{#if this.assignmentList}}
           {{#each this.assignmentList as |assignment|}}
             {{#if assignment.name}}
-            <li><LinkTo @route="assignments.assignment" @model={{assignment}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
+            <li><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
-            <li><LinkTo @route="assignments.assignment" @model={{assignment}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date
+            <li><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date
               assignment.assignedDate 'MMM Do YYYY' }}</LinkTo></li>
             {{/if}}
           {{/each}}
@@ -48,9 +48,9 @@
           {{#if this.adminList}}
           {{#each this.adminList as |assignment|}}
             {{#if assignment.name}}
-            <li><LinkTo @route="assignments.assignment" @model={{assignment}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
+            <li><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
-            <li><LinkTo @route="assignments.assignment" @model={{assignment}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date
+            <li><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date
               assignment.assignedDate 'MMM Do YYYY' }}</LinkTo></li>
             {{/if}}
           {{/each}}
@@ -65,9 +65,9 @@
           {{#if this.pdList}}
           {{#each this.pdList as |assignment|}}
             {{#if assignment.name}}
-            <li><LinkTo @route="assignments.assignment" @model={{assignment}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
+            <li><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.name}}</LinkTo></li>
             {{else}}
-            <li><LinkTo @route="assignments.assignment" @model={{assignment}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date
+            <li><LinkTo @route="assignments.assignment" @model={{assignment.id}} @classNames="assignment-new-link">{{assignment.problem.title}} / {{format-date
               assignment.assignedDate 'MMM Do YYYY' }}</LinkTo></li>
             {{/if}}
           {{/each}}
