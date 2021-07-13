@@ -7,6 +7,7 @@ import moment from 'moment';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(ErrorHandlingMixin, {
+  router: service('router'),
   elementId: 'assignment-new',
   createAssignmentError: null,
   isMissingRequiredFields: null,
@@ -178,8 +179,9 @@ export default Component.extend(ErrorHandlingMixin, {
       // let nameDate = $('#assignedDate')
       //   .data('daterangepicker')
       //   .startDate.format('MMM Do YYYY');
+      let nameDate = new Date(assignedDate);
       let problemTitle = problem.get('title');
-      name = problemTitle + ' / ' + assignedDate;
+      name = problemTitle + ' / ' + nameDate;
     }
     if (assignedDate && dueDate && assignedDate > dueDate) {
       this.set('invalidDateRange', true);
@@ -193,8 +195,8 @@ export default Component.extend(ErrorHandlingMixin, {
       createDate: new Date(),
       section,
       problem,
-      assignedDate,
-      dueDate,
+      assignedDate: new Date(assignedDate),
+      dueDate: new Date(dueDate),
       name,
     });
 
@@ -232,7 +234,7 @@ export default Component.extend(ErrorHandlingMixin, {
     createAssignmentData
       .save()
       .then((assignment) => {
-        this.sendAction('toAssignmentInfo', assignment);
+        this.router.transitionTo('assignments.assignment', assignment.id);
         this.alert.showToast(
           'success',
           'Assignment Created',
