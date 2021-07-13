@@ -44,7 +44,7 @@ export default Component.extend({
     let student = this.student;
     let threads = this.threads;
     if (threads) {
-      let work = threads.get(student);
+      let work = threads[student];
       if (work) {
         return work.length;
       }

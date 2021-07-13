@@ -50,40 +50,40 @@ export default Component.extend(ErrorHandlingMixin, {
         endDate = moment(endDate);
       }
 
-      $('input[name="startDate"]').daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        minYear: 1990,
-        autoUpdateInput: true,
-        locale: {
-          cancelLabel: 'Clear',
-        },
-        startDate: startDate,
-      });
-      $('input[name="endDate"]').daterangepicker({
-        singleDatePicker: true,
-        showDropdowns: true,
-        minYear: 1990,
-        autoUpdateInput: true,
-        locale: {
-          cancelLabel: 'Clear',
-        },
-        startDate: endDate,
-      });
-      $('input[name="startDate"]').on(
-        'apply.daterangepicker',
-        function (ev, picker) {
-          $(this).val(picker.startDate.format('MM/DD/YYYY'));
-        }
-      );
-      $('input[name="endDate"]').on(
-        'apply.daterangepicker',
-        function (ev, picker) {
-          $(this).val(picker.startDate.format('MM/DD/YYYY'));
-        }
-      );
-      $('input[name="startDate"]').attr('placeholder', 'mm/dd/yyyy');
-      $('input[name="endDate"]').attr('placeholder', 'mm/dd/yyyy');
+      // $('input[name="startDate"]').daterangepicker({
+      //   singleDatePicker: true,
+      //   showDropdowns: true,
+      //   minYear: 1990,
+      //   autoUpdateInput: true,
+      //   locale: {
+      //     cancelLabel: 'Clear',
+      //   },
+      //   startDate: startDate,
+      // });
+      // $('input[name="endDate"]').daterangepicker({
+      //   singleDatePicker: true,
+      //   showDropdowns: true,
+      //   minYear: 1990,
+      //   autoUpdateInput: true,
+      //   locale: {
+      //     cancelLabel: 'Clear',
+      //   },
+      //   startDate: endDate,
+      // });
+      // $('input[name="startDate"]').on(
+      //   'apply.daterangepicker',
+      //   function (ev, picker) {
+      //     $(this).val(picker.startDate.format('MM/DD/YYYY'));
+      //   }
+      // );
+      // $('input[name="endDate"]').on(
+      //   'apply.daterangepicker',
+      //   function (ev, picker) {
+      //     $(this).val(picker.startDate.format('MM/DD/YYYY'));
+      //   }
+      // );
+      // $('input[name="startDate"]').attr('placeholder', 'mm/dd/yyyy');
+      // $('input[name="endDate"]').attr('placeholder', 'mm/dd/yyyy');
     });
   },
   missingCriteriaMessage:
@@ -591,7 +591,7 @@ export default Component.extend(ErrorHandlingMixin, {
   ),
 
   willDestroyElement: function () {
-    $('.daterangepicker').remove();
+    // $('.daterangepicker').remove();
     this._super(...arguments);
   },
 
@@ -653,6 +653,11 @@ export default Component.extend(ErrorHandlingMixin, {
   }),
 
   actions: {
+    changeDate: function () {
+      console.log("changing date");
+      console.log(this.startDate);
+      console.log(this.endDate);
+    },
     buildCriteria: function () {
       //clear errors if any
       let errorProps = ['isMissingCriteria', 'isInvalidDateRange'];
@@ -667,12 +672,12 @@ export default Component.extend(ErrorHandlingMixin, {
         return;
       }
 
-      let startDate = $('#startDate')
-        .data('daterangepicker')
-        .startDate.format('YYYY-MM-DD');
-      let endDate = $('#endDate')
-        .data('daterangepicker')
-        .startDate.format('YYYY-MM-DD');
+      // let startDate = $('#startDate')
+      //   .data('daterangepicker')
+      //   .startDate.format('YYYY-MM-DD');
+      // let endDate = $('#endDate')
+      //   .data('daterangepicker')
+      //   .startDate.format('YYYY-MM-DD');
 
       const students = this.selectedStudents;
       let studentIds;
@@ -684,8 +689,8 @@ export default Component.extend(ErrorHandlingMixin, {
         assignment: this.get('selectedAssignment.id'),
         problem: this.get('selectedProblem.id'),
         section: this.get('selectedSection.id'),
-        startDate: startDate,
-        endDate: endDate,
+        startDate: this.startDate,
+        endDate: this.endDate,
         students: studentIds,
         doIncludeOldPows: this.doIncludeOldPows,
         isVmtOnly: this.isVmtOnly,

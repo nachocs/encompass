@@ -231,9 +231,9 @@ export default Component.extend(ErrorHandlingMixin, {
       .getEach('student')
       .uniq()
       .forEach((student) => {
-        if (!threads.has(student)) {
+        if (!threads[student]) {
           const answers = this.studentWork(student);
-          threads.set(student, answers);
+          threads[student] = answers;
         }
       });
 
@@ -481,9 +481,9 @@ export default Component.extend(ErrorHandlingMixin, {
       .getEach('student')
       .uniq()
       .forEach((student) => {
-        if (!threads.has(student)) {
+        if (!threads[student]) {
           const answers = this.studentWork(student);
-          threads.set(student, answers);
+          threads[student] = answers;
         }
       });
     return threads;

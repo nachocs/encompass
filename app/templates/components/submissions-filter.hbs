@@ -41,9 +41,9 @@
     <li>
       <label>Date Range</label>
       <div class="single-text-input-container">
-        <Input class="single-text-input" @id="startDate" @name="startDate" @type="text" @value={{this.startDate}} />
+        <Input class="single-text-input" @id="startDate" @name="startDate" @type="date" @value={{this.startDate}} {{action 'changeDate' on="change"}} />
         <span class="seperator"> - </span>
-        <Input class="single-text-input" @id="endDate" @name="endDate" @type="text" @value={{this.endDate}} />
+        <Input class="single-text-input" @id="endDate" @name="endDate" @type="date" @value={{this.endDate}} {{action 'changeDate' on="change"}} />
       </div>
     </li>
     <li class="include-pows-input">
