@@ -1,16 +1,10 @@
 import Component from '@ember/component';
 
-
-
-
-
-
 export default Component.extend({
   content: null,
   selectedValue: null,
   optionLabelPath: '',
-  classNames: ['mySelect'],
-  elementId: 'my-select',
+  classNames: ['mySelect', 'my-select'],
 
   // didInitAttrs is deprecated according to Ember docs
   didInitAttrs: function (attrs) {

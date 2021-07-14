@@ -35,7 +35,7 @@
     font-size: 1.1em;
     margin-bottom: 10px;
     margin-left: 15px;
-    #my-select {
+    .my-select {
       width: 100%;
       margin-right: 30px;
       select {
@@ -60,21 +60,21 @@
       }
     }
     &.notice {
-      #my-select:before {
+      .my-select:before {
         content: "N";
         font-weight: $bolder-font-weight;
         color: #DD9327;
       }
     }
     &.wonder {
-      #my-select:before {
+      .my-select:before {
         content: "W";
         font-weight: $bolder-font-weight;
         color: #72CCC6;
       }
     }
     &.feedback {
-      #my-select:before {
+      .my-select:before {
         content: "F";
         font-weight: $bolder-font-weight;
         color: #BE4699;

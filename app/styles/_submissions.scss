@@ -243,7 +243,7 @@
     .side-icons {
       width: 220px;
       @include flex-container(auto, null, row, nowrap, flex-end, center, center);
-      #my-select {
+      .my-select {
         width: 100%;
         margin-right: 30px;
         select {

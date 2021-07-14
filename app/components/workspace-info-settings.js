@@ -249,6 +249,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
     },
     stopEditing() {
+      console.log("stop editing");
       this.set('isEditing', false);
       this.set('didLinkedAssignmentChange', false);
       this.set('selectedLinkedAssignment', null);

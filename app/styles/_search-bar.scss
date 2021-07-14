@@ -19,7 +19,7 @@
   .select-bar {
     @include flex-item(1, center, 0.3 0 auto);
     margin-right: 15px;
-    #my-select {
+    .my-select {
       width: 100%;
       select {
         height: 30px;

@@ -2,7 +2,7 @@
 @import "mixins";
 @import "responsive-font-size";
 
-#my-select {
+.my-select {
   width: 90%;
   // @include flex-inline-container(auto, null, row, no-wrap, center, center, stretch);
   // width: 100%;
