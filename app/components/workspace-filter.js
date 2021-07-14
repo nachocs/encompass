@@ -3,9 +3,8 @@ import { computed } from '@ember/object';
 import { alias, equal } from '@ember/object/computed';
 /*global _:false */
 import { isEqual } from '@ember/utils';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Component.extend(CurrentUserMixin, {
+export default Component.extend({
   elementId: 'workspace-filter',
   primaryFilterValue: alias('primaryFilter.value'),
   primaryFilterInputs: alias('filter.primaryFilters.inputs'),
