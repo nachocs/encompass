@@ -18,6 +18,7 @@ export default class Application extends Route.extend(MtAuthMixin) {
   @service store;
   @service('workspace-permissions') workspacePermissions;
   @service('edit-permissions') editPermissions;
+  @service('current-user') currentUser;
   beforeModel() {
     let that = this;
     window.addEventListener(
@@ -34,6 +35,7 @@ export default class Application extends Route.extend(MtAuthMixin) {
     let user = await this.store.queryRecord('user', { alias: 'current' });
     this.workspacePermissions.setUser(user);
     this.editPermissions.setUser(user);
+    this.currentUser.setUser(user);
     return user;
   }
 
