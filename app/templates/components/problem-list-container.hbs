@@ -40,8 +40,9 @@
             <span class="hover-menu" id="privacy-menu">
               <ul>
                 {{#each this.privacySettingOptions as |option|}}
+                {{log option}}
                 <li>
-                  <RadioFilter @labelName={{this.option.label}} @labelIcon={{this.option.icon}} @inputValue={{this.option.value}} @isChecked={{this.option.isChecked}} @groupName="privacy" @onClick={{action "updatePrivacySetting"}} @groupValue={{this.selectedPrivacySetting}} />
+                  <RadioFilter @labelName={{option.label}} @labelIcon={{option.icon}} @inputValue={{option.value}} @isChecked={{option.isChecked}} @groupName="privacy" @onClick={{action "updatePrivacySetting"}} @groupValue={{this.selectedPrivacySetting}} />
                 </li>
                 {{/each}}
               </ul>

@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { computed, observer } from '@ember/object';
 import { alias, or } from '@ember/object/computed';
+import _ from 'underscore';
 /*global _:false */
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
