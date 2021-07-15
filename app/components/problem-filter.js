@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import { alias, equal, reads } from '@ember/object/computed';
 // attrs passed in by parent
 // store
@@ -9,10 +10,10 @@ import { alias, equal, reads } from '@ember/object/computed';
 /*global _:false */
 import { isEqual } from '@ember/utils';
 // import CategoriesListMixin from '../mixins/categories_list_mixin';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Component.extend(CurrentUserMixin, {
+export default Component.extend({
   elementId: 'problem-filter',
+  currentUser: service('current-user'),
   primaryFilterValue: alias('primaryFilter.value'),
   primaryFilterInputs: alias('filter.primaryFilters.inputs'),
   secondaryFilter: alias('primaryFilter.secondaryFilters'),

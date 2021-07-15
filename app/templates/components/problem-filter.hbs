@@ -53,7 +53,7 @@
          {{/if}}
     </ul>
   {{/if}}
-  {{#if this.currentUser.isAdmin}}
+  {{#if this.currentUser.user.isAdmin}}
     <h3 {{action 'toggleMoreFilters'}} class="more-header {{if closedMenu 'closed'}}">
       <i class="fas {{if this.showMoreFilters 'fa-chevron-down'}}{{unless this.showMoreFilters 'fa-chevron-right'}}"></i> More
     </h3>

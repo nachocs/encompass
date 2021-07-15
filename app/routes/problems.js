@@ -22,7 +22,7 @@ export default AuthenticatedRoute.extend({
   //     }
   //   }
   // },
-  model: function (params) {
+  model: function () {
     const store = this.store;
     const user = this.modelFor('application');
     let problemCriteria = {};
