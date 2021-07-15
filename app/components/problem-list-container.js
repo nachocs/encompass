@@ -154,6 +154,7 @@ export default Component.extend(
         icon: 'fas fa-trash',
       },
     ],
+    selectedCategories: [],
     statusFilter: ['approved', 'pending', 'flagged'],
     showCategoryList: false,
     primaryFilterValue: alias('primaryFilter.value'),
@@ -907,6 +908,9 @@ export default Component.extend(
       closeModal() {
         this.set('showCategoryList', false);
       },
+      searchCategory(cat) {
+        this.selectedCategories.pushObject(cat);
+      }
     },
   }
 );
