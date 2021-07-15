@@ -155,7 +155,7 @@ export default Component.extend(
       },
     ],
     statusFilter: ['approved', 'pending', 'flagged'],
-
+    showCategoryList: false,
     primaryFilterValue: alias('primaryFilter.value'),
     doUseSearchQuery: or('isSearchingProblems', 'isDisplayingSearchResults'),
     selectedPrivacySetting: ['M', 'O', 'E'],
@@ -903,6 +903,9 @@ export default Component.extend(
       toProblemInfo(problem) {
         this.sendAction('toProblemInfo', problem);
         this.$('#outlet').removeClass('hidden');
+      },
+      closeModal() {
+        this.set('showCategoryList', false);
       },
     },
   }

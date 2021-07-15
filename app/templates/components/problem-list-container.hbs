@@ -1,6 +1,6 @@
 <div class="flex-container-full">
   <div class="flex-item-full filter-options collapse" id="filter-list-side">
-    <ProblemFilter @store={{this.store}} @onUpdate={{action "triggerFetch"}} @triggerShowTrashed={{action "triggerShowTrashed"}} @filter={{this.filter}} @primaryFilter={{this.primaryFilter}} @adminFilterSelect={{this.adminFilterSelect}} @orgs={{this.model.organizations}} @categoriesFilter={{this.categoriesFilter}} @doIncludeSubCategories={{this.doIncludeSubCategories}} @toggleTrashed={{this.toggleTrashed}} @sendtoApplication="sendtoApplication" />
+    <ProblemFilter @showCategoryList={{this.showCategoryList}} @categoryTree={{this.categoryTree}} @store={{this.store}} @onUpdate={{action "triggerFetch"}} @triggerShowTrashed={{action "triggerShowTrashed"}} @filter={{this.filter}} @primaryFilter={{this.primaryFilter}} @adminFilterSelect={{this.adminFilterSelect}} @orgs={{this.model.organizations}} @categoriesFilter={{this.categoriesFilter}} @doIncludeSubCategories={{this.doIncludeSubCategories}} @toggleTrashed={{this.toggleTrashed}} @sendtoApplication="sendtoApplication" />
   </div>
 
   <div class="flex-item-full list-view">
@@ -91,6 +91,16 @@
 <div class="toggle-filter-menu">
   <button {{action 'toggleMenu'}}><i id="arrow-icon" class="fas fa-chevron-right"></i></button>
 </div>
+
+{{#if this.showCategoryList}}
+<div id="category-list-modal">
+  <div class="modal-content">
+    <h4>Select a Category</h4>
+    <button class="close" {{action 'closeModal' }}><i class="fas fa-times"></i></button>
+    <CategoriesMenu @categories={{this.categoryTree}} @store={{this.store}} @addCategories="searchCategory" />
+  </div>
+</div>
+{{/if}}
 
 <div class="list-outlet hidden" id="outlet">
   {{outlet}}

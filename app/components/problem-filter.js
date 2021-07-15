@@ -22,7 +22,6 @@ export default Component.extend({
   showCategoryFilters: false,
   showMoreFilters: false,
   closedMenu: true,
-  showCategoryList: false,
 
   init: function () {
     this._super(...arguments);
@@ -146,10 +145,6 @@ export default Component.extend({
 
     removeCategory(category) {
       this.categoriesFilter.removeObject(category);
-    },
-
-    closeModal() {
-      this.set('showCategoryList', false);
     },
 
     toggleIncludeSubCats() {
