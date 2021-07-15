@@ -47,7 +47,6 @@
   .clear-field {
     @include flex-item(2, center, 0.6 0 auto);
     font-size: 0.8em;
-    position: relative;
     cursor: pointer;
     .search-field {
       height: 35px;

@@ -22,6 +22,7 @@ export default Component.extend({
   showCategoryFilters: false,
   showMoreFilters: false,
   closedMenu: true,
+  showCategoryList: false,
 
   init: function () {
     this._super(...arguments);
@@ -126,7 +127,7 @@ export default Component.extend({
       this.store.query('category', {}).then((queryCats) => {
         let categories = queryCats.get('meta');
         this.set('categoryTree', categories.categories);
-        this.sendAction('sendtoApplication', this.categoryTree);
+        this.set('showCategoryList', true)
       });
     },
 
@@ -147,9 +148,9 @@ export default Component.extend({
       this.categoriesFilter.removeObject(category);
     },
 
-    // closeModal() {
-    //   this.set('showCategoryList', false);
-    // },
+    closeModal() {
+      this.set('showCategoryList', false);
+    },
 
     toggleIncludeSubCats() {
       // toggle value
