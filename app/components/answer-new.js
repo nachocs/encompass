@@ -220,15 +220,11 @@ export default Component.extend(ErrorHandlingMixin, {
         }
 
         if (explanation.length > this.explanationLengthLimit) {
-          console.log('explanation too long');
           this.set('isExplanationTooLarge', true);
           this.set('isCreatingAnswer', false);
-
           return;
         }
-        console.log('creating records');
         const records = students.map((student) => {
-          console.log('creating record', student);
           return this.store.createRecord('answer', {
             createdBy: student,
             createDate: new Date(),
@@ -244,19 +240,16 @@ export default Component.extend(ErrorHandlingMixin, {
           });
         });
         // additional uploaded image base 64 data was concatenated to explanation
-        console.log(records);
         return all(
           records.map((rec) => {
             return rec.save();
           })
         )
           .then((answers) => {
-            const userId = this.get(currentUser.user.id);
-
+            const userId = this.currentUser.user.id;
             let yourAnswer = answers.find((answer) => {
               return answer.get('createdBy.id') === userId;
             });
-
             this.alert.showToast(
               'success',
               'Answer Created',
