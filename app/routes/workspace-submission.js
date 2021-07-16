@@ -72,7 +72,12 @@ export default Route.extend(VmtHostMixin, {
   },
 
   resolveVmtRoom(submission) {
-    let roomId = submission.submission.get('vmtRoomInfo.roomId');
+    let roomId 
+    if(submission.submission){
+      roomId = submission.submission.get('vmtRoomInfo.roomId');
+    } else {
+      roomId = submission.get('vmtRoomInfo.roomId');
+    }
     let utils = this.utils;
 
     if (!utils.isValidMongoId(roomId)) {
