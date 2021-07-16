@@ -178,7 +178,7 @@ export default Route.extend(VmtHostMixin, {
       let currentUrl = window.location.hash;
       let wasVmt = currentUrl.indexOf('?vmtRoomId=') !== -1;
       let willBeVmt = this.utils.isValidMongoId(
-        transition.queryParams.vmtRoomId
+        transition.to.queryParams.vmtRoomId
       );
       if (wasVmt && !willBeVmt) {
         window.postMessage({
