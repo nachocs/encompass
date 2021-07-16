@@ -431,11 +431,11 @@ describe('Problems', async function () {
                 before(async function () {
                   let options = {
                     selector: 'a',
-                    urlToWaitFor: `${helpers.host}/#/problems`,
+                    urlToWaitFor: `${helpers.host}/problems`,
                     timeout: 10000
                   };
               
-                  await helpers.navigateAndWait(driver, `${helpers.host}/#/problems`, options );
+                  await helpers.navigateAndWait(driver, `${helpers.host}/problems`, options );
                   if (!isStudent) {
                     await helpers.findAndClickElement(driver, '.refresh-icon');
                   }
