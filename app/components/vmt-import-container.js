@@ -32,14 +32,14 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   mostRecentSearchResults: null,
 
   maxSteps: computed('steps', function () {
-    return this.get('steps.length') - 1;
+    return this.steps.length - 1;
   }),
 
   detailsItems: computed('selectedRooms.[]', 'workspaceName', function () {
     return [
       {
         label: 'Selected Rooms',
-        displayValue: this.get('selectedRooms.length'),
+        displayValue: this.selectedRooms.length,
         emptyValue: 'No Rooms',
         propName: 'selectedRooms.length',
         associatedStep: 1,
@@ -64,7 +64,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     changeStep(direction) {
-      let currentStep = this.get('currentStep.value');
+      let currentStep = this.currentStep.value;
       let maxStep = this.maxSteps;
       if (direction === 1) {
         if (currentStep === maxStep) {

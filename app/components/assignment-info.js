@@ -36,7 +36,7 @@ export default Component.extend(ErrorHandlingMixin, {
   ),
 
   didReceiveAttrs: function () {
-    if (this.get('assignment.id') !== this.get('currentAssignment.id')) {
+    if (this.assignment.id !== this.currentAssignment.id) {
       this.set('currentAssignment', this.assignment);
     }
   },

@@ -234,7 +234,7 @@ export default Component.extend(ErrorHandlingMixin, {
     'showLoadingMessage',
     function () {
       let msg;
-      // let userOrgName = this.get('userOrgName');
+      // let userOrgName = this.userOrgName;
       if (this.isFetchingWorkspaces) {
         if (this.showLoadingMessage) {
           msg = 'Loading results... Thank you for your patience.';
@@ -257,7 +257,7 @@ export default Component.extend(ErrorHandlingMixin, {
         } else {
           verb = 'contains';
         }
-        let total = this.get('workspacesMetadata.total');
+        let total = this.workspacesMetadata.total;
         if (total === 1) {
           countDescriptor = 'workspace';
           if (criterion === 'all') {
@@ -273,7 +273,7 @@ export default Component.extend(ErrorHandlingMixin, {
         )} ${countDescriptor} ${typeDescription} "${this.searchQuery}"`;
         return msg;
       }
-      msg = `${this.get('workspacesMetadata.total')} workspaces found`;
+      msg = `${this.workspacesMetadata.total} workspaces found`;
 
       if (this.toggleTrashed) {
         msg = `${msg} - <strong>Displaying Trashed Workspaces</strong>`;
@@ -335,7 +335,7 @@ export default Component.extend(ErrorHandlingMixin, {
 
     let doHideOutlet = this.doHideOutlet;
     if (_.isUndefined(doHideOutlet)) {
-      this.set('doHideOutlet', this.get('model.hideOutlet'));
+      this.set('doHideOutlet', this.model.hideOutlet);
     }
     if (this.doHideOutlet === false) {
       this.$('#outlet').removeClass('hidden');
@@ -400,8 +400,8 @@ export default Component.extend(ErrorHandlingMixin, {
         },
       },
     };
-    let isAdmin = this.get('model.currentUser.isAdmin');
-    let isPdadmin = this.get('model.currentUser.accountType') === 'P';
+    let isAdmin = this.model.currentUser.isAdmin;
+    let isPdadmin = this.model.currentUser.accountType === 'P';
     if (isPdadmin) {
       filter.primaryFilters.inputs.myOrg.secondaryFilters = {
         selectedValues: ['orgProblems', 'fromOrg'],
@@ -485,8 +485,8 @@ export default Component.extend(ErrorHandlingMixin, {
   }),
 
   configurePrimaryFilter() {
-    let primaryFilters = this.get('filter.primaryFilters');
-    if (this.get('model.currentUser.isAdmin')) {
+    let primaryFilters = this.filter.primaryFilters;
+    if (this.model.currentUser.isAdmin) {
       primaryFilters.selectedValue = 'all';
       this.set('primaryFilter', primaryFilters.inputs.all);
       return;
@@ -496,7 +496,7 @@ export default Component.extend(ErrorHandlingMixin, {
 
   buildMineFilter() {
     let filter = {};
-    let userId = this.get('model.currentUser.id');
+    let userId = this.model.currentUser.id;
     let secondaryValues = this.get(
       'primaryFilter.secondaryFilters.selectedValues'
     );
@@ -629,7 +629,7 @@ export default Component.extend(ErrorHandlingMixin, {
 
   buildCollabFilter() {
     const utils = this.utils;
-    const collabWorkspaces = this.get('model.currentUser.collabWorkspaces');
+    const collabWorkspaces = this.model.currentUser.collabWorkspaces;
 
     let ids;
     let filter = {};
@@ -688,7 +688,7 @@ export default Component.extend(ErrorHandlingMixin, {
 
   buildFilterBy: function () {
     let primaryFilterValue = this.primaryFilterValue;
-    let isPdadmin = this.get('model.currentUser.accountType') === 'P';
+    let isPdadmin = this.model.currentUser.accountType === 'P';
     let filterBy;
 
     if (primaryFilterValue === 'mine') {
@@ -736,7 +736,7 @@ export default Component.extend(ErrorHandlingMixin, {
     'toggleTrashed',
     'currentUser.hiddenWorkspaces',
     function () {
-      let hiddenWorkspaces = this.get('model.currentUser.hiddenWorkspaces');
+      let hiddenWorkspaces = this.model.currentUser.hiddenWorkspaces;
       let workspaces = this.workspaces;
       let visibileWorkspaces = workspaces.filter((workspace) => {
         if (!hiddenWorkspaces.includes(workspace.id)) {
@@ -748,7 +748,7 @@ export default Component.extend(ErrorHandlingMixin, {
         if (this.toggleTrashed) {
           return visibileWorkspaces;
         } else if (this.toggleHidden) {
-          // this.get('store').findRecord('workspace', hiddenWorkspaces[0]).then((workspaces) => {
+          // this.store.findRecord('workspace', hiddenWorkspaces[0]).then((workspaces) => {
           //   console.log(workspaces.id);
           // });
         } else {

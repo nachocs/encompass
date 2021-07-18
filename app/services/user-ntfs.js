@@ -14,7 +14,7 @@ export default Service.extend({
     this.set('user', user);
     this.set('responses', this.store.peekAll('response'));
 
-    this.get('user.notifications').then((ntfs) => {
+    this.user.notifications.then((ntfs) => {
       this.set('notifications', ntfs);
       this.set('areNtfsLoaded', true);
     });
@@ -242,28 +242,28 @@ export default Service.extend({
 
   // observeNtfResponses: function() {
   //   console.log('observing ntf responses');
-  //   this.get('ntfResponses').forEach((response))
+  //   this.ntfResponses.forEach((response))
   // }.observes('ntfResponses')
 
   // updateResponseNtfs: function() {
   //   console.log('observed change to responses');
   //   let ntfsToClear = [];
 
-  //   this.get('trashedResponses').forEach((response) => {
+  //   this.trashedResponses.forEach((response) => {
   //     let relatedNtfs = this.findRelatedNtfs('response', response);
   //     relatedNtfs.forEach((ntf) => {
   //       ntfsToClear.addObject(ntf);
   //     });
   //   });
 
-  //   this.get('supercededResponses').forEach((response) => {
+  //   this.supercededResponses.forEach((response) => {
   //     let relatedNtfs = this.findRelatedNtfs('response', response);
   //     relatedNtfs.forEach((ntf) => {
   //       ntfsToClear.addObject(ntf);
   //     });
   //   });
 
-  //   this.get('readByRecipientResponses').forEach((response) => {
+  //   this.readByRecipientResponses.forEach((response) => {
   //     let relatedNtfs = this.findRelatedNtfs('response', response);
   //     relatedNtfs.forEach((ntf) => {
   //       ntfsToClear.addObject(ntf);

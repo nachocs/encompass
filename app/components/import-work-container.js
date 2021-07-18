@@ -70,21 +70,21 @@ export default Component.extend(
         return [
           {
             label: 'Selected Problem',
-            displayValue: this.get('selectedProblem.title'),
+            displayValue: this.selectedProblem.title,
             emptyValue: 'No Problem',
             propName: 'selectedProblem',
             associatedStep: 1,
           },
           {
             label: 'Selected Class',
-            displayValue: this.get('selectedSection.name'),
+            displayValue: this.selectedSection.name,
             emptyValue: 'No Class',
             propName: 'selectedSection',
             associatedStep: 2,
           },
           {
             label: 'Uploaded Files',
-            displayValue: this.get('uploadedFiles.length'),
+            displayValue: this.uploadedFiles.length,
             propName: 'uploadedFileCount',
             associatedStep: 3,
           },
@@ -151,7 +151,7 @@ export default Component.extend(
       return resolve(section.get('students'));
     },
     maxSteps: computed('steps', function () {
-      return this.get('steps.length') - 1;
+      return this.steps.length - 1;
     }),
 
     actions: {
@@ -163,7 +163,7 @@ export default Component.extend(
       },
 
       changeStep(direction) {
-        let currentStep = this.get('currentStep.value');
+        let currentStep = this.currentStep.value;
         let maxStep = this.maxSteps;
         if (direction === 1) {
           if (currentStep === maxStep) {
@@ -377,7 +377,7 @@ export default Component.extend(
         let postData = {
           subs: JSON.stringify(subs),
           doCreateWorkspace: true,
-          workspaceOwner: JSON.stringify(this.get('workspaceOwner.id')),
+          workspaceOwner: JSON.stringify(this.workspaceOwner.id),
           requestedName: JSON.stringify(this.workspaceName),
           workspaceMode: JSON.stringify(this.workspaceMode),
           folderSet: JSON.stringify(folderSetId),

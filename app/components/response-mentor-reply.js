@@ -25,8 +25,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   ],
 
   didReceiveAttrs() {
-    if (this.get('displayResponse.id') !== this.currentDisplayResponseId) {
-      this.set('currentDisplayResponseId', this.get('displayResponse.id'));
+    if (this.displayResponse.id !== this.currentDisplayResponseId) {
+      this.set('currentDisplayResponseId', this.displayResponse.id);
 
       ['isEditing', 'isRevising', 'isFinishingDraft'].forEach((prop) => {
         if (this.get(prop)) {
@@ -38,7 +38,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   statusIconFill: computed('displayResponse.status', function () {
-    let status = this.get('displayResponse.status');
+    let status = this.displayResponse.status;
     return this.iconFillOptions[status];
   }),
 
@@ -65,7 +65,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     function () {
       return (
         !this.isParentWorkspace &&
-        this.get('displayResponse.status') === 'pendingApproval' &&
+        this.displayResponse.status === 'pendingApproval' &&
         (this.canApprove || this.isOwnMentorReply)
       );
     }
@@ -85,7 +85,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   }),
 
   isDraft: computed('displayResponse.status', function () {
-    return this.get('displayResponse.status') === 'draft';
+    return this.displayResponse.status === 'draft';
   }),
 
   showRevise: computed('canRevise', 'isComposing', 'isDraft', function () {
@@ -155,7 +155,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return false;
       }
 
-      let note = this.get('displayResponse.note');
+      let note = this.displayResponse.note;
       return typeof note === 'string' && note.length > 0;
     }
   ),
@@ -166,7 +166,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'displayResponse.status',
     'isParentWorkspace',
     function () {
-      let status = this.get('displayResponse.status');
+      let status = this.displayResponse.status;
 
       if (this.isParentWorkspace) {
         return false;
@@ -222,7 +222,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'quillText.length',
     'maxResponseLength',
     function () {
-      let len = this.get('quillText.length');
+      let len = this.quillText.length;
       let maxLength = this.maxResponseLength;
       let maxSizeDisplay = this.returnSizeDisplay(maxLength);
       let actualSizeDisplay = this.returnSizeDisplay(len);
@@ -236,7 +236,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   isOldFormatDisplayResponse: computed('displayResponse.text', function () {
-    let text = this.get('displayResponse.text');
+    let text = this.displayResponse.text;
     let parsed = new DOMParser().parseFromString(text, 'text/html');
     return !Array.from(parsed.body.childNodes).some(
       (node) => node.nodeType === 1
@@ -247,7 +247,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'displayResponse.wasReadByRecipient',
     function () {
       let results = {};
-      if (this.get('displayResponse.wasReadByRecipient')) {
+      if (this.displayResponse.wasReadByRecipient) {
         results.className = 'far fa-envelope-open';
         results.title = 'Recipient has seen message';
       } else {
@@ -262,7 +262,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'isMentorRecipient',
     'displayResponse.status',
     function () {
-      let status = this.get('displayResponse.status');
+      let status = this.displayResponse.status;
 
       return status === 'approved' && !this.isMentorRecipient;
     }
@@ -278,8 +278,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     // value true or false
     handleComposeAction(propName, value, doClearErrors) {
       if (value) {
-        this.set('editRevisionText', this.get('displayResponse.text'));
-        this.set('editRevisionNote', this.get('displayResponse.note'));
+        this.set('editRevisionText', this.displayResponse.text);
+        this.set('editRevisionNote', this.displayResponse.note);
       } else {
         this.set('editRevisionText', '');
         this.set('editRevisionNote', '');
@@ -312,7 +312,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
       let doSetSuperceded = false;
 
-      let priorRevisionStatus = this.get('priorMentorRevision.status');
+      let priorRevisionStatus = this.priorMentorRevision.status;
       if (
         priorRevisionStatus === 'pendingApproval' ||
         priorRevisionStatus === 'needsRevisions'
@@ -391,10 +391,10 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let oldText = this.get('displayResponse.text');
+      let oldText = this.displayResponse.text;
       let newText = this.quillText;
 
-      let oldNote = this.get('displayResponse.note');
+      let oldNote = this.displayResponse.note;
       let newNote = this.editRevisionNote;
 
       if (oldText === newText && oldNote === newNote) {
@@ -457,10 +457,10 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let oldText = this.get('displayResponse.text');
+      let oldText = this.displayResponse.text;
       let newText = this.quillText;
 
-      let oldNote = this.get('displayResponse.note');
+      let oldNote = this.displayResponse.note;
       let newNote = this.editRevisionNote;
 
       if (!isDraft) {
@@ -470,7 +470,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         }
       }
 
-      let oldStatus = this.get('displayResponse.status');
+      let oldStatus = this.displayResponse.status;
       let doSetSuperceded =
         !isDraft &&
         (oldStatus === 'pendingApproval' || oldStatus === 'needsRevisions');
@@ -500,7 +500,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       revision.set('submission', this.submission);
       revision.set('workspace', this.workspace);
       revision.set('priorRevision', this.displayResponse);
-      revision.set('recipient', this.get('displayResponse.recipient.content'));
+      revision.set('recipient', this.displayResponse.recipient.content);
       revision.set('status', newReplyStatus);
 
       let hash;
@@ -605,8 +605,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
               null
             );
 
-            let prevResponse =
-              this.get('sortedMentorReplies.lastObject') || null;
+            let prevResponse = this.sortedMentorReplies.lastObject || null;
             this.onSaveSuccess(this.submission, prevResponse);
           }
         })

@@ -49,7 +49,7 @@ export default Component.extend(CurrentUserMixin, {
     },
   },
   displayStatus: computed('thread.highestPriorityStatus', function () {
-    let status = this.get('thread.highestPriorityStatus');
+    let status = this.thread.highestPriorityStatus;
     return this.get('statusMap.' + status);
   }),
 
@@ -57,7 +57,7 @@ export default Component.extend(CurrentUserMixin, {
     'displayStatus',
     'currentCounterValue',
     function () {
-      let text = this.get('displayStatus.display');
+      let text = this.displayStatus.display;
       return text + ' ' + this.currentCounterValue;
     }
   ),
@@ -72,7 +72,7 @@ export default Component.extend(CurrentUserMixin, {
     'pendingApprovalCounter',
     'newRevisionCounter',
     function () {
-      let prop = this.get('displayStatus.counterProp');
+      let prop = this.displayStatus.counterProp;
       if (!prop) {
         return '';
       }
@@ -81,7 +81,7 @@ export default Component.extend(CurrentUserMixin, {
   ),
 
   newRevisionCounter: computed('thread.newRevisions.[]', function () {
-    let count = this.get('thread.newRevisions.length');
+    let count = this.thread.newRevisions.length;
 
     if (count > 1) {
       return `(${count})`;
@@ -90,7 +90,7 @@ export default Component.extend(CurrentUserMixin, {
   }),
 
   unreadCounter: computed('unreadResponses.[]', function () {
-    let count = this.get('thread.unreadResponses.length');
+    let count = this.thread.unreadResponses.length;
 
     if (count > 1) {
       return `(${count})`;
@@ -99,7 +99,7 @@ export default Component.extend(CurrentUserMixin, {
   }),
 
   draftCounter: computed('draftResponses.[]', function () {
-    let count = this.get('thread.draftResponses.length');
+    let count = this.thread.draftResponses.length;
 
     if (count > 1) {
       return `(${count})`;
@@ -110,7 +110,7 @@ export default Component.extend(CurrentUserMixin, {
   needsRevisionCounter: computed(
     'thread.needsRevisionResponses.[]',
     function () {
-      let count = this.get('thread.needsRevisionResponses.length');
+      let count = this.thread.needsRevisionResponses.length;
 
       if (count > 1) {
         return `(${count})`;
@@ -122,7 +122,7 @@ export default Component.extend(CurrentUserMixin, {
   pendingApprovalCounter: computed(
     'thread.pendingApprovalResponses.[]',
     function () {
-      let count = this.get('thread.pendingApprovalResponses.length');
+      let count = this.thread.pendingApprovalResponses.length;
 
       if (count > 1) {
         return `(${count})`;
@@ -132,7 +132,7 @@ export default Component.extend(CurrentUserMixin, {
   ),
 
   newlyApprovedCounter: computed('thread.newlyApprovedReplies.[]', function () {
-    let count = this.get('thread.newlyApprovedReplies.length');
+    let count = this.thread.newlyApprovedReplies.length;
 
     if (count > 1) {
       return `(${count})`;
@@ -141,7 +141,7 @@ export default Component.extend(CurrentUserMixin, {
   }),
 
   unmentoredCounter: computed('thread.unmentoredRevisions.[]', function () {
-    let count = this.get('thread.unmentoredRevisions.length');
+    let count = this.thread.unmentoredRevisions.length;
 
     if (count > 1) {
       return `(${count})`;
@@ -150,7 +150,7 @@ export default Component.extend(CurrentUserMixin, {
   }),
 
   mentors: computed('thread.mentors.[]', function () {
-    let mentorIds = this.get('thread.mentors') || [];
+    let mentorIds = this.thread.mentors || [];
     return mentorIds
       .map((id) => {
         return this.store.peekRecord('user', id);
@@ -160,7 +160,7 @@ export default Component.extend(CurrentUserMixin, {
   }),
 
   ntfTitleText: computed('thread.newNtfCount', function () {
-    let count = this.get('thread.newNtfCount');
+    let count = this.thread.newNtfCount;
     if (!count) {
       return '';
     }
@@ -175,13 +175,13 @@ export default Component.extend(CurrentUserMixin, {
 
   actions: {
     toSubmissionResponse: function () {
-      let response = this.get('thread.highestPriorityResponse');
+      let response = this.thread.highestPriorityResponse;
       if (response) {
         let responseId = response.get('id');
         let submissionId = this.utils.getBelongsToId(response, 'submission');
         this.toResponse(submissionId, responseId);
       } else {
-        let submission = this.get('thread.highestPrioritySubmission');
+        let submission = this.thread.highestPrioritySubmission;
         if (!submission) {
           submission = this.latestRevision;
         }

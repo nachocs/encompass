@@ -1,51 +1,57 @@
 /*global _:false */
-import { alias } from '@ember/object/computed';
-import { observer } from '@ember/object';
-import { inject as service } from '@ember/service';
 import Component from '@ember/component';
+import { observer } from '@ember/object';
+import { alias } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(ErrorHandlingMixin, {
+  tagName: '',
   elementId: 'problem-new',
   classNames: ['side-info'],
   showGeneral: true,
   filesToBeUploaded: null,
-  createProblemErrors: [],
-  imageUploadErrors: [],
+  createProblemErrors: () => [],
+  imageUploadErrors: () => [],
   isMissingRequiredFields: null,
   isPublic: null,
   privacySetting: null,
   checked: true,
   status: null,
   alert: service('sweet-alert'),
-  parentActions: alias("parentView.actions"),
+  parentActions: alias('parentView.actions'),
   approvedProblem: false,
   noLegalNotice: null,
   showCategories: false,
-  keywords: [],
+  keywords: () => [],
 
   init: function () {
     this._super(...arguments);
     let tooltips = {
       name: 'Please try and give all your problems a unique title',
       statement: 'Content of the problem to be completed',
-      categories: 'Use category menu to select appropriate common core categories',
+      categories:
+        'Use category menu to select appropriate common core categories',
       keywords: 'Add keywords to help other people find this problem',
       additionalInfo: 'Any additional information desired for the problem',
-      additionalImage: 'You can upload a JPG, PNG or PDF (only the first page is saved)',
-      privacySettings: 'Just Me makes your problem private, My Organization allows your problem to be seen by all members in your organization, and Public means every user can see your problem',
+      additionalImage:
+        'You can upload a JPG, PNG or PDF (only the first page is saved)',
+      privacySettings:
+        'Just Me makes your problem private, My Organization allows your problem to be seen by all members in your organization, and Public means every user can see your problem',
       copyrightNotice: 'Add notice if problem contains copyrighted material',
-      sharingAuth: 'If you are posting copyrighted material please note your permission',
+      sharingAuth:
+        'If you are posting copyrighted material please note your permission',
       author: 'Name of the person who wrote this problem, (is the author)',
-      legalNotice: 'Please verify that the material you are posting is either your own or properly authorized to share',
+      legalNotice:
+        'Please verify that the material you are posting is either your own or properly authorized to share',
     };
     this.set('tooltips', tooltips);
     this.set('selectedCategories', []);
     this.set('keywordFilter', this.createKeywordFilter.bind(this));
   },
 
-  didInsertElement: function () {
+  didInsertElement: () => {
     $('.list-outlet').removeClass('hidden');
   },
 
@@ -95,16 +101,16 @@ export default Component.extend(ErrorHandlingMixin, {
       return;
     }
 
-    if (accountType === "A") {
+    if (accountType === 'A') {
       this.set('status', 'approved');
-    } else if (accountType === "P") {
-      if (privacySetting === "E") {
+    } else if (accountType === 'P') {
+      if (privacySetting === 'E') {
         this.set('status', 'pending');
       } else {
         this.set('status', 'approved');
       }
     } else {
-      if (privacySetting === "M") {
+      if (privacySetting === 'M') {
         this.set('status', 'approved');
       } else {
         this.set('status', 'pending');
@@ -125,7 +131,7 @@ export default Component.extend(ErrorHandlingMixin, {
       copyrightNotice: copyrightNotice,
       sharingAuth: sharingAuth,
       author: author,
-      keywords: keywords
+      keywords: keywords,
     });
 
     if (additionalImage) {
@@ -143,67 +149,116 @@ export default Component.extend(ErrorHandlingMixin, {
           processData: false,
           contentType: false,
           data: formData,
-          createdBy: createdBy
-        }).then(function (res) {
-          that.set('uploadResults', res.images);
-          that.store.findRecord('image', res.images[0]._id).then((image) => {
-            createProblemData.set('image', image);
-            createProblemData.save()
-              .then((problem) => {
-                that.get('alert').showToast('success', 'Problem Created', 'bottom-end', 4000, false, null);
-                let parentView = this.parentView;
-                this.get('parentActions.refreshList').call(parentView);
-                that.sendAction('toProblemInfo', problem);
-              })
-              .catch((err) => {
-                if (err.errors[0].detail === `There is already an existing public problem titled "${title}."`) {
-                  this.send('showGeneral');
-                }
-                that.handleErrors(err, 'createProblemErrors', createProblemData);
-              });
+          createdBy: createdBy,
+        })
+          .then(function (res) {
+            that.set('uploadResults', res.images);
+            that.store.findRecord('image', res.images[0]._id).then((image) => {
+              createProblemData.set('image', image);
+              createProblemData
+                .save()
+                .then((problem) => {
+                  that
+                    .get('alert')
+                    .showToast(
+                      'success',
+                      'Problem Created',
+                      'bottom-end',
+                      4000,
+                      false,
+                      null
+                    );
+                  let parentView = this.parentView;
+                  this.parentActions.refreshList.call(parentView);
+                  that.sendAction('toProblemInfo', problem);
+                })
+                .catch((err) => {
+                  if (
+                    err.errors[0].detail ===
+                    `There is already an existing public problem titled "${title}."`
+                  ) {
+                    this.send('showGeneral');
+                  }
+                  that.handleErrors(
+                    err,
+                    'createProblemErrors',
+                    createProblemData
+                  );
+                });
+            });
+          })
+          .catch(function (err) {
+            that.handleErrors(err, 'imageUploadErrors');
           });
-        }).catch(function (err) {
-          that.handleErrors(err, 'imageUploadErrors');
-        });
       } else {
         $.post({
           url: '/image',
           processData: false,
           contentType: false,
           data: formData,
-          createdBy: createdBy
-        }).then(function (res) {
-          that.set('uploadResults', res.images);
-          that.store.findRecord('image', res.images[0]._id).then((image) => {
-            createProblemData.set('image', image);
-            createProblemData.save()
-              .then((problem) => {
-                that.get('alert').showToast('success', 'Problem Created', 'bottom-end', 4000, false, null);
-                let parentView = this.parentView;
-                this.get('parentActions.refreshList').call(parentView);
-                that.sendAction('toProblemInfo', problem);
-              })
-              .catch((err) => {
-                if (err.errors[0].detail === `There is already an existing public problem titled "${title}."`) {
-                  this.send('showGeneral');
-                }
-                that.handleErrors(err, 'createProblemErrors', createProblemData);
-              });
+          createdBy: createdBy,
+        })
+          .then(function (res) {
+            that.set('uploadResults', res.images);
+            that.store.findRecord('image', res.images[0]._id).then((image) => {
+              createProblemData.set('image', image);
+              createProblemData
+                .save()
+                .then((problem) => {
+                  that
+                    .get('alert')
+                    .showToast(
+                      'success',
+                      'Problem Created',
+                      'bottom-end',
+                      4000,
+                      false,
+                      null
+                    );
+                  let parentView = this.parentView;
+                  this.parentActions.refreshList.call(parentView);
+                  that.sendAction('toProblemInfo', problem);
+                })
+                .catch((err) => {
+                  if (
+                    err.errors[0].detail ===
+                    `There is already an existing public problem titled "${title}."`
+                  ) {
+                    this.send('showGeneral');
+                  }
+                  that.handleErrors(
+                    err,
+                    'createProblemErrors',
+                    createProblemData
+                  );
+                });
+            });
+          })
+          .catch(function (err) {
+            that.handleErrors(err, 'imageUploadErrors');
           });
-        }).catch(function (err) {
-          that.handleErrors(err, 'imageUploadErrors');
-        });
       }
     } else {
-      createProblemData.save()
+      createProblemData
+        .save()
         .then((res) => {
-          this.alert.showToast('success', 'Problem Created', 'bottom-end', 4000, false, null);
+          this.alert.showToast(
+            'success',
+            'Problem Created',
+            'bottom-end',
+            4000,
+            false,
+            null
+          );
           let parentView = this.parentView;
-          this.get('parentActions.refreshList').call(parentView);
+          this.parentActions.refreshList.call(parentView);
           that.sendAction('toProblemInfo', res);
         })
         .catch((err) => {
-          if (err.errors[0].detail === `There is already an existing public problem titled "${title}."`) {
+          if (
+            err.errors[0].detail ===
+            `There is already an existing public problem titled "${title}."`
+          ) {
             this.send('showGeneral');
           }
           that.handleErrors(err, 'createProblemErrors', createProblemData);
@@ -225,7 +280,6 @@ export default Component.extend(ErrorHandlingMixin, {
     // don't let user create keyword if it matches exactly an existing keyword
     return !_.contains(keywordsLower, keywordLower);
   },
-
 
   actions: {
     radioSelect: function (value) {
@@ -253,7 +307,7 @@ export default Component.extend(ErrorHandlingMixin, {
         let categories = queryCats.get('meta');
         this.set('categoryTree', categories.categories);
       });
-      this.set('showCategories', !(this.showCategories));
+      this.set('showCategories', !this.showCategories);
     },
 
     addCategories: function (category) {
@@ -284,7 +338,11 @@ export default Component.extend(ErrorHandlingMixin, {
     },
 
     resetErrors(e) {
-      const errors = ['noLegalNotice', 'createProblemErrors', 'imageUploadErrors'];
+      const errors = [
+        'noLegalNotice',
+        'createProblemErrors',
+        'imageUploadErrors',
+      ];
 
       for (let error of errors) {
         if (this.get(error)) {
@@ -299,7 +357,13 @@ export default Component.extend(ErrorHandlingMixin, {
     },
 
     confirmCreatePublic: function () {
-      this.alert.showModal('question', 'Are you sure you want to create a public problem?', 'Creating a public problem means it will be accessible to all EnCoMPASS users. You will not be able to make any changes once this problem has been used', 'Yes')
+      this.alert
+        .showModal(
+          'question',
+          'Are you sure you want to create a public problem?',
+          'Creating a public problem means it will be accessible to all EnCoMPASS users. You will not be able to make any changes once this problem has been used',
+          'Yes'
+        )
         .then((result) => {
           if (result.value) {
             this.set('showCats', true);
@@ -337,11 +401,16 @@ export default Component.extend(ErrorHandlingMixin, {
         this.set('privacySetting', this.privacySetting);
 
         let isQuillValid = this.isQuillValid();
-        if (!isQuillValid || !this.problemTitle || !this.problemStatement || !this.privacySetting) {
+        if (
+          !isQuillValid ||
+          !this.problemTitle ||
+          !this.problemStatement ||
+          !this.privacySetting
+        ) {
           this.set('isMissingRequiredFields', true);
           return;
         }
-        if (this.privacySetting === "E") {
+        if (this.privacySetting === 'E') {
           this.send('confirmCreatePublic');
         } else {
           this.set('showCats', true);
@@ -367,7 +436,7 @@ export default Component.extend(ErrorHandlingMixin, {
     },
 
     nextStep: function () {
-      console.log("next step!")
+      console.log('next step!');
       if (this.showGeneral) {
         this.send('showCats');
       } else if (this.showCats) {
@@ -405,7 +474,6 @@ export default Component.extend(ErrorHandlingMixin, {
       this.set('quillText', content);
       this.set('isQuillEmpty', isEmpty);
       this.set('isQuillTooLong', isOverLengthLimit);
-    }
-  }
+    },
+  },
 });
-

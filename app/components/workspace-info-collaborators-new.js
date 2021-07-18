@@ -81,7 +81,7 @@ export default Component.extend(CurrentUserMixin, {
   modes: computed('currentUser.isAdmin', 'currentUser.isStudent', function () {
     const basic = ['private', 'org', 'public'];
 
-    if (this.get('currentUser.isStudent') || !this.get('currentUser.isAdmin')) {
+    if (this.currentUser.isStudent || !this.currentUser.isAdmin) {
       return basic;
     }
 
@@ -176,7 +176,7 @@ export default Component.extend(CurrentUserMixin, {
       if (!val) {
         return;
       }
-      let existingCollab = this.get('workspace.collaborators');
+      let existingCollab = this.workspace.collaborators;
       const user = this.store.peekRecord('user', val);
       let alreadyCollab = _.contains(existingCollab, user.get('id'));
 
@@ -197,10 +197,10 @@ export default Component.extend(CurrentUserMixin, {
       let ws = this.workspace;
       let permissions = ws.get('permissions');
 
-      let subValue = this.get('submissions.value');
+      let subValue = this.submissions.value;
 
       let newObj = {
-        user: this.get('collabUser.id'),
+        user: this.collabUser.id,
         global: this.globalPermissionValue,
         submissions: { all: false, userOnly: false, submissionIds: [] },
       };
@@ -247,10 +247,10 @@ export default Component.extend(CurrentUserMixin, {
         newObj.submissions.all = true;
       }
       if (globalSetting === 'custom') {
-        newObj.selections = this.get('selections.value') || 0;
-        newObj.folders = this.get('folders.value') || 0;
-        newObj.comments = this.get('comments.value') || 0;
-        newObj.feedback = this.get('feedback.value') || 'none';
+        newObj.selections = this.selections.value || 0;
+        newObj.folders = this.folders.value || 0;
+        newObj.comments = this.comments.value || 0;
+        newObj.feedback = this.feedback.value || 'none';
 
         if (subValue === 'all') {
           newObj.submissions.all = true;

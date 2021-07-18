@@ -101,8 +101,8 @@ export default Controller.extend(CurrentUserMixin, {
   }),
   /*
     path: function() {
-      var path = [this.get('model')];
-      var ancestor = this.get('model.parent');
+      var path = [this.model];
+      var ancestor = this.model.parent;
   
       while(ancestor) {
         console.log(ancestor.get('parent'));

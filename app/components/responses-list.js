@@ -44,20 +44,20 @@ export default Component.extend(CurrentUserMixin, {
     let list = [
       {
         name: 'submitterResponses',
-        actionCount: this.get('actionSubmitterThreads.length'),
-        allCount: this.get('submitterThreads.length'),
+        actionCount: this.actionSubmitterThreads.length,
+        allCount: this.submitterThreads.length,
         currentFilter: 'submitter',
       },
       {
         name: 'mentoringResponses',
-        actionCount: this.get('actionMentoringThreads.length'),
-        allCount: this.get('mentoringThreads.length'),
+        actionCount: this.actionMentoringThreads.length,
+        allCount: this.mentoringThreads.length,
         currentFilter: 'mentoring',
       },
       {
         name: 'approvingResponses',
-        actionCount: this.get('actionApprovingThreads.length'),
-        allCount: this.get('approvingThreads.length'),
+        actionCount: this.actionApprovingThreads.length,
+        allCount: this.approvingThreads.length,
         currentFilter: 'approving',
       },
     ];
@@ -76,13 +76,13 @@ export default Component.extend(CurrentUserMixin, {
     function () {
       let filter = this.currentFilter;
       if (filter === 'submitter') {
-        return this.get('meta.submitter');
+        return this.meta.submitter;
       }
       if (filter === 'mentoring') {
-        return this.get('meta.mentoring');
+        return this.meta.mentoring;
       }
       if (filter === 'approving') {
-        return this.get('meta.approving');
+        return this.meta.approving;
       }
     }
   ),
@@ -202,11 +202,7 @@ export default Component.extend(CurrentUserMixin, {
 
   areThreads: gt('allThreads.length', 0),
 
-  isAdmin: function () {
-    return (
-      this.get('currentUser.isAdmin') && !this.get('currentUser.isStudent')
-    );
-  },
+  isAdmin: () => this.currentUser.isAdmin && !this.currentUser.isStudent,
 
   showMentorHeader: computed('currentFilter', function () {
     return this.currentFilter !== 'mentoring';
@@ -234,15 +230,15 @@ export default Component.extend(CurrentUserMixin, {
   },
 
   submitterThreadsCount: computed('submitterThreads.[]', function () {
-    return this.get('submitterThreads.length');
+    return this.submitterThreads.length;
   }),
 
   mentoringThreadsCount: computed('mentoringThreads.[]', function () {
-    return this.get('mentoringThreads.length');
+    return this.mentoringThreads.length;
   }),
 
   approvingThreadsCount: computed('approvingThreads.[]', function () {
-    return this.get('approvingThreads.length');
+    return this.approvingThreads.length;
   }),
 
   displayThreads: computed(
@@ -297,7 +293,7 @@ export default Component.extend(CurrentUserMixin, {
   ),
 
   submitterCounter: computed('actionSubmitterThreads.[]', function () {
-    let count = this.get('actionSubmitterThreads.length');
+    let count = this.actionSubmitterThreads.length;
 
     if (count > 0) {
       return `(${count})`;
@@ -306,7 +302,7 @@ export default Component.extend(CurrentUserMixin, {
   }),
 
   mentoringCounter: computed('actionMentoringThreads.[]', function () {
-    let count = this.get('actionMentoringThreads.length');
+    let count = this.actionMentoringThreads.length;
 
     if (count > 0) {
       return `(${count})`;
@@ -315,7 +311,7 @@ export default Component.extend(CurrentUserMixin, {
   }),
 
   approvingCounter: computed('actionApprovingThreads.[]', function () {
-    let count = this.get('actionApprovingThreads.length');
+    let count = this.actionApprovingThreads.length;
 
     if (count > 0) {
       return `(${count})`;
@@ -339,7 +335,7 @@ export default Component.extend(CurrentUserMixin, {
       let recipientId = this.utils.getBelongsToId(response, 'recipient');
       return (
         !response.get('wasReadByRecipient') &&
-        recipientId === this.get('currentUser.id')
+        recipientId === this.currentUser.id
       );
     });
     return !this.utils.isNullOrUndefined(unreadReply);
@@ -352,8 +348,7 @@ export default Component.extend(CurrentUserMixin, {
     let unreadReplies = responses.filter((response) => {
       let creatorId = this.utils.getBelongsToId(response, 'createdBy');
       return (
-        !response.get('wasReadByRecipient') &&
-        creatorId === this.get('currentUser.id')
+        !response.get('wasReadByRecipient') && creatorId === this.currentUser.id
       );
     });
 

@@ -76,7 +76,7 @@ export default Component.extend(ErrorHandlingMixin, {
   problemsPreloadValue: computed('cachedProblems.[]', function () {
     // if there is at least one problem in the store
     // do not auto fetch problems on focus
-    let length = this.get('cachedProblems.length');
+    let length = this.cachedProblems.length;
     return length > 0 ? undefined : 'focus';
   }),
 
@@ -85,7 +85,7 @@ export default Component.extend(ErrorHandlingMixin, {
     'selectedProblem.title',
     'nameDate',
     function () {
-      let hasName = this.get('name.length') > 0;
+      let hasName = this.name.length > 0;
 
       if (hasName) {
         return this.name;
@@ -94,7 +94,7 @@ export default Component.extend(ErrorHandlingMixin, {
       if (!this.hasProblem) {
         return '';
       }
-      let title = this.get('selectedProblem.title');
+      let title = this.selectedProblem.title;
 
       let nameDate = this.nameDate;
 

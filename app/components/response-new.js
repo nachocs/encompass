@@ -7,6 +7,7 @@ import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+  tagName: '',
   elementId: 'response-new',
 
   utils: service('utility-methods'),
@@ -16,9 +17,9 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   isCreating: false,
   anonymous: false,
   showExisting: false,
-  subResponses: [],
-  selections: [],
-  comments: [],
+  subResponses: () => [],
+  selections: () => [],
+  comments: () => [],
   submission: null,
   showSelections: false,
   showComments: false,
@@ -28,13 +29,13 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   cantRespond: not('canRespond'),
   confirmLeaving: and('isEditing', 'dirty'),
   alert: service('sweet-alert'),
-  todaysDate: new Date(),
+  todaysDate: () => new Date(),
   doUseOnlyOwnMarkup: true,
 
   quillEditorId: 'response-new-editor',
   quillText: '',
   maxResponseLength: 14680064,
-  errorPropsToRemove: [
+  errorPropsToRemove: () => [
     'recordSaveErrors',
     'emptyReplyError',
     'quillTooLongError',
@@ -50,8 +51,9 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   filteredSelections: computed(
-    'model.selections.@each.isTrashed',
+    'currentUser.id',
     'doUseOnlyOwnMarkup',
+    'model.selections.@each.isTrashed',
     function () {
       // filter out trashed selections
       // if a user deletes a selection and then immediately after
@@ -59,21 +61,22 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       // be associated with the workspace
 
       if (this.doUseOnlyOwnMarkup) {
-        return this.get('model.selections').filter((selection) => {
+        return this.model.selections.filter((selection) => {
           if (selection.get('isTrashed')) {
             return false;
           }
           let creatorId = this.utils.getBelongsToId(selection, 'createdBy');
-          return creatorId === this.get('currentUser.id');
+          return creatorId === this.currentUser.id;
         });
       }
-      return this.get('model.selections').rejectBy('isTrashed');
+      return this.model.selections.rejectBy('isTrashed');
     }
   ),
 
   filteredComments: computed(
-    'model.comments.@each.isTrashed',
+    'currentUser.id',
     'doUseOnlyOwnMarkup',
+    'model.comments.@each.isTrashed',
     function () {
       // filter out trashed selections
       // if a user deletes a selection and then immediately after
@@ -81,21 +84,21 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       // be associated with the workspace
 
       if (this.doUseOnlyOwnMarkup) {
-        return this.get('model.comments').filter((comment) => {
+        return this.model.comments.filter((comment) => {
           if (comment.get('isTrashed')) {
             return false;
           }
 
           let creatorId = this.utils.getBelongsToId(comment, 'createdBy');
-          return creatorId === this.get('currentUser.id');
+          return creatorId === this.currentUser.id;
         });
       }
-      return this.get('model.comments').rejectBy('isTrashed');
+      return this.model.comments.rejectBy('isTrashed');
     }
   ),
 
   willDestroyElement() {
-    if (!this.get('model.persisted')) {
+    if (!this.model.persisted) {
       this.model.unloadRecord();
     }
     this._super(...arguments);
@@ -118,6 +121,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     if (this.isRevising) {
       ('New Revised Response');
     }
+    return;
   }),
 
   showNoteField: computed('newReplyStatus', 'newReplyType', function () {
@@ -128,31 +132,35 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     return !this.isEditing && this.newReplyStatus !== 'approved';
   }),
 
-  canRevise: computed('creator', 'model.persisted', 'currentUser', function () {
-    return (
-      this.get('creator.id') === this.get('currentUser.id') &&
-      this.get('model.persisted')
-    );
-  }),
+  canRevise: computed(
+    'creator.id',
+    'currentUser.id',
+    'model.persisted',
+    function () {
+      return this.creator.id === this.currentUser.id && this.model.persisted;
+    }
+  ),
   showRevise: computed('canRevise', 'isRevising', function () {
     return this.canRevise && !this.isRevising;
   }),
 
-  existingResponses: computed('submissionResponses.[]', function () {
-    let modelId = this.get('model.id');
-    return this.submissionResponses.rejectBy('id', modelId);
-  }),
-
-  dirty: computed('model.text', 'data.text', 'response', function () {
-    if (this.get('data.text')) {
-      return this.text !== this.get('data.text');
+  existingResponses: computed(
+    'model.id',
+    'submissionResponses.[]',
+    function () {
+      let modelId = this.model.id;
+      return this.submissionResponses.rejectBy('id', modelId);
     }
-    return this.get('model.text') !== this.response;
+  ),
+
+  dirty: computed('data.text', 'model.text', 'response', 'text', function () {
+    if (this.data.text) {
+      return this.text !== this.data.text;
+    }
+    return this.model.text !== this.response;
   }),
 
-  canRespond: computed('isStatic', function () {
-    return !this.isStatic;
-  }),
+  canRespond: computed.not('isStatic'),
 
   explainEmptiness: computed(
     'isEditing',
@@ -161,10 +169,10 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'isRevising',
     function () {
       return (
-        this.get('filteredSelections.length') === 0 &&
+        this.filteredSelections.length === 0 &&
         !this.isEditing &&
         !this.isRevising &&
-        !this.get('model.text')
+        !this.model.text
       );
     }
   ),
@@ -173,23 +181,28 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     return this.to === this.student;
   }),
 
-  who: computed('student', 'to', 'anonymous', function () {
-    if (this.anonymous) {
-      return 'Someone';
-    }
-    if (this.isToStudent) {
-      return 'You';
-    }
+  who: computed(
+    'anonymous',
+    'isToStudent',
+    'model.student',
+    'student',
+    'to',
+    function () {
+      if (this.anonymous) {
+        return 'Someone';
+      }
+      if (this.isToStudent) {
+        return 'You';
+      }
 
-    return this.get('model.student');
-  }),
+      return this.model.student;
+    }
+  ),
 
   greeting: computed('model.student', function () {
-    let brk = this.get('model.student').indexOf(' ');
+    let brk = this.model.student.indexOf('');
     let firstname =
-      brk === -1
-        ? this.get('model.student')
-        : this.get('model.student').substr(0, brk);
+      brk === -1 ? this.model.student : this.model.student.substr(0, brk);
     return `Hello ${firstname},`;
   }),
 
@@ -241,7 +254,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     let greeting = this.greeting;
     let text = `<p>${greeting}</p><br>`;
 
-    if (this.get('filteredSelections.length') > 0) {
+    if (this.filteredSelections.length > 0) {
       this.filteredSelections.forEach((s) => {
         let who = this.who;
 
@@ -282,20 +295,20 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   shortText: computed('model.text', function () {
-    if (typeof this.get('model.text') !== 'string') {
+    if (typeof this.model.text !== 'string') {
       return '';
     }
-    return this.get('model.text').slice(0, 150);
+    return this.model.text.slice(0, 150);
   }),
 
   createRevision() {
     let record = this.store.createRecord('response', {
       recipient: this.recipient,
       createdBy: this.currentUser,
-      submission: this.get('submission.content'),
+      submission: this.submission.content,
       workspace: this.workspace,
-      selections: this.get('model.selections.content'),
-      comments: this.get('model.comments.content'),
+      selections: this.model.selections.content,
+      comments: this.model.comments.content,
       status: this.newReplyStatus,
       responseType: this.newReplyType,
       source: 'submission',
@@ -350,7 +363,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'quillText.length',
     'maxResponseLength',
     function () {
-      let len = this.get('quillText.length');
+      let len = this.quillText.length;
       let maxLength = this.maxResponseLength;
       let maxSizeDisplay = this.returnSizeDisplay(maxLength);
       let actualSizeDisplay = this.returnSizeDisplay(len);

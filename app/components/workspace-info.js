@@ -6,6 +6,7 @@ import { inject as service } from '@ember/service';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(ErrorHandlingMixin, {
+  tagName: '',
   elementId: 'workspace-info',
   // comments: controller(),
   alert: service('sweet-alert'),
@@ -13,15 +14,15 @@ export default Component.extend(ErrorHandlingMixin, {
   utils: service('utility-methods'),
   isEditing: false,
   selectedMode: null,
-  updateRecordErrors: [],
+  updateRecordErrors: () => [],
   isShowingCustomViewer: false,
-  customSubmissionIds: [],
+  customSubmissionIds: () => [],
   isParentWorkspace: equal('workspace.workspaceType', 'parent'),
 
   didReceiveAttrs() {
     this._super(...arguments);
 
-    const collaborators = this.get('workspace.collaborators');
+    const collaborators = this.workspace.collaborators;
     // array of Ids, query for users;
 
     if (!this.utils.isNonEmptyArray(collaborators)) {
@@ -42,7 +43,7 @@ export default Component.extend(ErrorHandlingMixin, {
   },
 
   getLinkedAssignment: function () {
-    return this.get('workspace.linkedAssignment').then((assignment) => {
+    return this.workspace.linkedAssignment.then((assignment) => {
       if (!this.isDestroyed && !this.isDestroying) {
         this.set('linkedAssignment', assignment);
       }
@@ -55,7 +56,7 @@ export default Component.extend(ErrorHandlingMixin, {
     this._super(...arguments);
   },
 
-  canEdit: computed('workspace.id', function () {
+  canEdit: computed('currentUser', 'workspace.id', function () {
     let workspace = this.workspace;
     let ownerId = workspace.get('owner.id');
     let creatorId = workspace.get('createdBy.id');
@@ -69,34 +70,36 @@ export default Component.extend(ErrorHandlingMixin, {
   }),
 
   canEditCollaborators: computed(
+    'canEdit',
+    'currentUser.id',
     'workspace.feedbackAuthorizers.[]',
     function () {
       if (this.canEdit) {
         return true;
       }
-      return this.get('workspace.feedbackAuthorizers').includes(
-        this.get('currentUser.id')
-      );
+      return this.workspace.feedbackAuthorizers.includes(this.currentUser.id);
     }
   ),
 
-  showRemoveSelfAsCollab: computed('workspace.collaborators.[]', function () {
-    return this.get('workspace.collaborators').includes(
-      this.get('currentUser.id')
-    );
-  }),
+  showRemoveSelfAsCollab: computed(
+    'currentUser.id',
+    'workspace.collaborators.[]',
+    function () {
+      return this.workspace.collaborators.includes(this.currentUser.id);
+    }
+  ),
 
   modes: computed('currentUser.isAdmin', 'currentUser.isStudent', function () {
     const basic = ['private', 'org', 'public'];
 
-    if (this.get('currentUser.isStudent') || !this.get('currentUser.isAdmin')) {
+    if (this.currentUser.isStudent || !this.currentUser.isAdmin) {
       return basic;
     }
 
     return ['private', 'org', 'public', 'internet'];
   }),
 
-  globalItems: {
+  globalItems: () => ({
     groupName: 'globalPermissionValue',
     groupLabel: 'Workspace Permissions',
     info:
@@ -140,9 +143,9 @@ export default Component.extend(ErrorHandlingMixin, {
           'Select this if you want to set permissions for each aspect of a workspace',
       },
     ],
-  },
+  }),
 
-  initialCollabOptions: computed('selectedCollaborators', function () {
+  initialCollabOptions: computed('selectedCollaborators', 'store', function () {
     let peeked = this.store.peekAll('user');
     let collabs = this.selectedCollaborators;
 
@@ -165,7 +168,7 @@ export default Component.extend(ErrorHandlingMixin, {
     'workspace.owner.id',
     function () {
       let hash = {};
-      let wsOwnerId = this.get('workspace.owner.id');
+      let wsOwnerId = this.workspace.owner.id;
 
       // no reason to set owner as a collaborator
       if (wsOwnerId) {
@@ -204,9 +207,7 @@ export default Component.extend(ErrorHandlingMixin, {
               `Are you sure you want to remove ${user.get(
                 'username'
               )} as a collaborator?`,
-              `This may affect their ability to access ${this.get(
-                'workspace.name'
-              )} `,
+              `This may affect their ability to access ${this.workspace.name} `,
               'Yes, remove.'
             )
             .then((result) => {
@@ -214,7 +215,7 @@ export default Component.extend(ErrorHandlingMixin, {
                 permissions.removeObject(objToRemove);
                 const collaborators = this.originalCollaborators;
                 collaborators.removeObject(user);
-                // this.get('alert').showToast('success', `${user.get('username')} removed`, 'bottom-end', 3000, null, false);
+                // this.alert').showToast('success', `${user.get('username} removed`, 'bottom-end', 3000, null, false);
                 // remove workspace from user's collab workspaces
               }
             });
@@ -345,10 +346,7 @@ export default Component.extend(ErrorHandlingMixin, {
       }
     },
     selectAllSubmissions: function () {
-      this.set(
-        'customSubmissionIds',
-        this.get('workspace.submissions').mapBy('id')
-      );
+      this.set('customSubmissionIds', this.workspace.submissions.mapBy('id'));
     },
     deselectAllSubmissions: function () {
       this.set('customSubmissionIds', []);

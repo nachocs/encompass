@@ -6,24 +6,26 @@
  It cleans up it's window event binding
  It also currently marks 'editing' false on the controller (room for improvement)
 */
-import { inject as service } from '@ember/service';
-
 import Mixin from '@ember/object/mixin';
+import { inject as service } from '@ember/service';
 import $ from 'jquery';
-
 
 export default Mixin.create({
   alert: service('sweet-alert'),
 
-  confirmText: 'You have unsaved changes which you may lose.  Are you sure you want to leave?',
+  confirmText:
+    'You have unsaved changes which you may lose.  Are you sure you want to leave?',
 
   activate: function () {
     var route = this;
-    $(window).on('beforeunload.' + route.controllerName + '.confirm', function () {
-      if (route.controller.get('confirmLeaving')) {
-        return route.confirmText;
+    $(window).on(
+      'beforeunload.' + route.controllerName + '.confirm',
+      function () {
+        if (route.controller.get('confirmLeaving')) {
+          return route.confirmText;
+        }
       }
-    });
+    );
   },
 
   deactivate: function () {
@@ -40,13 +42,19 @@ export default Mixin.create({
       var controller = this.controller;
       if (controller.confirmLeaving) {
         transition.abort();
-        this.alert.showModal('question', 'Are you sure you want to leave?', 'Any progress will not be saved', 'Yes')
+        this.alert
+          .showModal(
+            'question',
+            'Are you sure you want to leave?',
+            'Any progress will not be saved',
+            'Yes'
+          )
           .then((result) => {
             if (result.value) {
               controller.set('editing', false);
               controller.set('confirmLeaving', false);
               transition.retry();
-            } else if (result.dismiss === "cancel") {
+            } else if (result.dismiss === 'cancel') {
               if (window.history) {
                 window.history.forward();
               }
@@ -54,7 +62,7 @@ export default Mixin.create({
           });
       }
 
-      // if (controller.get('confirmLeaving') && !window.confirm(this.get('confirmText'))) {
+      // if (controller.get('confirmLeaving') && !window.confirm(this.confirmText)) {
       //   if (window.history) {
       //     window.history.forward();
       //   }
@@ -68,7 +76,6 @@ export default Mixin.create({
       //     //2: reinforce that people are leaving the editing mode
       //   return true;
       // }
-    }
-  }
-
+    },
+  },
 });

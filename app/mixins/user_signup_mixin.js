@@ -103,7 +103,7 @@ export default Mixin.create({
         var usernameTest = usernamePattern.test(username);
 
         if (usernameTest === false) {
-          this.set('usernameError', this.get('usernameErrors.invalid'));
+          this.set('usernameError', this.usernameErrors.invalid);
           return;
         }
 
@@ -123,7 +123,7 @@ export default Mixin.create({
         this.set('emailError', null);
         this.set('email', email);
       } else {
-        this.set('emailError', this.get('emailErrors.invalid'));
+        this.set('emailError', this.emailErrors.invalid);
       }
     },
     passwordValidate: function (password) {
@@ -135,7 +135,7 @@ export default Mixin.create({
         password.length < this.passwordMinLength ||
         password.length > this.passwordMaxLength
       ) {
-        this.set('passwordError', this.get('passwordErrors.invalid'));
+        this.set('passwordError', this.passwordErrors.invalid);
       } else {
         this.set('passwordError', null);
 

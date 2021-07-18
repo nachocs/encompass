@@ -1,4 +1,4 @@
-this.get('store').findAll('category').then((categories) => {
+this.store').findAll('category.then((categories) => {
 
 let gradesArr = ["K", "1", "2", "3", "4", "5", "6", "7", "8", "HSS", "HSN", "HSG", "HSF", "HSA"];
   let grades = {};

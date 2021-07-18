@@ -9,8 +9,9 @@ import moment from 'moment';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(ErrorHandlingMixin, {
+  tagName: '',
   elementId: 'assignment-info-teacher',
-  classNameBindings: ['isEditing:is-editing'],
+  classNameBindings: () => ['isEditing:is-editing'],
   formattedDueDate: null,
   formattedAssignedDate: null,
   isEditing: false,
@@ -20,9 +21,9 @@ export default Component.extend(ErrorHandlingMixin, {
   htmlDateFormat: 'MM/DD/YYYY',
   displayDateFormat: 'MMM Do YYYY',
   assignmentToDelete: null,
-  dataFetchErrors: [],
-  findRecordErrors: [],
-  updateRecordErrors: [],
+  dataFetchErrors: () => [],
+  findRecordErrors: () => [],
+  updateRecordErrors: () => [],
   areLinkedWsExpanded: true,
   showParentWsForm: false,
   showLinkedWsForm: false,
@@ -71,8 +72,10 @@ export default Component.extend(ErrorHandlingMixin, {
   },
 
   didReceiveAttrs: function () {
+    this._super();
+
     const assignment = this.assignment;
-    if (this.get('currentAssignment.id') !== this.get('assignment.id')) {
+    if (this.currentAssignment.id !== this.assignment.id) {
       this.set('currentAssignment', assignment);
 
       this.set('isEditing', false);
@@ -100,7 +103,7 @@ export default Component.extend(ErrorHandlingMixin, {
 
   isYourOwn: computed('assignment.id', 'currentUser.id', function () {
     let creatorId = this.utils.getBelongsToId(this.assignment, 'createdBy');
-    return this.get('currentUser.id') === creatorId;
+    return this.currentUser.id === creatorId;
   }),
 
   isDirty: computed('assignment.answers.[]', function () {
@@ -118,8 +121,8 @@ export default Component.extend(ErrorHandlingMixin, {
     }
   ),
 
-  canEdit: computed('isClean', 'isYourOwn', function () {
-    const isAdmin = this.get('currentUser.isAdmin');
+  canEdit: computed('currentUser.isAdmin', 'isClean', 'isYourOwn', function () {
+    const isAdmin = this.currentUser.isAdmin;
     const isClean = this.isClean;
     const isYourOwn = this.isYourOwn;
 
@@ -127,18 +130,18 @@ export default Component.extend(ErrorHandlingMixin, {
   }),
   isReadOnly: not('canEdit'),
 
-  canEditDueDate: computed('hasBasicEditPrivileges', function () {
-    return this.hasBasicEditPrivileges;
-  }),
+  canEditDueDate: computed.reads('hasBasicEditPrivileges'),
 
   canEditAssignedDate: computed('assignment.assignedDate', function () {
     return this.permissions.canEditAssignedDate(this.assignment);
   }),
 
   canEditProblem: computed(
-    'sortedAnswers.[]',
-    'hasBasicEditPrivileges',
+    'assignment',
     'currentUser.actingRole',
+    'hasBasicEditPrivileges',
+    'section',
+    'sortedAnswers.[]',
     function () {
       return this.permissions.canEditProblem(this.assignment, this.section);
     }
@@ -166,12 +169,17 @@ export default Component.extend(ErrorHandlingMixin, {
     }
   ),
 
-  canEditDate: computed('isBeforeAssignedDate', 'canEdit', function () {
-    const isAdmin = this.get('currentUser.isAdmin');
-    const canEdit = this.canEdit;
-    const isBeforeAssignedDate = this.isBeforeAssignedDate;
-    return isAdmin || (canEdit && isBeforeAssignedDate);
-  }),
+  canEditDate: computed(
+    'canEdit',
+    'currentUser.isAdmin',
+    'isBeforeAssignedDate',
+    function () {
+      const isAdmin = this.currentUser.isAdmin;
+      const canEdit = this.canEdit;
+      const isBeforeAssignedDate = this.isBeforeAssignedDate;
+      return isAdmin || (canEdit && isBeforeAssignedDate);
+    }
+  ),
 
   isDateLocked: not('canEditDate'),
 
@@ -227,16 +235,16 @@ export default Component.extend(ErrorHandlingMixin, {
     });
   }),
 
-  initialProblemItem: computed('selectedProblem', function () {
-    if (this.get('selectedProblem.id')) {
-      return [this.get('selectedProblem.id')];
+  initialProblemItem: computed('selectedProblem.id', function () {
+    if (this.selectedProblem.id) {
+      return [this.selectedProblem.id];
     }
     return [];
   }),
 
-  initialSectionItem: computed('selectedSection', function () {
-    if (this.get('selectedSection.id')) {
-      return [this.get('selectedSection.id')];
+  initialSectionItem: computed('selectedSection.id', function () {
+    if (this.selectedSection.id) {
+      return [this.selectedSection.id];
     }
     return [];
   }),
@@ -272,9 +280,7 @@ export default Component.extend(ErrorHandlingMixin, {
     }
   ),
 
-  showReport: computed('showParentWsForm', function () {
-    return !this.showParentWsForm;
-  }),
+  showReport: computed.not('showParentWsForm'),
 
   hasParentWorkspace: computed('assignment.parentWorkspace', function () {
     let workspaceId = this.utils.getBelongsToId(
@@ -284,21 +290,25 @@ export default Component.extend(ErrorHandlingMixin, {
     return this.utils.isValidMongoId(workspaceId);
   }),
 
-  displayListsOptions: computed('areLinkedWsExpanded', function () {
-    let areLinkedWsExpanded = this.areLinkedWsExpanded;
-    let areSubmissionsExpanded = this.areSubmissionsExpanded;
+  displayListsOptions: computed(
+    'areLinkedWsExpanded',
+    'areSubmissionsExpanded',
+    function () {
+      let areLinkedWsExpanded = this.areLinkedWsExpanded;
+      let areSubmissionsExpanded = this.areSubmissionsExpanded;
 
-    let toHide = 'fas fa-chevron-down';
-    let toShow = 'fas fa-chevron-left';
-    return {
-      linkedWs: {
-        icon: areLinkedWsExpanded ? toHide : toShow,
-      },
-      submissions: {
-        icon: areSubmissionsExpanded ? toHide : toShow,
-      },
-    };
-  }),
+      let toHide = 'fas fa-chevron-down';
+      let toShow = 'fas fa-chevron-left';
+      return {
+        linkedWs: {
+          icon: areLinkedWsExpanded ? toHide : toShow,
+        },
+        submissions: {
+          icon: areSubmissionsExpanded ? toHide : toShow,
+        },
+      };
+    }
+  ),
 
   studentsWithoutWorkspaces: computed(
     'studentList.[]',
@@ -318,8 +328,8 @@ export default Component.extend(ErrorHandlingMixin, {
 
   actions: {
     editAssignment: function () {
-      let assignedDate = this.get('assignment.assignedDate');
-      let dueDate = this.get('assignment.dueDate');
+      let assignedDate = this.assignment.assignedDate;
+      let dueDate = this.assignment.dueDate;
       let format = this.htmlDateFormat;
 
       let that = this;
@@ -484,8 +494,8 @@ export default Component.extend(ErrorHandlingMixin, {
 
       let htmlDateFormat = this.htmlDateFormat;
 
-      let currentAssignedDate = this.get('assignment.assignedDate');
-      let currentDueDate = this.get('assignment.dueDate');
+      let currentAssignedDate = this.assignment.assignedDate;
+      let currentDueDate = this.assignment.dueDate;
 
       let currentAssignedFmt = currentAssignedDate
         ? moment(currentAssignedDate).format(htmlDateFormat)
@@ -499,12 +509,12 @@ export default Component.extend(ErrorHandlingMixin, {
 
       if (this.canEditAssignedDate) {
         if (assignedDateEditVal) {
-          startDate = this.assignedDateEditVal
+          startDate = this.assignedDateEditVal;
 
           assignedDate = this.getMongoDate(startDate);
         }
       } else {
-        assignedDate = this.get('assignment.assignedDate');
+        assignedDate = this.assignment.assignedDate;
       }
 
       if (this.canEditDueDate) {
@@ -513,7 +523,7 @@ export default Component.extend(ErrorHandlingMixin, {
 
           dueDate = this.getEndDate(endDate);
         } else {
-          dueDate = this.get('assignment.dueDate');
+          dueDate = this.assignment.dueDate;
         }
       }
 

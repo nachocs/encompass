@@ -16,7 +16,7 @@ export default Mixin.create({
     'areNtfsLoaded',
     function () {
       if (this.areNtfsLoaded) {
-        return this.get('userNtfs.newNotifications');
+        return this.userNtfs.newNotifications;
       }
       return [];
     }
@@ -57,7 +57,7 @@ export default Mixin.create({
       let isNewReply =
         ntfType === 'newMentorReply' || ntfType === 'newApproverReply';
 
-      return isNewReply && recipientId === this.get('currentUser.id');
+      return isNewReply && recipientId === this.currentUser.id;
     });
   }),
 

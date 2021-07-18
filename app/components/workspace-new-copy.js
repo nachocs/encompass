@@ -10,6 +10,7 @@ import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+  tagName: '',
   elementId: 'workspace-new-copy',
   newWsConfig: null,
   workspaceToCopy: null,
@@ -21,12 +22,12 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   newWsPermissions: null,
   newFolderSetOptions: null,
   utils: service('utility-methods'),
-  currentStep: {
+  currentStep: () => ({
     value: 1,
     display: 'Choose Workspace to Copy',
-  },
+  }),
 
-  copyConfig: {
+  copyConfig: () => ({
     groupName: 'copyConfig',
     required: true,
     inputs: [
@@ -54,35 +55,40 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
           'Decide which to copy for submissions, selections, folders, taggings, comments and responses',
       },
     ],
-  },
+  }),
 
-  submissionsPool: computed('workspaceToCopy', 'newWsConfig', function () {
-    let allSubmissions = this.get('workspaceToCopy.submissions.content');
-    if (!allSubmissions) {
+  submissionsPool: computed(
+    'customConfig.submissionOptions.{all,submissionIds}',
+    'newWsConfig',
+    'workspaceToCopy.submissions.content',
+    function () {
+      let allSubmissions = this.workspaceToCopy.submissions.content;
+      if (!allSubmissions) {
+        return [];
+      }
+      const newWsConfig = this.newWsConfig;
+      if (
+        newWsConfig !== 'D' ||
+        this.customConfig.submissionOptions.all === true
+      ) {
+        return allSubmissions;
+      }
+
+      let customIds = this.customConfig.submissionOptions.submissionIds;
+      if (this.utils.isNonEmptyArray(customIds)) {
+        return allSubmissions.filter((sub) => {
+          return customIds.includes(sub.get('id'));
+        });
+      }
       return [];
     }
-    const newWsConfig = this.newWsConfig;
-    if (
-      newWsConfig !== 'D' ||
-      this.get('customConfig.submissionOptions.all') === true
-    ) {
-      return allSubmissions;
-    }
+  ),
 
-    let customIds = this.get('customConfig.submissionOptions.submissionIds');
-    if (this.utils.isNonEmptyArray(customIds)) {
-      return allSubmissions.filter((sub) => {
-        return customIds.includes(sub.get('id'));
-      });
-    }
-    return [];
+  submissionsLength: computed('submissionsPool.length', function () {
+    return this.submissionsPool.length || 0;
   }),
-
-  submissionsLength: computed('submissionsPool', function () {
-    return this.get('submissionsPool.length') || 0;
-  }),
-  collaboratorsCount: computed('newWsPermissions', function () {
-    return this.get('newWsPermissions.length') || 0;
+  collaboratorsCount: computed('newWsPermissions.length', function () {
+    return this.newWsPermissions.length || 0;
   }),
 
   getCounts(model) {
@@ -142,10 +148,12 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   recordCounts: computed(
-    'workspaceToCopy',
-    'newWsConfig',
+    'collaboratorsCount',
     'customConfig',
+    'newWsConfig',
     'newWsPermissions',
+    'submissionsLength',
+    'workspaceToCopy',
     function () {
       return {
         submissions: this.submissionsLength,
@@ -158,50 +166,43 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     }
   ),
 
-  modeInputs: computed(
-    'currentUser.isStudent',
-    'currentUser.isAdmin',
-    function () {
-      let res = {
-        groupName: 'mode',
-        required: true,
-        inputs: [
-          {
-            value: 'private',
-            label: 'Private',
-            moreInfo:
-              'Workspace will only be visible to the owner and collaborators',
-          },
-          {
-            value: 'org',
-            label: 'My Org',
-            moreInfo:
-              'Workspace will be visible to everyone belonging to your org',
-          },
-          {
-            value: 'public',
-            label: 'Public',
-            moreInfo: 'Workspace will be visible to every Encompass user',
-          },
-        ],
-      };
+  modeInputs: computed('currentUser.{isStudent,isAdmin}', function () {
+    let res = {
+      groupName: 'mode',
+      required: true,
+      inputs: [
+        {
+          value: 'private',
+          label: 'Private',
+          moreInfo:
+            'Workspace will only be visible to the owner and collaborators',
+        },
+        {
+          value: 'org',
+          label: 'My Org',
+          moreInfo:
+            'Workspace will be visible to everyone belonging to your org',
+        },
+        {
+          value: 'public',
+          label: 'Public',
+          moreInfo: 'Workspace will be visible to every Encompass user',
+        },
+      ],
+    };
 
-      if (
-        this.get('currentUser.isStudent') ||
-        !this.get('currentUser.isAdmin')
-      ) {
-        return res;
-      }
-
-      res.inputs.push({
-        value: 'internet',
-        label: 'Internet',
-        moreInfo:
-          'Workspace will be accesible to any user with a link to the workspace',
-      });
+    if (this.currentUser.isStudent || !this.currentUser.isAdmin) {
       return res;
     }
-  ),
+
+    res.inputs.push({
+      value: 'internet',
+      label: 'Internet',
+      moreInfo:
+        'Workspace will be accesible to any user with a link to the workspace',
+    });
+    return res;
+  }),
 
   showSelectWorkspace: equal('currentStep.value', 1),
   // showSelectWorkspace: false,
@@ -212,7 +213,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   showReview: equal('currentStep.value', 5),
 
   didReceiveAttrs: function () {
-    let hasWorkspaceToCopy = this.get('model.workspaceToCopy');
+    this._super();
+    let hasWorkspaceToCopy = this.model.workspaceToCopy;
     if (hasWorkspaceToCopy) {
       return this.store
         .findRecord('workspace', hasWorkspaceToCopy)
@@ -224,18 +226,19 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     }
   },
 
-  maxSteps: computed('steps', function () {
-    return this.get('steps.length') - 1;
+  maxSteps: computed('steps.length', function () {
+    return this.steps.length - 1;
   }),
 
   isCopyingFolders: computed(
+    'customConfig.folderOptions.@eac.{all,includeStructureOnly,none}',
+    'customConfig.folderOptions.none',
     'newWsConfig',
     'workspaceToCopy.foldersLength',
-    'customConfig.folderOptions.@each{all,includeStructureOnly,none}',
     function () {
       const newWsConfig = this.newWsConfig;
       const utils = this.utils;
-      const isCustomWithNoFolders = this.get('customConfig.folderOptions.none');
+      const isCustomWithNoFolders = this.customConfig.folderOptions.none;
 
       // user has not picked a config yet
       if (utils.isNullOrUndefined(newWsConfig)) {
@@ -256,7 +259,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
       // make sure chosen workspace has any folders to copy
 
-      const foldersLength = this.get('workspaceToCopy.foldersLength');
+      const foldersLength = this.workspaceToCopy.foldersLength;
       return foldersLength > 0;
     }
   ),
@@ -284,7 +287,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     return this.submissions.filterBy('student', student).sortBy('createDate');
   },
 
-  collabList: computed('newWsPermissions.[]', function () {
+  collabList: computed('newWsPermissions.[]', 'store', function () {
     //need to get the permissions object
     //get username from each permissions object and list them in the sumamry
     const formattedPermissionObjects = this.formatPermissionsObjects(
@@ -301,22 +304,26 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       // remove null or undefined
       return users.compact();
     }
+    return;
   }),
 
   detailsItems: computed(
-    'workspaceToCopy',
-    'newWsConfig',
-    'newWsName',
-    'newWsOwner',
-    'newWsMode',
     'collabList',
     'existingFolderSet',
+    'modeDisplay',
     'newFolderSetOptions.name',
+    'newWsConfig',
+    'newWsMode',
+    'newWsName',
+    'newWsOwner.{name,username}',
+    'selectedConfigDisplay',
+    'selectedFolderSet',
+    'workspaceToCopy.name',
     function () {
       return [
         {
           label: 'Selected Workspace',
-          displayValue: this.get('workspaceToCopy.name'),
+          displayValue: this.workspaceToCopy.name,
           emptyValue: 'No workspace',
           propName: 'workspaceToCopy',
           associatedStep: 1,
@@ -342,8 +349,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
             },
             {
               label: 'Owner',
-              displayValue:
-                this.get('newWsOwner.username') || this.get('newWsOwner.name'),
+              displayValue: this.newWsOwner.username || this.newWsOwner.name,
               emptyValue: 'No Owner',
               propName: 'owner',
               associatedStep: 3,
@@ -364,7 +370,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
             },
             // {
             //   label: 'New Folder Set',
-            //   displayValue: this.get('newFolderSetOptions.name'),
+            //   displayValue: this.newFolderSetOptions.name,
             //   emptyValue: 'N/A',
             //   propName: 'newFolderSetOptions.name',
             //   associatedStep: 3,
@@ -385,8 +391,9 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
   existingFolderSet: computed(
     'newFolderSetOptions.existingFolderSetToUse',
+    'store',
     function () {
-      let id = this.get('newFolderSetOptions.existingFolderSetToUse');
+      let id = this.newFolderSetOptions.existingFolderSetToUse;
       if (!_.isString(id)) {
         return null;
       }
@@ -396,11 +403,11 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   ),
 
   selectedFolderSet: computed(
-    'newFolderSetOptions',
-    'newFolderSetOptions.existingFolderSetToUse',
+    'existingFolderSet',
+    'newFolderSetOptions.{existingFolderSetToUse,name}',
     function () {
       let existingFolderSet = this.existingFolderSet;
-      let newFolderSet = this.get('newFolderSetOptions.name');
+      let newFolderSet = this.newFolderSetOptions.name;
       if (existingFolderSet) {
         return existingFolderSet.get('name');
       } else if (newFolderSet) {
@@ -424,7 +431,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     return hash[this.newWsConfig];
   }),
 
-  steps: [
+  steps: () => [
     { value: 0 },
     { value: 1 },
     { value: 2 },
@@ -498,12 +505,12 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     // proceed() {
-    //   const currentStep = this.get('currentStep');
+    //   const currentStep = this.currentStep;
 
     //   // do validation for particular input
 
-    //   const value = this.get('currentStep.inputValue');
-    //   const constraints = this.get('currentStep.constraints');
+    //   const value = this.currentStep.inputValue;
+    //   const constraints = this.currentStep.constraints;
     //   let errors = window.validate(value, constraints);
     //   if (errors) {
     //     this.set('validationErrors', errors);
@@ -513,7 +520,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     // },
 
     changeStep(direction) {
-      let currentStep = this.get('currentStep.value');
+      let currentStep = this.currentStep.value;
       let maxStep = this.maxSteps;
       if (direction === 1) {
         if (currentStep === maxStep) {
@@ -556,7 +563,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       // start process of loading submissions - may need these for config step
       // for large workspaces(i.e. 1000+ submissions - this could take a long time)
       this.set('loadingSubmissions', true);
-      this.get('workspaceToCopy.submissions')
+      this.workspaceToCopy.submissions
         .then((submissions) => {
           this.set('submissions', submissions);
           this.set('loadingSubmissions', false);

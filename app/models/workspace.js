@@ -71,7 +71,7 @@ export default Model.extend(Auditable, Permission, {
   }),
 
   firstSubmissionId: computed('submissions', function () {
-    var firstId = this.get('data.submissions.firstObject.id');
+    var firstId = this.data.submissions.firstObject.id;
     return firstId;
   }),
 
@@ -97,9 +97,9 @@ export default Model.extend(Auditable, Permission, {
 
   submissionDates: computed(function () {
     var loFmt,
-      lo = this.get('data.submissionSet.description.firstSubmissionDate');
+      lo = this.data.submissionSet.description.firstSubmissionDate;
     var hiFmt,
-      hi = this.get('data.submissionSet.description.lastSubmissionDate');
+      hi = this.data.submissionSet.description.lastSubmissionDate;
     if (lo > hi) {
       var tmp = lo;
       lo = hi;

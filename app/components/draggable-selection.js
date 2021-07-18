@@ -41,14 +41,14 @@ export default Component.extend(
       'selection.createdBy.id',
       'currentUser.id',
       function () {
-        const currentUserId = this.get('currentUser.id');
-        const creatorId = this.get('selection.createdBy.id');
+        const currentUserId = this.currentUser.id;
+        const creatorId = this.selection.createdBy.id;
         return currentUserId === creatorId || this.canDeleteSelections;
       }
     ),
 
     isImage: computed('selection.imageTagLink', function () {
-      return this.get('selection.imageTagLink.length') > 0;
+      return this.selection.imageTagLink.length > 0;
     }),
 
     linkToClassName: computed('isImage', function () {
@@ -59,24 +59,24 @@ export default Component.extend(
     }),
 
     isSelected: computed('selection', 'currentSelection', function () {
-      return this.get('selection.id') === this.get('currentSelection.id');
+      return this.selection.id === this.currentSelection.id;
     }),
     isVmtClip: computed('selection.vmtInfo.{startTime,endTime}', function () {
       return (
-        this.get('selection.vmtInfo.startTime') >= 0 &&
-        this.get('selection.vmtInfo.endTime') >= 0
+        this.selection.vmtInfo.startTime >= 0 &&
+        this.selection.vmtInfo.endTime >= 0
       );
     }),
 
     titleText: computed('isVmtClip', 'createDate', function () {
       if (!this.isVmtClip) {
-        let createDate = this.get('selection.createDate');
+        let createDate = this.selection.createDate;
 
         let displayDate = moment(createDate).format('l h:mm');
         return `Created ${displayDate}`;
       }
-      let startTime = this.get('selection.vmtInfo.startTime');
-      let endTime = this.get('selection.vmtInfo.endTime');
+      let startTime = this.selection.vmtInfo.startTime;
+      let endTime = this.selection.vmtInfo.endTime;
 
       return `${this.utils.getTimeStringFromMs(startTime)} -
             ${this.utils.getTimeStringFromMs(endTime)}`;

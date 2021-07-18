@@ -15,7 +15,7 @@ export default AuthenticatedRoute.extend({
   model: function () {
     const currentUser = this.modelFor('application');
     return hash({
-      // pdSets: this.get('store').findAll('PdSet'),
+      // pdSets: this.store').findAll('PdSet,
       currentUser,
       folderSets: this.store.findAll('folder-set'),
       sections: this.store.findAll('section'),

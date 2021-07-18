@@ -53,7 +53,7 @@ export default Controller.extend({
     'currentWorkspace.owner',
     function () {
       let ownerId = this.utils.getBelongsToId(this.currentWorkspace, 'owner');
-      return this.get('currentUser.id') === ownerId;
+      return this.currentUser.id === ownerId;
     }
   ),
 
@@ -67,41 +67,35 @@ export default Controller.extend({
   nonTrashedSelections: computed(
     'currentWorkspace.selections.content.@each.isTrashed',
     function () {
-      return this.get('currentWorkspace.selections.content').rejectBy(
-        'isTrashed'
-      );
+      return this.currentWorkspace.selections.content.rejectBy('isTrashed');
     }
   ),
 
   nonTrashedTaggings: computed(
     'currentWorkspace.taggings.@each.isTrashed',
     function () {
-      return this.get('currentWorkspace.taggings').rejectBy('isTrashed');
+      return this.currentWorkspace.taggings.rejectBy('isTrashed');
     }
   ),
 
   nonTrashedFolders: computed(
     'currentWorkspace.folders.content.@each.isTrashed',
     function () {
-      return this.get('currentWorkspace.folders.content').rejectBy('isTrashed');
+      return this.currentWorkspace.folders.content.rejectBy('isTrashed');
     }
   ),
 
   nonTrashedComments: computed(
     'currentWorkspace.comments.content.@each.isTrashed',
     function () {
-      return this.get('currentWorkspace.comments.content').rejectBy(
-        'isTrashed'
-      );
+      return this.currentWorkspace.comments.content.rejectBy('isTrashed');
     }
   ),
 
   nonTrashedResponses: computed(
     'currentWorkspace.responses.content.@each.isTrashed',
     function () {
-      return this.get('currentWorkspace.responses.content').rejectBy(
-        'isTrashed'
-      );
+      return this.currentWorkspace.responses.content.rejectBy('isTrashed');
     }
   ),
 
@@ -355,7 +349,7 @@ export default Controller.extend({
       var submission = this.model.submission;
       var controller = this;
       var newSelection = null;
-      var alreadyExists = this.get('model.submission.selections').filterBy(
+      var alreadyExists = this.model.submission.selections.filterBy(
         'id',
         selection.id
       );

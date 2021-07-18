@@ -18,7 +18,7 @@ export default Component.extend({
       let ws = this.workspace;
       let currentUser = this.currentUser;
       let hiddenWorkspaces = currentUser.get('hiddenWorkspaces');
-      let deleted = this.get('workspace.isTrashed');
+      let deleted = this.workspace.isTrashed;
       let canDelete = this.permissions.canDelete(ws);
       let canCopy = this.permissions.canCopy(ws);
 
@@ -119,7 +119,7 @@ export default Component.extend({
     },
 
     hideWorkspace: function () {
-      let workspaceId = this.get('workspace.id');
+      let workspaceId = this.workspace.id;
       let user = this.currentUser;
       this.alert
         .showModal(

@@ -81,10 +81,7 @@ export default Component.extend(CurrentUserMixin, {
         ],
       };
 
-      if (
-        this.get('currentUser.isStudent') ||
-        !this.get('currentUser.isAdmin')
-      ) {
+      if (this.currentUser.isStudent || !this.currentUser.isAdmin) {
         return res;
       }
 

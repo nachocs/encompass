@@ -2,7 +2,7 @@ import Component from '@ember/component';
 // import EmberMap from '@ember/map';
 import { computed, observer } from '@ember/object';
 import { alias, equal, gte, or, sort } from '@ember/object/computed';
-import { inject as service } from "@ember/service";
+import { inject as service } from '@ember/service';
 /**
  * Passed in by template:
  * - submissions
@@ -56,8 +56,8 @@ export default Component.extend({
     if (studentSelectize) {
       let currentValue = studentSelectize.selectize.getValue();
 
-      let currentSubmissionId = this.get('initialStudentItem.firstObject');
-      if (this.get('initialStudentItem.firstObject') !== currentValue) {
+      let currentSubmissionId = this.initialStudentItem.firstObject;
+      if (this.initialStudentItem.firstObject !== currentValue) {
         studentSelectize.selectize.setValue([currentSubmissionId], true);
       }
     }
@@ -82,13 +82,14 @@ export default Component.extend({
   submissionThreads: computed('submissions.[]', function () {
     let threads = {};
     console.log(threads);
-    this.submissions.sortBy('student')
+    this.submissions
+      .sortBy('student')
       .getEach('student')
       .uniq()
       .forEach((student) => {
         if (!threads[student]) {
           const answers = this.studentWork(student);
-          threads[student]=answers;
+          threads[student] = answers;
         }
       });
     return threads;
@@ -140,7 +141,7 @@ export default Component.extend({
       }
     }
 
-    var thread = this.get('currentThread.lastObject');
+    var thread = this.currentThread.lastObject;
     if (thread === this.firstThread) {
       return this.lastThread;
     }
@@ -161,7 +162,7 @@ export default Component.extend({
           return currentThread[ix - 1];
         }
       }
-      var thread = this.get('currentThread.lastObject');
+      var thread = this.currentThread.lastObject;
 
       if (thread === this.lastThread) {
         return this.firstThread;
@@ -179,7 +180,7 @@ export default Component.extend({
     if (!revisions || revisions.get('length') === 0) {
       return 0;
     }
-    const currentSubmissionId = this.get('submission.id');
+    const currentSubmissionId = this.submission.id;
     if (revisions.length === 1) {
       return 1;
     }
@@ -268,7 +269,7 @@ export default Component.extend({
     'submission',
     'submissionThreadHeads.[]',
     function () {
-      let currentStudent = this.get('submission.student');
+      let currentStudent = this.submission.student;
       let threadHead = this.submissionThreadHeads.findBy(
         'student',
         currentStudent
@@ -319,8 +320,8 @@ export default Component.extend({
       if (studentSelectize) {
         let currentValue = studentSelectize.selectize.getValue();
 
-        let currentSubmissionId = this.get('initialStudentItem.firstObject');
-        if (this.get('initialStudentItem.firstObject') !== currentValue) {
+        let currentSubmissionId = this.initialStudentItem.firstObject;
+        if (this.initialStudentItem.firstObject !== currentValue) {
           studentSelectize.selectize.setValue([currentSubmissionId], true);
         }
       }

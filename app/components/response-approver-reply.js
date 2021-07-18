@@ -6,6 +6,7 @@ import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+  tagName: '',
   elementId: 'response-approver-reply',
   alert: service('sweet-alert'),
   utils: service('utility-methods'),
@@ -27,13 +28,13 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'displayReply.status',
     'iconFillOptions',
     function () {
-      let status = this.get('displayReply.status');
+      let status = this.displayReply.status;
       return this.iconFillOptions[status];
     }
   ),
 
   didReceiveAttrs() {
-    if (!this.get('approverReplies.length') > 0) {
+    if (!this.approverReplies.length > 0) {
       this.set('replyToView', null);
     }
     let primaryReply = this.primaryReply;
@@ -42,8 +43,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     if (primaryReply) {
       responseToSet = primaryReply;
-    } else if (this.get('sortedApproverReplies.lastObject')) {
-      responseToSet = this.get('sortedApproverReplies.lastObject');
+    } else if (this.sortedApproverReplies.lastObject) {
+      responseToSet = this.sortedApproverReplies.lastObject;
     } else {
       responseToSet = null;
     }
@@ -59,7 +60,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   handleRecipientRead(response) {
     let recipId = this.utils.getBelongsToId(response, 'recipient');
     if (
-      recipId === this.get('currentUser.id') &&
+      recipId === this.currentUser.id &&
       !response.get('wasReadByRecipient')
     ) {
       response.set('wasReadByRecipient', true);
@@ -75,13 +76,11 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return this.replyToView;
       }
 
-      return this.get('sortedApproverReplies.lastObject') || null;
+      return this.sortedApproverReplies.lastObject || null;
     }
   ),
 
-  isDraft: computed('displayReply.status', function () {
-    return this.get('displayReply.status') === 'draft';
-  }),
+  isDraft: computed.equal('displayReply.status', 'draft'),
 
   sortedApproverReplies: computed('approverReplies.[]', function () {
     if (!this.approverReplies) {
@@ -115,23 +114,22 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'showUndoApproval',
     function () {
       return (
-        this.get('responseToApprove.status') === 'approved' &&
-        !this.showUndoApproval
+        this.responseToApprove.status === 'approved' && !this.showUndoApproval
       );
     }
   ),
 
   showApprove: computed('responseToApprove.status', function () {
     return (
-      this.get('responseToApprove.status') !== 'approved' &&
-      this.get('responseToApprove.status') !== 'superceded'
+      this.responseToApprove.status !== 'approved' &&
+      this.responseToApprove.status !== 'superceded'
     );
   }),
 
   showCompose: computed('responseToApprove.status', function () {
     return (
-      this.get('responseToApprove.status') !== 'approved' &&
-      this.get('responseToApprove.status') !== 'superceded'
+      this.responseToApprove.status !== 'approved' &&
+      this.responseToApprove.status !== 'superceded'
     );
   }),
 
@@ -140,25 +138,24 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'responseToApprove.wasReadByRecipient',
     function () {
       return (
-        this.get('responseToApprove.status') === 'approved' &&
-        !this.get('responseToApprove.wasReadByRecipient')
+        this.responseToApprove.status === 'approved' &&
+        !this.responseToApprove.wasReadByRecipient
       );
     }
   ),
 
   canEditApproverReply: computed(
-    'currentUser',
+    'currentUser.isAdmin',
+    'displayReply',
     'isOwnDisplayReply',
     function () {
       if (!this.displayReply) {
         return false;
       }
-      return this.get('currentUser.isAdmin') || this.isOwnDisplayReply;
+      return this.currentUser.isAdmin || this.isOwnDisplayReply;
     }
   ),
-  canReviseApproverReply: computed('isOwnDisplayReply', function () {
-    return this.isOwnDisplayReply;
-  }),
+  canReviseApproverReply: computed.reads('isOwnDisplayReply'),
 
   showApproverEdit: computed(
     'canEditApproverReply',
@@ -199,40 +196,34 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     }
   ),
 
-  isOwnDisplayReply: computed('currentUser', 'displayReply', function () {
-    return this.get('currentUser.id') === this.get('displayReply.createdBy.id');
-  }),
+  isOwnDisplayReply: computed(
+    'currentUser.id',
+    'displayReply.createdBy.id',
+    function () {
+      return this.currentUser.id === this.displayReply.createdBy.id;
+    }
+  ),
 
   isDisplayReplyToYou: computed(
-    'currentUser',
+    'currentUser.id',
     'displayReply.recipient',
     function () {
       let recipientId = this.utils.getBelongsToId(
         this.displayReply,
         'recipient'
       );
-      return this.get('currentUser.id') === recipientId;
+      return this.currentUser.id === recipientId;
     }
   ),
 
-  showReplyInput: computed(
+  showReplyInput: computed.or(
     'isEditingApproverReply',
     'isRevisingApproverReply',
     'isComposingReply',
-    'isFinishingDraft',
-    function () {
-      return (
-        this.isEditingApproverReply ||
-        this.isRevisingApproverReply ||
-        this.isComposingReply ||
-        this.isFinishingDraft
-      );
-    }
+    'isFinishingDraft'
   ),
 
-  showDisplayReplyActions: computed('showReplyInput', function () {
-    return !this.showReplyInput;
-  }),
+  showDisplayReplyActions: computed.not('showReplyInput'),
 
   replyHeadingText: computed(
     'isEditingApproverReply',
@@ -251,9 +242,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     }
   ),
 
-  canTrash: computed('canApprove', function () {
-    return this.canApprove;
-  }),
+  canTrash: computed.reads('canApprove'),
   showTrash: computed('showReplyInput', 'canApprove', function () {
     return this.canApprove && !this.showReplyInput;
   }),
@@ -289,7 +278,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'quillText.length',
     'maxResponseLength',
     function () {
-      let len = this.get('quillText.length');
+      let len = this.quillText.length;
       let maxLength = this.maxResponseLength;
       let maxSizeDisplay = this.returnSizeDisplay(maxLength);
       let actualSizeDisplay = this.returnSizeDisplay(len);
@@ -303,7 +292,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   isOldFormatDisplayResponse: computed('displayReply.text', function () {
-    let text = this.get('displayReply.text');
+    let text = this.displayReply.text;
     let parsed = new DOMParser().parseFromString(text, 'text/html');
     return !Array.from(parsed.body.childNodes).some(
       (node) => node.nodeType === 1
@@ -314,7 +303,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'displayReply.wasReadByRecipient',
     function () {
       let results = {};
-      if (this.get('displayReply.wasReadByRecipient')) {
+      if (this.displayReply.wasReadByRecipient) {
         results.className = 'far fa-envelope-open';
         results.title = 'Recipient has seen message';
       } else {
@@ -329,9 +318,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     'isDisplayReplyToYou',
     'displayReply.status',
     function () {
-      return (
-        !this.isDisplayReplyToYou && this.get('displayReply.status') !== 'draft'
-      );
+      return !this.isDisplayReplyToYou && this.displayReply.status !== 'draft';
     }
   ),
 
@@ -361,11 +348,11 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
     editApproverReply() {
       this.set('isEditingApproverReply', true);
-      this.set('editRevisionText', this.get('displayReply.text'));
+      this.set('editRevisionText', this.displayReply.text);
     },
     reviseApproverReply() {
       this.set('isRevisingApproverReply', true);
-      this.set('editRevisionText', this.get('displayReply.text'));
+      this.set('editRevisionText', this.displayReply.text);
     },
     confirmApproval() {
       this.alert
@@ -422,7 +409,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         toastMessage = 'Draft Saved';
       }
       let record = this.store.createRecord('response', {
-        recipient: this.get('responseToApprove.createdBy.content'),
+        recipient: this.responseToApprove.createdBy.content,
         createdBy: this.currentUser,
         submission: this.submission,
         workspace: this.workspace,
@@ -491,7 +478,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         });
     },
     setReplyToView(response) {
-      if (!response || this.get('displayReply.id') === response.get('id')) {
+      if (!response || this.displayReply.id === response.id) {
         return;
       }
       [
@@ -509,8 +496,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     },
 
     startEditing() {
-      this.set('editRevisionText', this.get('displayReply.text'));
-      this.set('editRevisionNote', this.get('displayReply.note'));
+      this.set('editRevisionText', this.displayReply.text);
+      this.set('editRevisionNote', this.displayReply.note);
       this.set('isEditingApproverReply', true);
     },
     stopEditing() {
@@ -520,8 +507,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       this.clearErrorProps();
     },
     startRevising() {
-      this.set('editRevisionText', this.get('displayReply.text'));
-      this.set('editRevisionNote', this.get('displayReply.note'));
+      this.set('editRevisionText', this.displayReply.text);
+      this.set('editRevisionNote', this.displayReply.note);
 
       this.set('isRevisingApproverReply', true);
     },
@@ -532,7 +519,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       this.clearErrorProps();
     },
     resumeDraft() {
-      this.set('editRevisionText', this.get('displayReply.text'));
+      this.set('editRevisionText', this.displayReply.text);
 
       this.set('isFinishingDraft', true);
     },
@@ -557,7 +544,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let oldMessageBody = this.get('displayReply.text');
+      let oldMessageBody = this.displayReply.text;
       let messageBody = this.quillText;
 
       // if they clicked Needs Revisions or Approve, there are changes
@@ -675,10 +662,10 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let oldText = this.get('displayReply.text');
+      let oldText = this.displayReply.text;
       let newText = this.quillText;
 
-      let oldNote = this.get('displayReply.note');
+      let oldNote = this.displayReply.note;
       let newNote = this.editRevisionNote;
 
       if (oldText === newText && oldNote === newNote) {
@@ -747,10 +734,10 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let oldText = this.get('displayReply.text');
+      let oldText = this.displayReply.text;
       let newText = this.quillText;
 
-      let oldNote = this.get('displayReply.note');
+      let oldNote = this.displayReply.note;
       let newNote = this.editRevisionNote;
 
       if (oldText === newText && oldNote === newNote) {
@@ -780,10 +767,10 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       copy.createDate = new Date();
       let revision = this.store.createRecord('response', copy);
       revision.set('createdBy', this.currentUser);
-      revision.set('submission', this.get('displayReply.submission'));
-      revision.set('workspace', this.get('displayReply.workspace'));
+      revision.set('submission', this.displayReply.submission);
+      revision.set('workspace', this.displayReply.workspace);
       revision.set('priorRevision', this.displayReply);
-      revision.set('recipient', this.get('displayReply.recipient.content'));
+      revision.set('recipient', this.displayReply.recipient.content);
       revision.set(
         'reviewedResponse',
         this.reviewedResponses || this.responseToApprove

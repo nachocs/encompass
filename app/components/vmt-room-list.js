@@ -15,7 +15,7 @@ export default Component.extend({
         return this.customLabel;
       }
       if (this.isSubList) {
-        let activityName = this.get('parentActivity.name') || '';
+        let activityName = this.parentActivity.name || '';
 
         return `Rooms Belonging to Activity ${activityName}`;
       }

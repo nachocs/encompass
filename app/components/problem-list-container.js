@@ -1,12 +1,12 @@
 import Component from '@ember/component';
 import { computed, observer } from '@ember/object';
 import { alias, or } from '@ember/object/computed';
-import _ from 'underscore';
 /*global _:false */
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { isEqual } from '@ember/utils';
 import $ from 'jquery';
+import _ from 'underscore';
 // import CategoriesListMixin from '../mixins/categories_list_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
@@ -14,19 +14,21 @@ export default Component.extend(
   // CategoriesListMixin,
   ErrorHandlingMixin,
   {
+    tagName: 'div',
+    selectedCategories: alias('application.selectedCategories'),
     elementId: 'problem-list-container',
     showList: true,
     menuClosed: true,
     toggleTrashed: false,
-    searchOptions: ['general', 'title'],
+    searchOptions: () => ['general', 'title'],
     searchCriterion: 'general',
-    sortCriterion: {
+    sortCriterion: () => ({
       name: 'A-Z',
       sortParam: { title: 1 },
       doCollate: true,
       type: 'title',
-    },
-    sortOptions: {
+    }),
+    sortOptions: () => ({
       title: [
         { sortParam: null, icon: '' },
         {
@@ -63,8 +65,8 @@ export default Component.extend(
           type: 'date',
         },
       ],
-    },
-    privacySettingOptions: [
+    }),
+    privacySettingOptions: () => [
       {
         id: 1,
         label: 'All',
@@ -87,15 +89,15 @@ export default Component.extend(
         icon: 'fas fa-unlock',
       },
     ],
-    adminFilterSelect: {
+    adminFilterSelect: () => ({
       defaultValue: ['organization'],
       options: [
         { label: 'organization' },
         { label: 'creator' },
         // { label: 'author'}
       ],
-    },
-    statusOptions: [
+    }),
+    statusOptions: () => [
       {
         name: 'status',
         value: 'approved',
@@ -119,7 +121,7 @@ export default Component.extend(
         teacherHide: true,
       },
     ],
-    moreMenuOptions: [
+    moreMenuOptions: () => [
       {
         label: 'Edit',
         value: 'edit',
@@ -153,23 +155,27 @@ export default Component.extend(
         icon: 'fas fa-trash',
       },
     ],
-    selectedCategories: [],
-    statusFilter: ['approved', 'pending', 'flagged'],
+    statusFilter: () => ['approved', 'pending', 'flagged'],
     showCategoryList: false,
     primaryFilterValue: alias('primaryFilter.value'),
     doUseSearchQuery: or('isSearchingProblems', 'isDisplayingSearchResults'),
-    selectedPrivacySetting: ['M', 'O', 'E'],
+    selectedPrivacySetting: () => ['M', 'O', 'E'],
     doIncludeSubCategories: true,
     adminFilter: alias('filter.primaryFilters.inputs.all'),
     alert: service('sweet-alert'),
 
     listResultsMessage: computed(
-      'criteriaTooExclusive',
       'areNoRecommendedProblems',
+      'criteriaTooExclusive',
       'isDisplayingSearchResults',
-      'problems.@each.isTrashed',
       'isFetchingProblems',
+      'problems.@each.isTrashed',
+      'problemsMetadata.total',
+      'searchCriterion',
+      'searchQuery',
       'showLoadingMessage',
+      'toggleTrashed',
+      'userOrgName',
       function () {
         let msg;
         let userOrgName = this.userOrgName;
@@ -198,7 +204,7 @@ export default Component.extend(
           } else {
             verb = 'contains';
           }
-          let total = this.get('problemsMetadata.total');
+          let total = this.problemsMetadata.total;
           if (total === 1) {
             countDescriptor = 'problem';
             if (criterion === 'general') {
@@ -209,13 +215,11 @@ export default Component.extend(
           if (this.searchCriterion === 'general') {
             typeDescription = `that ${verb}`;
           }
-          msg = `Based off your filter criteria, we found ${this.get(
-            'problemsMetadata.total'
-          )} ${countDescriptor} ${typeDescription} "${this.searchQuery}"`;
+          msg = `Based off your filter criteria, we found ${this.problemsMetadata.total} ${countDescriptor} ${typeDescription} "${this.searchQuery}"`;
           return msg;
         }
 
-        msg = `${this.get('problemsMetadata.total')} problems found`;
+        msg = `${this.problemsMetadata.total} problems found`;
 
         let toggleTrashed = this.toggleTrashed;
 
@@ -248,7 +252,7 @@ export default Component.extend(
     },
 
     getUserOrg() {
-      return this.get('model.currentUser.organization').then((org) => {
+      return this.model.currentUser.organization.then((org) => {
         if (org) {
           return org.get('name');
         } else {
@@ -263,18 +267,23 @@ export default Component.extend(
       });
     },
 
-    statusOptionsList: computed('problem.status', function () {
-      let statusOptions = this.statusOptions;
-      let isTeacher = this.get('model.currentUser.isTeacher');
+    statusOptionsList: computed(
+      'model.currentUser.isTeacher',
+      'problem.status',
+      'statusOptions',
+      function () {
+        let statusOptions = this.statusOptions;
+        let isTeacher = this.model.currentUser.isTeacher;
 
-      if (isTeacher) {
-        statusOptions = _.filter(statusOptions, (option) => {
-          return !option.teacherHide;
-        });
+        if (isTeacher) {
+          statusOptions = _.filter(statusOptions, (option) => {
+            return !option.teacherHide;
+          });
+        }
+
+        return statusOptions;
       }
-
-      return statusOptions;
-    }),
+    ),
 
     didInsertElement() {
       let width = this.$().css('width');
@@ -285,7 +294,7 @@ export default Component.extend(
 
       let doHideOutlet = this.doHideOutlet;
       if (_.isUndefined(doHideOutlet)) {
-        this.set('doHideOutlet', this.get('model.hideOutlet'));
+        this.set('doHideOutlet', this.model.hideOutlet);
       }
       if (this.doHideOutlet === false) {
         this.$('#outlet').removeClass('hidden');
@@ -294,6 +303,7 @@ export default Component.extend(
     },
 
     didReceiveAttrs: function () {
+      this._super();
       let attributes = ['problems', 'sections', 'organizations'];
 
       for (let attr of attributes) {
@@ -357,7 +367,7 @@ export default Component.extend(
           },
         },
       };
-      let isAdmin = this.get('model.currentUser.isAdmin');
+      let isAdmin = this.model.currentUser.isAdmin;
 
       if (isAdmin) {
         filter.primaryFilters.inputs.mine.isChecked = false;
@@ -435,8 +445,8 @@ export default Component.extend(
       this.set('filter', filter);
     },
     configurePrimaryFilter() {
-      let primaryFilters = this.get('filter.primaryFilters');
-      if (this.get('model.currentUser.isAdmin')) {
+      let primaryFilters = this.filter.primaryFilters;
+      if (this.model.currentUser.isAdmin) {
         primaryFilters.selectedValue = 'all';
         this.set('primaryFilter', primaryFilters.inputs.all);
         return;
@@ -445,7 +455,7 @@ export default Component.extend(
     },
     buildMineFilter() {
       let filter = {};
-      let userId = this.get('model.currentUser.id');
+      let userId = this.model.currentUser.id;
 
       filter.createdBy = userId;
 
@@ -463,9 +473,7 @@ export default Component.extend(
       let filter = {};
 
       // 2 options : recommended, fromOrg
-      let secondaryValues = this.get(
-        'primaryFilter.secondaryFilters.selectedValues'
-      );
+      let secondaryValues = this.primaryFilter.secondaryFilters.selectedValues;
 
       let includeRecommended = _.indexOf(secondaryValues, 'recommended') !== -1;
       let includeFromOrg = _.indexOf(secondaryValues, 'fromOrg') !== -1;
@@ -480,7 +488,7 @@ export default Component.extend(
 
       if (includeRecommended) {
         let recommendedProblems =
-          this.get('model.currentUser.organization.recommendedProblems') || [];
+          this.model.currentUser.organization.recommendedProblems || [];
         let ids = recommendedProblems.mapBy('id');
 
         if (!_.isEmpty(ids)) {
@@ -498,7 +506,7 @@ export default Component.extend(
 
       if (includeFromOrg) {
         filter.$or.push({
-          organization: this.get('model.currentUser.organization.id'),
+          organization: this.model.currentUser.organization.id,
         });
       }
 
@@ -701,6 +709,7 @@ export default Component.extend(
             return problems.rejectBy('isTrashed');
           }
         }
+        return;
       }
     ),
 
@@ -716,7 +725,7 @@ export default Component.extend(
       let sortBy = this.buildSortBy();
       let filterBy = this.buildFilterBy();
 
-      if (this.get('criteriaTooExclusive' || this.areNoRecommendedProblems)) {
+      if (this.criteriaTooExclusive || this.areNoRecommendedProblems) {
         // display message or just 0 results
         this.set('problems', []);
         this.set('problemsMetadata', null);
@@ -829,11 +838,11 @@ export default Component.extend(
         this.getProblems(page, isTrashedOnly);
       },
       addCategory: function (cat) {
-        let filterCategories = this.get('filter.categories');
+        let filterCategories = this.filter.categories;
         filterCategories.addObject(cat);
       },
       removeCategory: function (cat) {
-        let filterCategories = this.get('filter.categories');
+        let filterCategories = this.filter.categories;
         filterCategories.removeObject(cat);
       },
       updateFilter: function (id, checked) {
@@ -909,7 +918,7 @@ export default Component.extend(
       },
       searchCategory(cat) {
         this.selectedCategories.pushObject(cat);
-      }
+      },
     },
   }
 );

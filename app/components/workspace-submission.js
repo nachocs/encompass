@@ -18,6 +18,7 @@ export default Component.extend(
   ErrorHandlingMixin,
   VmtHostMixin,
   {
+    tagName: '',
     elementId: 'workspace-submission-comp',
     classNameBindings: [
       'areNoSelections:no-selections',
@@ -39,9 +40,10 @@ export default Component.extend(
     isMessageListenerAttached: false,
 
     showSelectableView: computed(
+      'isTransitioning',
       'makingSelection',
       'showingSelections',
-      'isTransitioning',
+      'switching',
       function () {
         let making = this.makingSelection;
         let showing = this.showingSelections;
@@ -50,34 +52,31 @@ export default Component.extend(
       }
     ),
 
-    shouldCheck: computed('makingSelection', function () {
-      return this.makingSelection;
-    }),
+    shouldCheck: computed.reads('makingSelection'),
 
     areNoSelections: computed(
       'workspaceSelections.[]',
       'canSeeSelections',
       function () {
-        return (
-          this.canSeeSelections && !this.get('workspaceSelections.length') > 0
-        );
+        return this.canSeeSelections && !this.workspaceSelections.length > 0;
       }
     ),
 
     didRender: function () {
+      this._super(...arguments);
       if (this.switching) {
         this.set('switching', false);
       }
     },
 
     didReceiveAttrs() {
+      this._super(...arguments);
       let listener = this.onVmtMessage.bind(this);
 
       if (this.isVmt) {
         this.set('vmtListener', listener);
         window.addEventListener('message', listener);
       }
-      this._super(...arguments);
     },
 
     didInsertElement() {
@@ -112,7 +111,7 @@ export default Component.extend(
       'currentSubmission.id',
       'selections.[]',
       function () {
-        let subId = this.get('currentSubmission.id');
+        let subId = this.currentSubmission.id;
 
         return this.selections.filter((sel) => {
           return subId === this.utils.getBelongsToId(sel, 'submission');
@@ -120,12 +119,7 @@ export default Component.extend(
       }
     ),
 
-    trashedSelections: computed(
-      'workspaceSelections.@each.isTrashed',
-      function () {
-        return this.workspaceSelections.filterBy('isTrashed');
-      }
-    ),
+    trashedSelections: computed.filterBy('workspaceSelections', 'isTrashed'),
 
     canSelect: computed(
       'currentWorkspace.permissions.@each.{global,selections}',
@@ -151,7 +145,7 @@ export default Component.extend(
       function () {
         return this.responses.filter((response) => {
           let subId = this.utils.getBelongsToId(response, 'submission');
-          return subId === this.get('currentSubmission.id');
+          return subId === this.currentSubmission.id;
         });
       }
     ),
@@ -235,7 +229,7 @@ export default Component.extend(
     }),
     isVmt: computed('currentSubmission.vmtRoomInfo.roomId', function () {
       return this.utils.isValidMongoId(
-        this.get('currentSubmission.vmtRoomInfo.roomId')
+        this.currentSubmission.vmtRoomInfo.roomId
       );
     }),
 
@@ -266,13 +260,13 @@ export default Component.extend(
     },
 
     currentReplayerTime: computed('vmtReplayerInfo.timeElapsed', function () {
-      let ms = this.get('vmtReplayerInfo.timeElapsed');
+      let ms = this.vmtReplayerInfo.timeElapsed;
 
       return this.utils.getTimeStringFromMs(ms);
     }),
 
     maxReplayerTime: computed('vmtReplayerInfo.totalDuration', function () {
-      let ms = this.get('vmtReplayerInfo.totalDuration');
+      let ms = this.vmtReplayerInfo.totalDuration;
       return ms > 0 ? ms : 0;
     }),
 
@@ -302,7 +296,7 @@ export default Component.extend(
 
       if (messageType === 'VMT_ON_REPLAYER_LOAD') {
         // set replayer to current selection start time if applicable
-        let vmtStartTime = this.get('currentSelection.vmtInfo.startTime');
+        let vmtStartTime = this.currentSelection.vmtInfo.startTime;
         if (vmtStartTime >= 0 && canSet) {
           this.set('vmtReplayerInfo', vmtReplayerInfo);
           // set replayer to start point but do not auto play
@@ -319,24 +313,14 @@ export default Component.extend(
       'currentSelection.vmtInfo.{startTime,endTime}',
       function () {
         return (
-          this.get('currentSelection.vmtInfo.startTime') >= 0 &&
-          this.get('currentSelection.vmtInfo.endTime') >= 0
+          this.currentSelection.vmtInfo.startTime >= 0 &&
+          this.currentSelection.vmtInfo.endTime >= 0
         );
       }
     ),
 
-    currentClipStartTime: computed(
-      'currentSelection.vmtInfo.startTime',
-      function () {
-        return this.get('currentSelection.vmtInfo.startTime');
-      }
-    ),
-    currentClipEndTime: computed(
-      'currentSelection.vmtInfo.endTime',
-      function () {
-        return this.get('currentSelection.vmtInfo.endTime');
-      }
-    ),
+    currentClipStartTime: computed.reads('currentSelection.vmtInfo.startTime'),
+    currentClipEndTime: computed.reads('currentSelection.vmtInfo.endTime'),
 
     actions: {
       addSelection: function (selection, isUpdateOnly) {
@@ -508,9 +492,9 @@ export default Component.extend(
 
       onSelectionSelect() {
         if (this.isVmt) {
-          let vmtStartTime = this.get('currentSelection.vmtInfo.startTime');
+          let vmtStartTime = this.currentSelection.vmtInfo.startTime;
           if (vmtStartTime >= 0) {
-            let endTime = this.get('currentSelection.vmtInfo.endTime');
+            let endTime = this.currentSelection.vmtInfo.endTime;
             this.setVmtReplayerTime(vmtStartTime, true, endTime);
             this.set('makingSelections', false);
           }
@@ -526,9 +510,7 @@ export default Component.extend(
           getUrl.pathname.split('/')[1];
 
         window.open(
-          `${baseUrl}#/responses/submission/${this.get(
-            'currentSubmission.id'
-          )}`,
+          `${baseUrl}#/responses/submission/${this.currentSubmission.id}`,
           'newwindow',
           'width=1200, height=700'
         );

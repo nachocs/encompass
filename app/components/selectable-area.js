@@ -16,7 +16,7 @@ export default Component.extend({
   },
 
   didInsertElement: function () {
-    this.set('currSubId', this.get('model.id'));
+    this.set('currSubId', this.model.id);
     this.set('selecting', this.makingSelection);
     this.set('showing', this.showingSelections);
 
@@ -67,7 +67,6 @@ export default Component.extend({
       this.imageTagging.disable();
     }
     this.setupResizeHandler();
-
   },
 
   didReceiveAttrs() {
@@ -83,8 +82,8 @@ export default Component.extend({
     let highlighting = this.selectionHighlighting;
     let tagging = this.imageTagging;
 
-    let currentSelsLength = this.get('currentSelections.length');
-    let attrSelsLength = this.get('sels.length');
+    let currentSelsLength = this.currentSelections.length;
+    let attrSelsLength = this.sels.length;
 
     if (attrSelsLength !== currentSelsLength) {
       this.set('currentSelections', this.sels);
@@ -93,7 +92,7 @@ export default Component.extend({
     let wasSelRemoved = currentSelsLength > attrSelsLength;
 
     //submission was changed
-    if (this.currSubId !== this.get('model.id')) {
+    if (this.currSubId !== this.model.id) {
       this.imageTagging.removeAllTags();
       this.set('makingSelection', false);
       this.set('showingSelections', false);
@@ -137,14 +136,12 @@ export default Component.extend({
         this.set('showing', false);
         highlighting.removeAllHighlights();
         tagging.removeAllTags();
-
       }
     } else if (isShowing) {
       // for when switching between submissions while showing selections
       highlighting.highlightAllSelections();
       tagging.showAllTags();
     }
-
   },
 
   setupTagging: function () {
@@ -168,7 +165,7 @@ export default Component.extend({
             id: selection.get('id'),
             coords: coordinates,
             text: selection.get('text'),
-            comments: selection.get('comments')
+            comments: selection.get('comments'),
           };
         } else if (arrCoords.length === 5) {
           imgTags[imgTags.length] = {
@@ -176,11 +173,11 @@ export default Component.extend({
             parent: arrCoords[0],
             coords: {
               left: arrCoords[1],
-              top: arrCoords[2]
+              top: arrCoords[2],
             },
             size: {
               width: arrCoords[3],
-              height: arrCoords[4]
+              height: arrCoords[4],
             },
             note: selection.get('text'),
             comments: selection.get('comments'),
@@ -194,7 +191,6 @@ export default Component.extend({
     }
   },
 
-
   willDestroyElement() {
     this.sendAction('handleTransition', false);
     this.selectionHighlighting.destroy();
@@ -206,8 +202,6 @@ export default Component.extend({
   actions: {
     toggleShow() {
       this.toggleShow();
-    }
-  }
-
-
+    },
+  },
 });

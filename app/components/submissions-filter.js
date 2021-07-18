@@ -105,17 +105,17 @@ export default Component.extend(ErrorHandlingMixin, {
 
   isTeacher: computed('currentUser', function () {
     return (
-      this.get('currentUser.accountType') === 'T' &&
-      this.get('currentUser.actingRole') !== 'student'
+      this.currentUser.accountType === 'T' &&
+      this.currentUser.actingRole !== 'student'
     );
   }),
 
   initialTeacherItem: computed('selectedTeacher', 'isTeacher', function () {
     if (this.isTeacher) {
-      return [this.get('currentUser.id')];
+      return [this.currentUser.id];
     }
     if (this.selectedTeacher) {
-      return [this.get('selectedTeacher.id')];
+      return [this.selectedTeacher.id];
     }
     return [];
   }),
@@ -124,8 +124,8 @@ export default Component.extend(ErrorHandlingMixin, {
     'currentUser',
     'selectedStudents.[]',
     function () {
-      if (this.get('currentUser.isStudent')) {
-        return [this.get('currentUser.id')];
+      if (this.currentUser.isStudent) {
+        return [this.currentUser.id];
       }
       if (_.isArray(this.selectedStudents)) {
         return this.selectedStudents.mapBy('id');
@@ -136,29 +136,29 @@ export default Component.extend(ErrorHandlingMixin, {
 
   initialAssignmentItem: computed('selectedAssignment', function () {
     if (this.selectedAssignment) {
-      return [this.get('selectedAssignment.id')];
+      return [this.selectedAssignment.id];
     }
     return [];
   }),
 
   initialProblemItem: computed('selectedProblem', function () {
     if (this.selectedProblem) {
-      return [this.get('selectedProblem.id')];
+      return [this.selectedProblem.id];
     }
     return [];
   }),
 
   initialSectionItem: computed('selectedSection', function () {
     if (this.selectedSection) {
-      return [this.get('selectedSection.id')];
+      return [this.selectedSection.id];
     }
     return [];
   }),
 
   didReceiveAttrs: function () {
-    // if (this.get('currentUser.isStudent')) {
+    // if (this.currentUser.isStudent) {
     //   this.set('selectedStudent', this.currentUser);
-    // } else if (this.get('currentUser.isTeacher')) {
+    // } else if (this.currentUser.isTeacher) {
     //   this.set('selectedTeacher', this.currentUser);
     // }
 
@@ -238,7 +238,7 @@ export default Component.extend(ErrorHandlingMixin, {
       const teacher = this.selectedTeacher;
 
       // students can only make workspaces from their own work
-      if (this.get('currentUser.isStudent')) {
+      if (this.currentUser.isStudent) {
         return [this.currentUser];
       }
 
@@ -265,7 +265,7 @@ export default Component.extend(ErrorHandlingMixin, {
         return baseUsers;
       }
       return [];
-      // const peeked = this.get('store').peekAll('user');
+      // const peeked = this.store').peekAll('user;
       // if (peeked) {
       //   return peeked;
       // }
@@ -298,11 +298,11 @@ export default Component.extend(ErrorHandlingMixin, {
   }),
 
   // doFetchProblems: function() {
-  //   return !this.get('selectedAssignment');
+  //   return !this.selectedAssignment;
   // }.property('selectedAssignment'),
 
   selectedTeacherSectionIds: computed('selectedTeacher', function () {
-    const sectionsFromTeacher = this.get('selectedTeacher.sections');
+    const sectionsFromTeacher = this.selectedTeacher.sections;
     if (sectionsFromTeacher) {
       return sectionsFromTeacher
         .filter((section) => {
@@ -321,7 +321,7 @@ export default Component.extend(ErrorHandlingMixin, {
       }
       return this.baseAssignments.filter((assignment) => {
         return (
-          assignment.get('createdBy.id') === this.get('selectedTeacher.id') ||
+          assignment.get('createdBy.id') === this.selectedTeacher.id ||
           this.selectedTeacherSectionIds.includes(assignment.get('section.id'))
         );
       });
@@ -337,7 +337,7 @@ export default Component.extend(ErrorHandlingMixin, {
       }
       return this.baseAssignments.filterBy(
         'problem.id',
-        this.get('selectedProblem.id')
+        this.selectedProblem.id
       );
     }
   ),
@@ -350,7 +350,7 @@ export default Component.extend(ErrorHandlingMixin, {
         return [];
       }
       return this.baseAssignments.filter((assignment) => {
-        return this.get('selectedSection.assignments').includes(assignment);
+        return this.selectedSection.assignments.includes(assignment);
       });
     }
   ),
@@ -654,7 +654,7 @@ export default Component.extend(ErrorHandlingMixin, {
 
   actions: {
     changeDate: function () {
-      console.log("changing date");
+      console.log('changing date');
       console.log(this.startDate);
       console.log(this.endDate);
     },
@@ -685,10 +685,10 @@ export default Component.extend(ErrorHandlingMixin, {
         studentIds = students.mapBy('id');
       }
       const criteria = {
-        teacher: this.get('selectedTeacher.id'),
-        assignment: this.get('selectedAssignment.id'),
-        problem: this.get('selectedProblem.id'),
-        section: this.get('selectedSection.id'),
+        teacher: this.selectedTeacher.id,
+        assignment: this.selectedAssignment.id,
+        problem: this.selectedProblem.id,
+        section: this.selectedSection.id,
         startDate: this.startDate,
         endDate: this.endDate,
         students: studentIds,

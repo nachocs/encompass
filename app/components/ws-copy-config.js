@@ -10,7 +10,7 @@ export default Component.extend({
   utils: service('utility-methods'),
 
   validConfigValues: computed('copyConfig', function () {
-    const configInputs = this.get('copyConfig.inputs');
+    const configInputs = this.copyConfig.inputs;
 
     if (this.utils.isNonEmptyArray(configInputs)) {
       return configInputs.map((input) => input.value);

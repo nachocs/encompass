@@ -26,7 +26,7 @@ export default Component.extend(CurrentUserMixin, {
     'comment',
     function () {
       let workspaceId = this.utils.getBelongsToId(this.comment, 'workspace');
-      return workspaceId === this.get('currentWorkspace.id');
+      return workspaceId === this.currentWorkspace.id;
     }
   ),
 
@@ -37,7 +37,7 @@ export default Component.extend(CurrentUserMixin, {
 
   isOwnComment: computed('comment', 'currentUser.id', function () {
     let creatorId = this.utils.getBelongsToId(this.comment, 'createdBy');
-    return creatorId === this.get('currentUser.id');
+    return creatorId === this.currentUser.id;
   }),
 
   canDelete: computed(
@@ -57,7 +57,7 @@ export default Component.extend(CurrentUserMixin, {
   ),
 
   relevanceClass: computed('comment.relevance', function () {
-    return 'relevance-' + this.get('comment.relevance');
+    return 'relevance-' + this.comment.relevance;
   }),
 
   isFromCurrentSelection: computed(
@@ -66,7 +66,7 @@ export default Component.extend(CurrentUserMixin, {
     function () {
       return (
         this.utils.getBelongsToId(this.comment, 'selection') ===
-        this.get('currentSelection.id')
+        this.currentSelection.id
       );
     }
   ),

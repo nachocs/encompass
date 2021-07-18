@@ -31,7 +31,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   }),
 
   initialOwnerItem: computed('workspace.owner', function () {
-    const owner = this.get('workspace.owner');
+    const owner = this.workspace.owner;
     if (this.utils.isNonEmptyObject(owner)) {
       return [owner.get('id')];
     }
@@ -39,7 +39,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   }),
 
   initialLinkedAssignmentItem: computed('linkedAssignment', function () {
-    let linkedAssignmentId = this.get('linkedAssignment.id');
+    let linkedAssignmentId = this.linkedAssignment.id;
 
     if (linkedAssignmentId) {
       return [linkedAssignmentId];
@@ -56,7 +56,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   modes: computed('currentUser.isAdmin', 'currentUser.isStudent', function () {
     const basic = ['private', 'org', 'public'];
 
-    if (this.get('currentUser.isStudent') || !this.get('currentUser.isAdmin')) {
+    if (this.currentUser.isStudent || !this.currentUser.isAdmin) {
       return basic;
     }
 
@@ -136,7 +136,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let linkedAssignmentId = this.get('linkedAssignment.id');
+      let linkedAssignmentId = this.linkedAssignment.id;
 
       if (_.isNull($item)) {
         if (linkedAssignmentId) {
@@ -249,7 +249,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       }
     },
     stopEditing() {
-      console.log("stop editing");
+      console.log('stop editing');
       this.set('isEditing', false);
       this.set('didLinkedAssignmentChange', false);
       this.set('selectedLinkedAssignment', null);

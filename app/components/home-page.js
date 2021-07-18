@@ -24,7 +24,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   notStudent: Ember.computed.not('isStudent'),
 
   didReceiveAttrs: function () {
-    let currentUser = this.get('currentUser');
+    let currentUser = this.currentUser;
     this.set(
       'isStudentAccount',
       currentUser && currentUser.get('accountType') === 'S'
@@ -42,7 +42,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       // console.log('toggle called', this.openMenu);
     },
     showToggleModal: function () {
-      this.get('alert')
+      this.alert
         .showModal(
           'question',
           'Are you sure you want to switch roles?',
@@ -58,7 +58,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     toggleActingRole: function () {
       // should this action be moved to the application controller?
-      const currentUser = this.get('currentUser');
+      const currentUser = this.currentUser;
 
       // student account types cannot toggle to teacher role
       if (currentUser.get('accountType') === 'S') {
@@ -77,7 +77,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
           this.store.unloadAll('assignment');
           // window location needed to request dashboard data, cannot transitionTo('toHome')
           window.location.href = '/';
-          this.get('alert').showToast(
+          this.alert.showToast(
             'success',
             'Successfully switched roles',
             'bottom-end',

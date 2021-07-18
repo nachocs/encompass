@@ -28,7 +28,7 @@ export default Model.extend(Auditable, {
   responses: hasMany('response', { async: true }),
   vmtRoomInfo: attr(''),
 
-  folders: computed('selections.[].folders', function () {
+  folders: computed('selections.@each.folders', function () {
     var folders = [];
     this.selections.forEach(function (selection) {
       folders.pushObjects(selection.get('folders'));
@@ -37,41 +37,38 @@ export default Model.extend(Auditable, {
   }),
 
   // selectedComments: function () {
-  //   return this.get('comments').filterBy('useForResponse', true);
+  //   return this.comments.filterBy('useForResponse', true);
   // }.property('comments.[].useForResponse'),
 
-  puzzle: computed(function () {
-    return this.get('publication.puzzle');
-  }),
+  puzzle: computed.reads('publication.puzzle'),
 
-  puzzleUrl: computed(function () {
-    return '/library/go.html?destination=' + this.get('puzzle.puzzleId');
+  puzzleUrl: computed('puzzle.puzzleId', function () {
+    return '/library/go.html?destination=' + this.puzzle.puzzleId;
   }),
 
   /*
   attachment: function(){
-    return this.get('data.uploadedFile');
+    return this.data.uploadedFile;
   }.property(),
   */
 
-  imageUrl: computed(function () {
+  imageUrl: computed('uploadedFile.savedFileName', function () {
     return (
       'http://mathforum.org/encpows/uploaded-images/' +
-      this.get('uploadedFile.savedFileName')
+      this.uploadedFile.savedFileName
     );
   }),
 
   student: computed(
-    'creator.safeName',
-    'creator.username',
-    'creator.fullName',
+    'creator.{fullName,safeName,username}',
     'vmtDisplayName',
+    'vmtRoomInfo.roomId',
     function () {
-      let safeName = this.get('creator.safeName');
-      let fullName = this.get('creator.fullName');
-      let username = this.get('creator.username');
+      let safeName = this.creator.safeName;
+      let fullName = this.creator.fullName;
+      let username = this.creator.username;
 
-      if (this.get('vmtRoomInfo.roomId')) {
+      if (this.vmtRoomInfo.roomId) {
         return this.vmtDisplayName;
       }
 
@@ -86,16 +83,16 @@ export default Model.extend(Auditable, {
   ),
 
   studentDisplayName: computed(
-    'creator.safeName',
-    'creator.username',
+    'creator.{safeName,username}',
     'vmtDisplayName',
+    'vmtRoomInfo.roomId',
     function () {
-      if (this.get('vmtRoomInfo.roomId')) {
+      if (this.vmtRoomInfo.roomId) {
         return this.vmtDisplayName;
       }
 
-      let safeName = this.get('creator.safeName');
-      let username = this.get('creator.username');
+      let safeName = this.creator.safeName;
+      let username = this.creator.username;
 
       let name = safeName ? safeName : username;
 
@@ -109,51 +106,43 @@ export default Model.extend(Auditable, {
     if (createDate) {
       label += ' on ' + moment(createDate).format('l');
     }
-    label += ' (' + this.get('data.thread.threadId') + ')';
+    label += ' (' + this.data.thread.threadId + ')';
     return label;
   }),
 
-  isStatic: computed('powId', function () {
-    return !this.powId;
-  }),
+  isStatic: computed.not('powId'),
   uniqueIdentifier: computed(
-    'creator.username',
-    'creator.studentId',
+    'creator.{safeName,studentId,username}',
+    'isVmt',
+    'vmtRoomInfo.roomId',
     function () {
       // vmt room
       if (this.isVmt) {
-        return this.get('vmtRoomInfo.roomId');
+        return this.vmtRoomInfo.roomId;
       }
       // encompass user
-      if (this.get('creator.studentId')) {
-        return this.get('creator.studentId');
+      if (this.creator.studentId) {
+        return this.creator.studentId;
       }
 
       // pows username
-      if (this.get('creator.username')) {
-        return this.get('creator.username');
+      if (this.creator.username) {
+        return this.creator.username;
       }
-      return this.get('creator.safeName');
+      return this.creator.safeName;
     }
   ),
 
   isVmt: computed('vmtRoomInfo.roomId', function () {
-    let id = this.get('vmtRoomInfo.roomId');
+    let id = this.vmtRoomInfo.roomId;
     let checkForHexRegExp = new RegExp('^[0-9a-fA-F]{24}$');
 
     return checkForHexRegExp.test(id);
   }),
 
-  firstVmtParticipant: computed('vmtRoomInfo.participants.[]', function () {
-    return this.get('vmtRoomInfo.participants.firstObject');
-  }),
-  firstVmtFacilitator: computed(
-    'vmtRoomInfo.facilitators.firstObject',
-    function () {
-      return this.get('vmtRoomInfo.facilitators.firstObject');
-    }
-  ),
+  firstVmtParticipant: computed.reads('vmtRoomInfo.participants.firstObject'),
+  firstVmtFacilitator: computed.reads('vmtRoomInfo.facilitators.firstObject'),
   vmtDisplayName: computed('vmtRoomInfo.roomName', function () {
-    return `VMT Room: ${this.get('vmtRoomInfo.roomName')}`;
+    return `VMT Room: ${this.vmtRoomInfo.roomName}`;
   }),
 });

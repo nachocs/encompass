@@ -74,7 +74,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   didUpdateAttrs() {
-    let attrProbId = this.get('problem.id');
+    let attrProbId = this.problem.id;
     let currentId = this.currentProblemId;
     if (!_.isEqual(attrProbId, currentId)) {
       if (this.isEditing) {
@@ -90,7 +90,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   didReceiveAttrs: function () {
     let currentProblemId = this.currentProblemId;
     if (_.isUndefined(currentProblemId)) {
-      this.set('currentProblemId', this.get('problem.id'));
+      this.set('currentProblemId', this.problem.id);
     }
     this.set('isWide', false);
     this.set('showAssignment', false);
@@ -129,7 +129,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   statusIconFill: computed('problem.status', function () {
-    let status = this.get('problem.status');
+    let status = this.problem.status;
 
     return this.iconFillOptions[status];
   }),
@@ -167,7 +167,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
   },
 
   keywordSelectOptions: computed('problem.keywords.[]', function () {
-    let keywords = this.get('problem.keywords');
+    let keywords = this.problem.keywords;
     if (!_.isArray(keywords)) {
       return [];
     }
@@ -693,7 +693,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
             null
           );
           let parentView = this.parentView;
-          this.get('parentActions.refreshList').call(parentView);
+          this.parentActions.refreshList.call(parentView);
         })
         .catch((err) => {
           this.alert.showToast(
@@ -881,7 +881,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
 
     addToRecommend: function () {
       let problem = this.problem;
-      let accountType = this.get('currentUser.accountType');
+      let accountType = this.currentUser.accountType;
       if (accountType === 'A') {
         this.orgOptions().then((orgs) => {
           this.set('orgList', orgs);
@@ -1003,7 +1003,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
                 null
               );
               let parentView = this.parentView;
-              this.get('parentActions.refreshList').call(parentView);
+              this.parentActions.refreshList.call(parentView);
             });
           }
         });
@@ -1017,10 +1017,10 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let keywords = this.get('problem.keywords');
+      let keywords = this.problem.keywords;
       if (!_.isArray(keywords)) {
         this.problem.set('keywords', []);
-        keywords = this.get('problem.keywords');
+        keywords = this.problem.keywords;
       }
       let isRemoval = _.isNull($item);
 

@@ -22,9 +22,9 @@ export default Model.extend(Auditable, {
   link: computed('workspace', 'submission', 'id', function () {
     return (
       '#/workspaces/' +
-      this.get('workspace.id') +
+      this.workspace.id +
       '/submissions/' +
-      this.get('submission.id') +
+      this.submission.id +
       '/selections/' +
       this.id
     );

@@ -9,7 +9,7 @@ import AuthenticatedRoute from './_authenticated_route';
 
 export default AuthenticatedRoute.extend({
   model: function () {
-    // return this.get('store').findAll('user');
+    // return this.store').findAll('user;
   },
 
   actions: {
