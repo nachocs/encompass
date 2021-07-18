@@ -28,42 +28,6 @@ export default Mixin.create({
     'response'
   ),
 
-  workspaceNotifications: computed.filterBy(
-    'newNotifications',
-    'primaryRecordType',
-    'workspace'
-  ),
-
-  assignmentNotifications: computed.filterBy(
-    'newNotifications',
-    'primaryRecordType',
-    'workspace'
-  ),
-
-  sectionNotifications: computed.filterBy(
-    'newNotifications',
-    'primaryRecordType',
-    'section'
-  ),
-
-  problemNotifications: computed.filterBy(
-    'newNotifications',
-    'primaryRecordType',
-    'problem'
-  ),
-
-  organizationNotifications: computed.filterBy(
-    'newNotifications',
-    'primaryRecordType',
-    'organization'
-  ),
-
-  userNotifications: computed.filterBy(
-    'newNotifications',
-    'primaryRecordType',
-    'user'
-  ),
-
   newReplyNotifications: computed(
     'currentUser.id',
     'responseNotifications.[]',
