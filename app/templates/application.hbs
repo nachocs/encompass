@@ -7,15 +7,5 @@
 
     {{outlet}}
 
-    {{#if this.showCategoryList}}
-    <div id="category-list-modal">
-      <div class="modal-content">
-        <h4>Select a Category</h4>
-        <button class="close" {{action 'closeModal' }}><i class="fas fa-times"></i></button>
-        <CategoriesMenu @categories={{categories}} @store={{this.store}} @addCategories="searchCategory" />
-      </div>
-    </div>
-    {{/if}}
-
   </section> <!-- end al_body -->
 </div>

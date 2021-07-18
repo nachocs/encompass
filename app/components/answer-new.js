@@ -5,14 +5,13 @@ import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import { all, reject, resolve } from 'rsvp';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
   elementId: 'answer-new',
   alert: service('sweet-alert'),
   utils: service('utility-methods'),
-
+  currentUser: service('current-user'),
   filesToBeUploaded: null,
   createAnswerError: null,
   isMissingRequiredFields: null,
@@ -98,7 +97,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         students.map((s) => s)
       );
     } else {
-      this.contributors.addObject(this.currentUser);
+      this.contributors.addObject(this.currentUser.user);
     }
   },
 
@@ -186,13 +185,14 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     let explanation = quillContent.replace(/["]/g, "'");
     const priorAnswer = this.priorAnswer ? this.priorAnswer : null;
     const students = this.contributors;
-
+    console.log('students', students);
     if (priorAnswer) {
       // if revising, check to see that there were changes made from original
       // to avoid lots of duplicate answers
       if (
         !this.isRevisionDifferent(priorAnswer, answer, explanation, students)
       ) {
+        console.log('answer is not different');
         this.set('isCreatingAnswer', false);
         return this.alert.showToast(
           'info',
@@ -222,10 +222,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         if (explanation.length > this.explanationLengthLimit) {
           this.set('isExplanationTooLarge', true);
           this.set('isCreatingAnswer', false);
-
           return;
         }
-
         const records = students.map((student) => {
           return this.store.createRecord('answer', {
             createdBy: student,
@@ -242,19 +240,16 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
           });
         });
         // additional uploaded image base 64 data was concatenated to explanation
-
         return all(
           records.map((rec) => {
             return rec.save();
           })
         )
           .then((answers) => {
-            const userId = this.get('currentUser.id');
-
+            const userId = this.currentUser.user.id;
             let yourAnswer = answers.find((answer) => {
               return answer.get('createdBy.id') === userId;
             });
-
             this.alert.showToast(
               'success',
               'Answer Created',

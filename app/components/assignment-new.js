@@ -4,10 +4,10 @@ import { and, notEmpty } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import moment from 'moment';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
-export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
+export default Component.extend(ErrorHandlingMixin, {
+  router: service('router'),
   elementId: 'assignment-new',
   createAssignmentError: null,
   isMissingRequiredFields: null,
@@ -121,33 +121,33 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         'If "Yes", an empty Parent workspace will be created from the newly linked student workspaces. The parent workspace will automatically update as the children workspaces are populated with new submissions and markup',
     };
     this.set('tooltips', tooltips);
-    $(function () {
-      $('input#assignedDate').daterangepicker(
-        {
-          singleDatePicker: true,
-          showDropdowns: true,
-          autoUpdateInput: false,
-        },
-        function (start, end, label) {
-          let assignedDate = start.format('MM/DD/YYYY');
-          $('input#assignedDate').val(assignedDate);
-          that.set('nameDate', start.format('MMM Do YYYY'));
-        }
-      );
-      $('input#dueDate').daterangepicker(
-        {
-          singleDatePicker: true,
-          showDropdowns: true,
-          autoUpdateInput: false,
-        },
-        function (start, end, label) {
-          let dueDate = start.format('MM/DD/YYYY');
-          $('input#dueDate').val(dueDate);
-        }
-      );
-      $('input[name="daterange"]').attr('placeholder', 'mm/dd/yyyy');
-    });
-    this.set('cachedProblems', this.store.peekAll('problem'));
+    // $(function () {
+    //   $('input#assignedDate').daterangepicker(
+    //     {
+    //       singleDatePicker: true,
+    //       showDropdowns: true,
+    //       autoUpdateInput: false,
+    //     },
+    //     function (start, end, label) {
+    //       let assignedDate = start.format('MM/DD/YYYY');
+    //       $('input#assignedDate').val(assignedDate);
+    //       that.set('nameDate', start.format('MMM Do YYYY'));
+    //     }
+    //   );
+    //   $('input#dueDate').daterangepicker(
+    //     {
+    //       singleDatePicker: true,
+    //       showDropdowns: true,
+    //       autoUpdateInput: false,
+    //     },
+    //     function (start, end, label) {
+    //       let dueDate = start.format('MM/DD/YYYY');
+    //       $('input#dueDate').val(dueDate);
+    //     }
+    //   );
+    //   $('input[name="daterange"]').attr('placeholder', 'mm/dd/yyyy');
+    // });
+    this.set('cachedProblems', this.store.findAll('problem'));
   },
 
   didReceiveAttrs: function () {
@@ -176,9 +176,10 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     const createdBy = this.currentUser;
 
     if (!name) {
-      let nameDate = $('#assignedDate')
-        .data('daterangepicker')
-        .startDate.format('MMM Do YYYY');
+      // let nameDate = $('#assignedDate')
+      //   .data('daterangepicker')
+      //   .startDate.format('MMM Do YYYY');
+      let nameDate = new Date(assignedDate);
       let problemTitle = problem.get('title');
       name = problemTitle + ' / ' + nameDate;
     }
@@ -194,8 +195,8 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
       createDate: new Date(),
       section,
       problem,
-      assignedDate,
-      dueDate,
+      assignedDate: new Date(assignedDate),
+      dueDate: new Date(dueDate),
       name,
     });
 
@@ -233,7 +234,7 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
     createAssignmentData
       .save()
       .then((assignment) => {
-        this.sendAction('toAssignmentInfo', assignment);
+        this.router.transitionTo('assignments.assignment', assignment.id);
         this.alert.showToast(
           'success',
           'Assignment Created',
@@ -316,24 +317,11 @@ export default Component.extend(CurrentUserMixin, ErrorHandlingMixin, {
         return;
       }
 
-      let startDate;
-      let endDate;
-
       if (!assignedDate) {
         delete values.assignedDate;
-      } else {
-        startDate = $('#assignedDate')
-          .data('daterangepicker')
-          .startDate.format('YYYY-MM-DD');
-        values.assignedDate = this.getMongoDate(startDate);
       }
       if (!dueDate) {
         delete values.dueDate;
-      } else {
-        endDate = $('#dueDate')
-          .data('daterangepicker')
-          .startDate.format('YYYY-MM-DD');
-        values.dueDate = this.getEndDate(endDate);
       }
 
       this.createAssignment(values);

@@ -1,8 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Component.extend(CurrentUserMixin, {
+export default Component.extend({
   elementId: 'user-list-pd',
 
   unauthUsers: computed('users.@each.isAuthorized', function () {

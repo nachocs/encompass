@@ -27,14 +27,6 @@ export default class ApplicationController extends Controller {
     window.location.href = '/';
   }
   @action
-  closeModal() {
-    this.showCategoryList = false;
-  }
-  @action
-  searchCategory(cat) {
-    this.selectedCategories.pushObject(cat);
-  }
-  @action
   handleFirstTouch() {
     this.isTouchScreen = true;
   }

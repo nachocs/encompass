@@ -4,7 +4,6 @@ import { alias } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
 export default Component.extend({
-  elementId: ['submission-viewer-list-item'],
   alert: service('sweet-alert'),
   student: alias('answer.student'),
   isVmt: alias('answer.isVmt'),
@@ -44,7 +43,7 @@ export default Component.extend({
     let student = this.student;
     let threads = this.threads;
     if (threads) {
-      let work = threads.get(student);
+      let work = threads[student];
       if (work) {
         return work.length;
       }

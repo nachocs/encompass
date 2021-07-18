@@ -19,7 +19,7 @@
   .select-bar {
     @include flex-item(1, center, 0.3 0 auto);
     margin-right: 15px;
-    #my-select {
+    .my-select {
       width: 100%;
       select {
         height: 30px;
@@ -47,7 +47,6 @@
   .clear-field {
     @include flex-item(2, center, 0.6 0 auto);
     font-size: 0.8em;
-    position: relative;
     cursor: pointer;
     .search-field {
       height: 35px;

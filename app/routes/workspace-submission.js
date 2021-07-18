@@ -72,7 +72,12 @@ export default Route.extend(VmtHostMixin, {
   },
 
   resolveVmtRoom(submission) {
-    let roomId = submission.submission.get('vmtRoomInfo.roomId');
+    let roomId 
+    if(submission.submission){
+      roomId = submission.submission.get('vmtRoomInfo.roomId');
+    } else {
+      roomId = submission.get('vmtRoomInfo.roomId');
+    }
     let utils = this.utils;
 
     if (!utils.isValidMongoId(roomId)) {
@@ -178,7 +183,7 @@ export default Route.extend(VmtHostMixin, {
       let currentUrl = window.location.hash;
       let wasVmt = currentUrl.indexOf('?vmtRoomId=') !== -1;
       let willBeVmt = this.utils.isValidMongoId(
-        transition.queryParams.vmtRoomId
+        transition.to.queryParams.vmtRoomId
       );
       if (wasVmt && !willBeVmt) {
         window.postMessage({

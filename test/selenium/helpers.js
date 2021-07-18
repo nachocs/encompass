@@ -13,7 +13,7 @@ const timeoutMs = 10000;  // timeout per await
 const timeoutTestMsStr = '25s';  // timeout per test
 
 const nconf = config.nconf;
-const port = nconf.get('testPort');
+const port = nconf.get('clientPort');
 const host = `http://localhost:${port}`;
 
 const loginUrl = `${host}/auth/login`;

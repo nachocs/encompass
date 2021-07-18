@@ -1,11 +1,11 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
+import _ from 'underscore';
 /*global _:false */
 import { inject as service } from '@ember/service';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 
-export default Component.extend(CurrentUserMixin, {
+export default Component.extend({
   classNames: ['problem-list-item'],
   classNameBindings: ['isPublic', 'isPrivate', 'isOrg', 'isPows'],
   privacySetting: alias('problem.privacySetting'),

@@ -1,6 +1,6 @@
 <div class="flex-container-full">
   <div class="flex-item-full filter-options collapse" id="filter-list-side">
-    <ProblemFilter @store={{this.store}} @onUpdate={{action "triggerFetch"}} @triggerShowTrashed={{action "triggerShowTrashed"}} @filter={{this.filter}} @primaryFilter={{this.primaryFilter}} @adminFilterSelect={{this.adminFilterSelect}} @orgs={{this.model.organizations}} @categoriesFilter={{this.categoriesFilter}} @doIncludeSubCategories={{this.doIncludeSubCategories}} @toggleTrashed={{this.toggleTrashed}} @sendtoApplication="sendtoApplication" />
+    <ProblemFilter @showCategoryList={{this.showCategoryList}} @categoryTree={{this.categoryTree}} @store={{this.store}} @onUpdate={{action "triggerFetch"}} @triggerShowTrashed={{action "triggerShowTrashed"}} @filter={{this.filter}} @primaryFilter={{this.primaryFilter}} @adminFilterSelect={{this.adminFilterSelect}} @orgs={{this.model.organizations}} @categoriesFilter={{this.categoriesFilter}} @doIncludeSubCategories={{this.doIncludeSubCategories}} @toggleTrashed={{this.toggleTrashed}} @sendtoApplication="sendtoApplication" />
   </div>
 
   <div class="flex-item-full list-view">
@@ -40,8 +40,9 @@
             <span class="hover-menu" id="privacy-menu">
               <ul>
                 {{#each this.privacySettingOptions as |option|}}
+                {{log option}}
                 <li>
-                  <RadioFilter @labelName={{this.option.label}} @labelIcon={{this.option.icon}} @inputValue={{this.option.value}} @isChecked={{this.option.isChecked}} @groupName="privacy" @onClick={{action "updatePrivacySetting"}} @groupValue={{this.selectedPrivacySetting}} />
+                  <RadioFilter @labelName={{option.label}} @labelIcon={{option.icon}} @inputValue={{option.value}} @isChecked={{option.isChecked}} @groupName="privacy" @onClick={{action "updatePrivacySetting"}} @groupValue={{this.selectedPrivacySetting}} />
                 </li>
                 {{/each}}
               </ul>
@@ -76,10 +77,10 @@
           <div class="sort-bar-item more"></div>
         </div>
         {{#if this.showList}}
-          <ProblemList @isSearching={{this.isSearchingProblems}} @problems={{this.displayProblems}} @metadata={{this.problemsMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{this.moreMenuOptions}} @store={{this.store}} @toProblemInfo="toProblemInfo" @refreshList={{action "refreshList"}} />
+          <ProblemList @currentUser={{this.currentUser}} @isSearching={{this.isSearchingProblems}} @problems={{this.displayProblems}} @metadata={{this.problemsMetadata}} @isList={{true}} @isGrid={{false}} @moreMenuOptions={{this.moreMenuOptions}} @store={{this.store}} @toProblemInfo="toProblemInfo" @refreshList={{action "refreshList"}} />
         {{/if}}
         {{#if this.showGrid}}
-          <ProblemList @isSearching={{this.isSearchingProblems}} @store={{this.store}} @problems={{this.displayProblems}} @metadata={{this.problemsMetadata}} @isList={{false}} @isGrid={{true}} @moreMenuOptions={{this.moreMenuOptions}} @toProblemInfo="toProblemInfo" @refreshList={{action "refreshList"}} />
+          <ProblemList @currentUser={{this.currentUser}} @isSearching={{this.isSearchingProblems}} @store={{this.store}} @problems={{this.displayProblems}} @metadata={{this.problemsMetadata}} @isList={{false}} @isGrid={{true}} @moreMenuOptions={{this.moreMenuOptions}} @toProblemInfo="toProblemInfo" @refreshList={{action "refreshList"}} />
         {{/if}}
 
         <PaginationControl @details={{this.problemsMetadata}} @initiatePageChange={{action "initiatePageChange"}} />
@@ -91,6 +92,16 @@
 <div class="toggle-filter-menu">
   <button {{action 'toggleMenu'}}><i id="arrow-icon" class="fas fa-chevron-right"></i></button>
 </div>
+
+{{#if this.showCategoryList}}
+<div id="category-list-modal">
+  <div class="modal-content">
+    <h4>Select a Category</h4>
+    <button class="close" {{action 'closeModal' }}><i class="fas fa-times"></i></button>
+    <CategoriesMenu @categories={{this.categoryTree}} @store={{this.store}} @addCategories="searchCategory" />
+  </div>
+</div>
+{{/if}}
 
 <div class="list-outlet hidden" id="outlet">
   {{outlet}}

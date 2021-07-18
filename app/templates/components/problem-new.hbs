@@ -27,7 +27,7 @@
       <div class="info-content-block">
         <div class="input-container">
           <Input @id="title" required="true" @type="text" @value={{this.title}} placeholder="Enter Problem Title"
-            {{on "key-down" this.resetErrors}} />
+            @key-down={{resetErrors}} />
         </div>
       </div>
       <p class="info-content-label statement">
@@ -186,7 +186,7 @@
       <span class="right-buttons">
         {{#if this.showGeneral}}
         <button class="action_button cancel-button" {{action 'cancelProblem' }}>Cancel</button>
-        <button class="action_button primary-button" {{action 'nextStep' }}>Next</button>
+        <button class="action_button primary-button" {{action 'nextStep'}}>Next</button>
         {{else}}
         {{#if this.showLegal}}
         <button class="action_button cancel-button" {{action 'backStep' }}>Back</button>

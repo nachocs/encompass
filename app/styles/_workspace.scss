@@ -11,7 +11,7 @@
       .flex-item {
         margin: 5px 5px;
         min-width: 250px;
-        #my-select {
+        .my-select {
           width: 100%;
         }
         div.twitter-typeahead {
@@ -48,7 +48,7 @@
       .flex-item {
         margin: 20px 10px;
         min-width: 650px;
-        #my-select {
+        .my-select {
           width: 70%;
         }
         div.selectize-comp {
@@ -209,7 +209,7 @@
     .radio-label {
       max-width: 100px;
     }
-    // #my-select {
+    // .my-select {
     //   width: 70%;
     // }
     div.mySelect {

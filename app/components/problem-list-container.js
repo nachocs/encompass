@@ -1,17 +1,16 @@
 import Component from '@ember/component';
 import { computed, observer } from '@ember/object';
 import { alias, or } from '@ember/object/computed';
+import _ from 'underscore';
 /*global _:false */
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { isEqual } from '@ember/utils';
 import $ from 'jquery';
 // import CategoriesListMixin from '../mixins/categories_list_mixin';
-import CurrentUserMixin from '../mixins/current_user_mixin';
 import ErrorHandlingMixin from '../mixins/error_handling_mixin';
 
 export default Component.extend(
-  CurrentUserMixin,
   // CategoriesListMixin,
   ErrorHandlingMixin,
   {
@@ -154,8 +153,9 @@ export default Component.extend(
         icon: 'fas fa-trash',
       },
     ],
+    selectedCategories: [],
     statusFilter: ['approved', 'pending', 'flagged'],
-
+    showCategoryList: false,
     primaryFilterValue: alias('primaryFilter.value'),
     doUseSearchQuery: or('isSearchingProblems', 'isDisplayingSearchResults'),
     selectedPrivacySetting: ['M', 'O', 'E'],
@@ -904,6 +904,12 @@ export default Component.extend(
         this.sendAction('toProblemInfo', problem);
         this.$('#outlet').removeClass('hidden');
       },
+      closeModal() {
+        this.set('showCategoryList', false);
+      },
+      searchCategory(cat) {
+        this.selectedCategories.pushObject(cat);
+      }
     },
   }
 );

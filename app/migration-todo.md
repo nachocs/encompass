@@ -14,7 +14,6 @@
 
 ## user.new
 - doesn't create user
-- doesn't load list of orgs
 
 ## users.user
 - update form works

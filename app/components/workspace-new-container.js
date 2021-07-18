@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-// import EmberMap from '@ember/map';
 import { computed } from '@ember/object';
 import { equal, or } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
@@ -225,22 +224,22 @@ export default Component.extend(ErrorHandlingMixin, {
     if (!_.isArray(answers)) {
       return [];
     }
-    const threads = EmberMap.create();
+    const threads = {};
 
     answers
       .sortBy('student')
       .getEach('student')
       .uniq()
       .forEach((student) => {
-        if (!threads.has(student)) {
+        if (!threads[student]) {
           const answers = this.studentWork(student);
-          threads.set(student, answers);
+          threads[student] = answers;
         }
       });
 
     let results = [];
-    threads.forEach((answers) => {
-      results.addObject(answers.get('lastObject'));
+    Object.keys(threads).forEach((answers) => {
+      results.addObject(threads[answers].get('lastObject'));
     });
     return results;
   },
@@ -337,9 +336,9 @@ export default Component.extend(ErrorHandlingMixin, {
         const threads = this.submissionThreads;
         if (threads) {
           let results = [];
-          threads.forEach((thread) => {
+          Object.keys(threads).forEach((thread) => {
             // each thread is sorted array of student work (from earliest to latest)
-            results.addObject(thread.get('lastObject'));
+            results.addObject(threads[thread].get('lastObject'));
           });
           return results;
         }
@@ -476,15 +475,14 @@ export default Component.extend(ErrorHandlingMixin, {
       return [];
     }
     const threads = {};
-    console.log(threads);
     this.filteredAnswers
       .sortBy('student')
       .getEach('student')
       .uniq()
       .forEach((student) => {
-        if (!threads.has(student)) {
+        if (!threads[student]) {
           const answers = this.studentWork(student);
-          threads.set(student, answers);
+          threads[student] = answers;
         }
       });
     return threads;
@@ -522,7 +520,7 @@ export default Component.extend(ErrorHandlingMixin, {
     if (field === 'revisions') {
       let ascending = _.sortBy(defaultSorted, (answer) => {
         let student = answer.get('student');
-        let revisionCount = this.submissionThreads.get(student).get('length');
+        let revisionCount = this.submissionThreads[student].get('length');
         return revisionCount;
       });
       if (direction === 1) {
@@ -666,7 +664,7 @@ export default Component.extend(ErrorHandlingMixin, {
           return;
         }
         let student = answer.get('student');
-        let revisions = this.submissionThreads.get(student);
+        let revisions = this.submissionThreads[student];
         this.selectedAnswers.removeObjects(revisions);
       }
       if (isChecked === false) {
@@ -675,7 +673,7 @@ export default Component.extend(ErrorHandlingMixin, {
           return;
         }
         let student = answer.get('student');
-        let revisions = this.submissionThreads.get(student);
+        let revisions = this.submissionThreads[student];
         this.selectedAnswers.addObjects(revisions);
       }
     },
